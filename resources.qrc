@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>shaders/simpleshader.frag</file>
+        <file>shaders/simpleshader.vert</file>
+        <file>models/cube.obj</file>
+        <file>models/shepplogan.pgm3d</file>
+    </qresource>
+</RCC>
