@@ -2,6 +2,7 @@
 #define UTILS_H
 
 #include <math.h>
+#include <QVector>
 
 namespace arm
 {
@@ -10,10 +11,19 @@ struct Vector3f;
 struct Point3i;
 struct Point3f;
 struct Vertex;
+struct FaceIndex;
 }
 
-typedef struct Point3i FaceIndex;
 
+struct FaceIndex
+{
+    unsigned int v0, v1, v2;
+
+    FaceIndex(unsigned int x_ = 1, unsigned int y_ = 2, unsigned int z_ = 3):
+        v0(x_), v1(y_), v2(z_)
+    {
+    }
+};
 
 struct Color3f
 {
@@ -186,7 +196,9 @@ struct Vertex
     Point3f position;
     Color3f color;
 
-    Vertex() {}
+    Vertex() :
+        position(Point3f(0.f, 0.f, 0.f)), color(Color3f(0.f, 0.f, 0.f))
+    {}
 
     Vertex(const Point3f& p, const Color3f& c) :
         position(p), color(c)
@@ -196,41 +208,5 @@ struct Vertex
         position(v.position), color(v.color)
     {}
 };
-
-
-// Aligned Axis Bounding Box
-struct AABB
-{
-    Vector3f min, max;
-
-    AABB(const Vector3f& min_ = Vector3f(0.f, 0.f, 0.f),
-         const Vector3f& max_ = Vector3f(0.f, 0.f, 0.f)) :
-        min(min_), max(max_)
-    {}
-
-    void extend(const Vector3f& v)
-    {
-        // TODO: implementer
-    }
-
-    void extend(const AABB& aabb)
-    {
-        // TODO: implementer
-    }
-
-    bool contains(const Vertex& v)
-    {
-        // TODO: implementer
-        return false;
-    }
-
-    bool contains(const AABB& aabb)
-    {
-        // TODO: implementer
-        return false;
-    }
-};
-
-
 
 #endif // UTILS_H

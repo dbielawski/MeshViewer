@@ -10,7 +10,7 @@ Scene::Scene():
 {
     m_camera->lookAt(Point3f(0.f, 5.f, -5.f),
                      Point3f(0.f, 0.f, 0.f),
-                     Point3f(0.f, 1.f, 0.f));
+                     Vector3f(0.f, 1.f, 0.f));
 
     m_camera->setPerspective(60.f, 0.001f, 1000.f);
 }

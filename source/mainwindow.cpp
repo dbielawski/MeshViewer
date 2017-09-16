@@ -34,6 +34,13 @@ void MainWindow::createMenus()
     m_fileMenu->addAction(m_openAction);
     m_fileMenu->addAction(m_clearSceneAction);
     m_fileMenu->addAction(m_quitAction);
+
+    m_display = menuBar()->addMenu(tr("&Display"));
+    m_display->addAction(m_toggleDisplayBoundingBoxAction);
+    m_display->addSeparator();
+    m_display->addAction(m_drawPointsAction);
+    m_display->addAction(m_drawLinesAction);
+    m_display->addAction(m_drawFilledAction);
 }
 
 void MainWindow::createActions()
@@ -52,10 +59,23 @@ void MainWindow::createActions()
     m_quitAction->setShortcut(QKeySequence(tr("Ctrl+Q")));
     m_quitAction->setStatusTip(tr("Exit the application"));
     connect(m_quitAction, SIGNAL(triggered(bool)), qApp, SLOT(quit()));
+
+    m_toggleDisplayBoundingBoxAction = new QAction(tr("&Render AABB"), this);
+    m_toggleDisplayBoundingBoxAction->setStatusTip(tr("Display the bounding box of the model | Toggle press B"));
+
+    m_drawPointsAction = new QAction(tr("&Points"), this);
+    m_drawPointsAction->setStatusTip(tr("Render the model in point mode | Press M to switch"));
+
+    m_drawLinesAction = new QAction(tr("&Lines"), this);
+    m_drawLinesAction->setStatusTip(tr("Render the model in line mode | Press M to switch"));
+
+    m_drawFilledAction = new QAction(tr("&Filled"), this);
+    m_drawFilledAction->setStatusTip(tr("Render the model with faces | Press M to switch"));
 }
 
 void MainWindow::openFile()
 {
+    // TODO: filtrer par type de fichier
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), tr("*.pgm3d"));
 
     // Tester s'il est vide, alors on arrete

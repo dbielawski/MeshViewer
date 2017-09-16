@@ -5,13 +5,15 @@
 
 #include "utils.h"
 
+#include "alignedbox3f.h"
+
 class Octree
 {
 public:
 
     struct OctreeNode
     {
-        AABB boundingBox;
+        AlignedBox3f boundingBox;
         OctreeNode* childs[8];
         /*QVector<> list;
 

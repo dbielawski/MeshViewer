@@ -23,10 +23,11 @@ void Camera::setViewport(unsigned int oX, unsigned int oY, unsigned int width, u
     m_height = height;
 }
 
-void Camera::lookAt(const Point3f& position, const Point3f& target, const Point3f& up)
+void Camera::lookAt(const Point3f& position, const Point3f& target, const Vector3f& up)
 {
     m_position = position;
     m_target = target;
+    m_up = up;
 
     m_viewMatrix.setToIdentity();
 
@@ -50,12 +51,19 @@ QMatrix4x4 Camera::projectionMatrix()
 
 void Camera::rotateAround(const QQuaternion& q)
 {
-    // TODO:
+    Point3f center = m_target - m_position;
+    m_viewMatrix.translate(QVector3D(center.x, center.y, center.z));
+    m_viewMatrix.rotate(q);
+    m_viewMatrix.translate(QVector3D(m_position.x, m_position.y, m_position.z));
+
+    updateView();
 }
 
 void Camera::rotate(float angle, float x, float y, float z)
 {
     m_viewMatrix.rotate(angle, x, y, z);
+
+    updateView();
 }
 
 void Camera::zoom(float z)
@@ -68,6 +76,8 @@ void Camera::zoom(float z)
     {
         m_position = m_position + direction() * z;
     }
+
+    updateView();
 }
 
 Vector3f Camera::up() const
@@ -83,4 +93,14 @@ Vector3f Camera::right() const
 Vector3f Camera::direction() const
 {
     return Vector3f(-m_viewMatrix(0, 2), -m_viewMatrix(1, 2), -m_viewMatrix(2, 2));
+}
+
+void Camera::updateView()
+{
+    lookAt(m_position, m_target, m_up);
+}
+
+void Camera::updateProjection()
+{
+    m_projectionMatrix.perspective(m_fovY, float(m_width) / float(m_height), m_near, m_far);
 }

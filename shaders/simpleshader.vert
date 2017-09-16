@@ -11,8 +11,7 @@ uniform mat4 mat_proj;
 
 void main(void)
 {
-    //gl_Position = mat_proj * mat_view * vec4(vtx_position, 1.f);
-    gl_Position = vec4(vtx_position, 1.f);
+    gl_Position = mat_proj * mat_view * vec4(vtx_position, 1.f);
 
     color = vtx_color;
 }

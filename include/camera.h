@@ -15,7 +15,7 @@ public:
     void setPerspective(float fovY, float near, float far);
     void setViewport(unsigned int oX, unsigned int oY, unsigned int width, unsigned int height);
 
-    void lookAt(const Point3f& position, const Point3f& target, const Point3f& up);
+    void lookAt(const Point3f& position, const Point3f& target, const Vector3f& up);
 
     QMatrix4x4 viewMatrix() const;
     QMatrix4x4 projectionMatrix();
@@ -36,9 +36,13 @@ public:
 
 
 private:
+    void updateView();
+    void updateProjection();
+
     QQuaternion m_orientation;
     Point3f m_position;
     Point3f m_target;
+    Vector3f m_up;
 
     float m_fovY;
     float m_near;

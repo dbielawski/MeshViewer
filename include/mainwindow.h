@@ -35,6 +35,12 @@ private:
     QAction*    m_openAction;
     QAction*    m_clearSceneAction;
     QAction*    m_quitAction;
+
+    QMenu*      m_display;
+    QAction*    m_toggleDisplayBoundingBoxAction;
+    QAction*    m_drawPointsAction;
+    QAction*    m_drawLinesAction;
+    QAction*    m_drawFilledAction;
 };
 
 #endif // MAINWINDOW_H
