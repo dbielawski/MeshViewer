@@ -5,6 +5,5 @@
         <file>models/cube.obj</file>
         <file>models/shepplogan.pgm3d</file>
         <file>models/cube_tr.obj</file>
-        <file>models/suzanne.obj</file>
     </qresource>
 </RCC>

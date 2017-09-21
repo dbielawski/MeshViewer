@@ -48,7 +48,7 @@ void GLWidget::initializeGL()
     glPointSize(15.f);
 
 //     Model3d* model = new pgm3d(":/models/shepplogan.pgm3d");
-    // Model3d* model = new obj(":/models/cube.obj");
+//     Model3d* model = new obj(":/models/cube.obj");
     Model3d* model = new obj(":/models/cube_tr.obj");
     m_mesh = model->mesh();
 

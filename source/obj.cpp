@@ -65,7 +65,7 @@ void obj::loadFromFile(const QString &fileName)
 
                     m_faces.append(FaceIndex(v0.toInt() - 1, v1.toInt() - 1, v2.toInt() - 1));
 
-                    std::cout << "List 3" << std::endl;
+//                    std::cout << "List 3" << std::endl;
                 }
                 else if (listSize == 4)
                 {
@@ -74,13 +74,13 @@ void obj::loadFromFile(const QString &fileName)
                     QString v2 = list.at(2);
                     QString v3 = list.at(3);
 
-                    FaceIndex i1(v0.toInt(), v1.toInt(), v2.toInt());
-                    FaceIndex i2(v2.toInt(), v3.toInt(), v0.toInt());
+                    FaceIndex i1(v0.toInt() - 1, v1.toInt() - 1, v2.toInt() - 1);
+                    FaceIndex i2(v2.toInt() - 1, v3.toInt() - 1, v0.toInt() - 1);
 
                     m_faces.append(i1);
                     m_faces.append(i2);
 
-                    std::cout << "List 4" << std::endl;
+//                    std::cout << "List 4" << std::endl;
                 }
                 else if (listSize == 18)
                 {
