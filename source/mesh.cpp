@@ -47,7 +47,7 @@ void Mesh::init()
     m_functions->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(FaceIndex) * m_faces.size(), &m_faces[0], GL_STATIC_DRAW);
 
     // TODO: supprimer et mettre dans GLWidget
-    mView.lookAt(QVector3D(3.f, 4.f, 2.f), QVector3D(0.f, 0.f, 0.f), QVector3D(0.f, 1.f, 0.f));
+    mView.lookAt(QVector3D(3.f, 4.f, 3.f), QVector3D(0.f, 0.f, 0.f), QVector3D(0.f, 1.f, 0.f));
     mProjection.perspective(60.f, 1200.f / 800.f, 0.001, 1000.f);
 }
 

@@ -26,6 +26,10 @@ GLWidget::GLWidget(QWidget *parent) :
 
     this->setFormat(glFormat);
     setFocusPolicy( Qt::StrongFocus );
+
+
+    m_wheelButtonPressed = false;
+    m_zoom = 1.f;
 }
 
 GLWidget::~GLWidget()
@@ -43,9 +47,8 @@ void GLWidget::initializeGL()
     glDepthFunc(GL_LESS);
     glPointSize(15.f);
 
-    // Model3d* model = new pgm3d(":/models/shepplogan.pgm3d");
+//     Model3d* model = new pgm3d(":/models/shepplogan.pgm3d");
     // Model3d* model = new obj(":/models/cube.obj");
-    // Model3d* model = new obj(":/models/cube_no_face.obj");
     Model3d* model = new obj(":/models/cube_tr.obj");
     m_mesh = model->mesh();
 
@@ -80,19 +83,78 @@ void GLWidget::paintGL()
 
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
-//    std::cout << "mouseMoveEvent" << std::endl;
+    //        std::cout << "mouseMoveEvent" << std::endl;
+
+    int dx = event->x() - m_previousMousePosition.x();
+    int dy = event->y() - m_previousMousePosition.y();
+
+    if (m_wheelButtonPressed)
+    {
+        m_mesh->mView.rotate(dx, 0.f, 1.f);
+        m_mesh->mView.rotate(dy, 1.f, 0.f);
+    }
+
+    m_previousMousePosition = event->pos();
+
+    updateGL();
+    event->accept();
 }
 
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
-//    std::cout << "mousePressEvent" << std::endl;
+    //    std::cout << "mousePressEvent" << std::endl;
+
+    switch (event->button())
+    {
+    case Qt::LeftButton:
+        break;
+    case Qt::RightButton:
+        break;
+    case Qt::MiddleButton:
+        m_wheelButtonPressed = true;
+        break;
+    default:
+        break;
+    }
+    event->accept();
+}
+
+void GLWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    switch (event->button())
+    {
+    case Qt::LeftButton:
+        break;
+    case Qt::RightButton:
+        break;
+    case Qt::MiddleButton:
+        m_wheelButtonPressed = false;
+        break;
+    default:
+        break;
+    }
+
 }
 
 void GLWidget::wheelEvent(QWheelEvent *event)
 {
-//    std::cout << "wheelEvent" << std::endl;
+    //    std::cout << "key event in board:" <<  event->buttons() << std::endl;
+    //    std::cout << "wheelEvent" << std::endl;
+
+    if (event->delta() > 0.f)
+    {
+//        std::cout << "zoomm in " << std::endl;
+        m_zoom += 0.1f;
+    }
+    else
+    {
+//        std::cout << "zoomm out" << std::endl;
+        m_zoom -= 0.1f;
+    }
+
+    updateGL();
     event->accept();
-    //m_scene->camera()->zoom();
+
 }
 
 void GLWidget::keyPressEvent(QKeyEvent *event)
@@ -130,9 +192,14 @@ void GLWidget::keyPressEvent(QKeyEvent *event)
         break;
     }
 
-//    std::cout << "key event in board:" <<  event->key() << std::endl;
+    //    std::cout << "key event in board:" <<  event->key() << std::endl;
 
     event->accept();
+}
+
+void GLWidget::keyReleaseEvent(QKeyEvent *event)
+{
+
 }
 
 

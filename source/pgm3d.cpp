@@ -55,7 +55,7 @@ void pgm3d::loadFromFile(const QString& fileName)
     {
         m_data = new unsigned int[voxelCount];
 
-        for (int i = 0; i < voxelCount; ++i)
+        for (unsigned long long i = 0; i < voxelCount; ++i)
             in >> m_data[i];
     }
 }
@@ -94,49 +94,48 @@ Mesh* pgm3d::mesh() const
         if (m_data[i] != 0) // if the voxel is not black
         {
             // Compute the centered position of the Voxel
-//            Point3i offset(indexTo3Dcoordinates(i, m_width, m_height));
+            Point3i offset(indexTo3Dcoordinates(i, m_width, m_height));
 
-//            float grayValue = m_data[i] / float(m_maxGrayscaleValue);
-//            Color3f color(grayValue, grayValue, grayValue);
+            float grayValue = m_data[i] / float(m_maxGrayscaleValue);
+            Color3f color(grayValue, grayValue, grayValue);
 
-//            Vertex frontBottomLeft(offset + Point3f(-.5f, .5f, -.5f), color);
-//            Vertex frontBottomRight(offset + Point3f(.5f, .5f, -.5f), color);
-//            Vertex frontTopRight(offset + Point3f(.5f, -.5f, -.5f), color);
-//            Vertex frontTopLeft(offset + Point3f(-.5f, -.5f, -.5f), color);
+            Vertex frontBottomLeft(offset + Point3f(-.5f, .5f, -.5f), color);
+            Vertex frontBottomRight(offset + Point3f(.5f, .5f, -.5f), color);
+            Vertex frontTopRight(offset + Point3f(.5f, -.5f, -.5f), color);
+            Vertex frontTopLeft(offset + Point3f(-.5f, -.5f, -.5f), color);
 
-//            Vertex backTopLeft(offset + Point3f(-.5f, -.5f, .5f), color);
-//            Vertex backTopRight(offset + Point3f(.5f, -.5f, .5f), color);
-//            Vertex backBottomLeft(offset + Point3f(-.5f, .5f, .5f), color);
-//            Vertex backBottomRight(offset + Point3f(.5f, .5f, .5f), color);
+            Vertex backTopLeft(offset + Point3f(-.5f, -.5f, .5f), color);
+            Vertex backTopRight(offset + Point3f(.5f, -.5f, .5f), color);
+            Vertex backBottomLeft(offset + Point3f(-.5f, .5f, .5f), color);
+            Vertex backBottomRight(offset + Point3f(.5f, .5f, .5f), color);
 
-//            vertices.append(frontBottomLeft);
-//            vertices.append(frontBottomRight);
-//            vertices.append(frontTopRight);
-//            vertices.append(frontTopLeft);
+            vertices.append(frontBottomLeft);
+            vertices.append(frontBottomRight);
+            vertices.append(frontTopRight);
+            vertices.append(frontTopLeft);
 
-//            vertices.append(backTopLeft);
-//            vertices.append(backTopRight);
-//            vertices.append(backBottomLeft);
-//            vertices.append(backBottomRight);
+            vertices.append(backTopLeft);
+            vertices.append(backTopRight);
+            vertices.append(backBottomLeft);
+            vertices.append(backBottomRight);
 
-//            faces.append(FaceIndex(i + 0, i + 1, i + 2)); // Front
-//            faces.append(FaceIndex(i + 2, i + 3, i + 0));
+            faces.append(FaceIndex(i + 0, i + 1, i + 2)); // Front
+            faces.append(FaceIndex(i + 2, i + 3, i + 0));
 
-//            faces.append(FaceIndex(i + 1, i + 4, i + 7)); // Right
-//            faces.append(FaceIndex(i + 7, i + 2, i + 1));
+            faces.append(FaceIndex(i + 1, i + 4, i + 7)); // Right
+            faces.append(FaceIndex(i + 7, i + 2, i + 1));
 
-//            faces.append(FaceIndex(i + 0, i + 3, i + 6)); // Left
-//            faces.append(FaceIndex(i + 6, i + 5, i + 0));
+            faces.append(FaceIndex(i + 0, i + 3, i + 6)); // Left
+            faces.append(FaceIndex(i + 6, i + 5, i + 0));
 
-//            faces.append(FaceIndex(i + 3, i + 2, i + 7)); // UP
-//            faces.append(FaceIndex(i + 7, i + 6, i + 3));
+            faces.append(FaceIndex(i + 3, i + 2, i + 7)); // UP
+            faces.append(FaceIndex(i + 7, i + 6, i + 3));
 
-//            faces.append(FaceIndex(i + 1, i + 0, i + 5)); // Bottom
-//            faces.append(FaceIndex(i + 5, i + 4, i + 1));
+            faces.append(FaceIndex(i + 1, i + 0, i + 5)); // Bottom
+            faces.append(FaceIndex(i + 5, i + 4, i + 1));
 
-//            faces.append(FaceIndex(i + 4, i + 5, i + 0)); // Back
-//            faces.append(FaceIndex(i + 6, i + 7, i + 4));
-//            break;
+            faces.append(FaceIndex(i + 4, i + 5, i + 0)); // Back
+            faces.append(FaceIndex(i + 6, i + 7, i + 4));
         }
     }
 

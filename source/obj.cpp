@@ -63,8 +63,7 @@ void obj::loadFromFile(const QString &fileName)
                     QString v1 = list.at(1);
                     QString v2 = list.at(2);
 
-                    FaceIndex i(v0.toInt(), v1.toInt(), v2.toInt());
-                    m_faces.append(i);
+                    m_faces.append(FaceIndex(v0.toInt() - 1, v1.toInt() - 1, v2.toInt() - 1));
 
                     std::cout << "List 3" << std::endl;
                 }

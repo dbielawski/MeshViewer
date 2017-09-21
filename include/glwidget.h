@@ -26,11 +26,13 @@ protected:
     virtual void resizeGL(int w, int h) override;
     virtual void paintGL() override;
 
-    virtual void mouseMoveEvent(QMouseEvent *event) override;
-    virtual void mousePressEvent(QMouseEvent *event) override;
-    virtual void wheelEvent(QWheelEvent *event) override;
+    virtual void mouseMoveEvent(QMouseEvent* event) override;
+    virtual void mousePressEvent(QMouseEvent* event) override;
+    virtual void mouseReleaseEvent(QMouseEvent* event) override;
+    virtual void wheelEvent(QWheelEvent* event) override;
 
-    virtual void keyPressEvent(QKeyEvent *event);
+    virtual void keyPressEvent(QKeyEvent* event) override;
+    virtual void keyReleaseEvent(QKeyEvent* event) override;
 
 private:
     // TODO: ameliorer ? ^^
@@ -51,6 +53,14 @@ private:
     Scene*              m_scene;
 
     Mesh*               m_mesh; //TODO: remove, mesh doit etre dans la scene
+
+
+    // INPUTS
+    bool m_wheelButtonPressed;
+
+    QPoint m_previousMousePosition;
+
+    float m_zoom;
 };
 
 #endif // GLVIEWER_H

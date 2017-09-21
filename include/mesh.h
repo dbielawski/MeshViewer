@@ -9,6 +9,7 @@
 
 class QGLFunctions;
 class QGLShaderProgram;
+
 class Octree;
 
 class Mesh
@@ -42,8 +43,8 @@ private:
     AlignedBox3f        m_boundingBox;
     Octree*             m_octree;
 
-    uint        m_vertexBufferId;
-    uint        m_indexBufferId;
+    uint                m_vertexBufferId;
+    uint                m_indexBufferId;
 
     QGLFunctions*       m_functions;
     QGLShaderProgram*   m_shaderProgram;
