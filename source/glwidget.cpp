@@ -12,6 +12,7 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 
+#include "assert.h"
 
 GLWidget::GLWidget(QWidget *parent) :
     QGLWidget(parent),
@@ -29,7 +30,7 @@ GLWidget::GLWidget(QWidget *parent) :
 
 
     m_wheelButtonPressed = false;
-    m_zoom = 1.f;
+    m_zoomValue = 1.f;
 }
 
 GLWidget::~GLWidget()
@@ -47,24 +48,21 @@ void GLWidget::initializeGL()
     glDepthFunc(GL_LESS);
     glPointSize(15.f);
 
-//     Model3d* model = new pgm3d(":/models/shepplogan.pgm3d");
-//     Model3d* model = new obj(":/models/cube.obj");
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     Model3d* model = new obj(":/models/cube_tr.obj");
-    m_mesh = model->mesh();
+    Mesh* m_mesh = model->mesh();
 
+    m_scene->init();
     m_scene->addMesh(*m_mesh);
-
-    //    m_shaderProgram = new QGLShaderProgram;
-    //    m_shaderProgram->addShaderFromSourceFile(QGLShader::Vertex, ":shaders/simpleshader.vert");
-    //    m_shaderProgram->addShaderFromSourceFile(QGLShader::Fragment, ":shaders/simpleshader.frag");
-    //    m_shaderProgram->link();
-
-    m_scene->camera()->setViewport(0, 0, this->width(), this->height());
 }
 
 void GLWidget::resizeGL(int w, int h)
 {
     glViewport(0, 0, w, h);
+
+    m_scene->camera()->setSize(w, h);
     m_scene->camera()->setViewport(0, 0, w, h);
 }
 
@@ -72,13 +70,9 @@ void GLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //    m_shaderProgram->bind();
-    //    m_shaderProgram->setUniformValue("mat_view", m_scene->camera()->viewMatrix());
-    //    m_shaderProgram->setUniformValue("mat_proj", m_scene->camera()->projectionMatrix());
-    //    m_scene->render(*m_shaderProgram);
-
     glPolygonMode(GL_FRONT_AND_BACK, m_displayModeValues[m_displayModeIndex]);
-    m_mesh->render();
+
+    m_scene->render();
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
@@ -90,8 +84,11 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
     if (m_wheelButtonPressed)
     {
-        m_mesh->mView.rotate(dx, 0.f, 1.f);
-        m_mesh->mView.rotate(dy, 1.f, 0.f);
+//        m_mesh->mView.rotate(dx, 0.f, 1.f);
+//        m_mesh->mView.rotate(dy, 1.f, 0.f);
+
+        m_scene->camera()->rotateAround(dx, Vector3f(0.f, 1.f, 0.f));
+        //m_scene->camera()->rotateAround(dy, Vector3f(1.f, 0.f, 0.f));
     }
 
     m_previousMousePosition = event->pos();
@@ -144,12 +141,12 @@ void GLWidget::wheelEvent(QWheelEvent *event)
     if (event->delta() > 0.f)
     {
 //        std::cout << "zoomm in " << std::endl;
-        m_zoom += 0.1f;
+        m_zoomValue += 0.1f;
     }
     else
     {
 //        std::cout << "zoomm out" << std::endl;
-        m_zoom -= 0.1f;
+        m_zoomValue -= 0.1f;
     }
 
     updateGL();
@@ -163,19 +160,19 @@ void GLWidget::keyPressEvent(QKeyEvent *event)
     switch ( event->key() )
     {
     case Qt::Key_Q:
-        m_mesh->mView.rotate(10, 0.f, 1.f);
+        m_scene->camera()->rotate(10, 0.f, 1.f, 0.f);
         updateGL();
         break;
     case Qt::Key_D:
-        m_mesh->mView.rotate(-10, 0.f, 1.f);
+        m_scene->camera()->rotate(-10, 0.f, 1.f, 0.f);
         updateGL();
         break;
     case Qt::Key_Z:
-        m_mesh->mView.rotate(10, 1.f, 0.f);
+
         updateGL();
         break;
     case Qt::Key_S:
-        m_mesh->mView.rotate(-10, 1.f, 0.f);
+
         updateGL();
         break;
 

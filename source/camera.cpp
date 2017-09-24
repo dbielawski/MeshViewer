@@ -1,5 +1,5 @@
 #include "camera.h"
-
+#include <iostream>
 
 Camera::Camera() : m_originX(0), m_originY(0), m_fovY(60.f), m_near(0.001f), m_far(1000.f),
     m_position(0.f, 0.f, 5.f),
@@ -8,11 +8,21 @@ Camera::Camera() : m_originX(0), m_originY(0), m_fovY(60.f), m_near(0.001f), m_f
 
 }
 
+void Camera::setSize(int w, int h)
+{
+    m_width = w;
+    m_height = h;
+
+    updateProjection();
+}
+
 void Camera::setPerspective(float fovY, float near, float far)
 {
     m_fovY = fovY;
     m_near = near;
     m_far = far;
+
+    updateProjection();
 }
 
 void Camera::setViewport(unsigned int oX, unsigned int oY, unsigned int width, unsigned int height)
@@ -21,6 +31,8 @@ void Camera::setViewport(unsigned int oX, unsigned int oY, unsigned int width, u
     m_originY = oY;
     m_width = width;
     m_height = height;
+
+    updateProjection();
 }
 
 void Camera::lookAt(const Point3f& position, const Point3f& target, const Vector3f& up)
@@ -55,6 +67,17 @@ void Camera::rotateAround(const QQuaternion& q)
     m_viewMatrix.translate(QVector3D(center.x, center.y, center.z));
     m_viewMatrix.rotate(q);
     m_viewMatrix.translate(QVector3D(m_position.x, m_position.y, m_position.z));
+
+    updateView();
+}
+
+void Camera::rotateAround(float angle, Vector3f axis)
+{
+    Point3f center = m_target - m_position;
+
+//    m_viewMatrix.translate(QVector3D(-center.x, -center.y, -center.z));
+    m_viewMatrix.rotate(10, axis.x, axis.y, axis.z);
+//    m_viewMatrix.translate(QVector3D(center.x, center.y, center.z));
 
     updateView();
 }

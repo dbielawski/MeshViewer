@@ -35,6 +35,9 @@ protected:
     virtual void keyReleaseEvent(QKeyEvent* event) override;
 
 private:
+    Scene*              m_scene;
+
+
     // TODO: ameliorer ? ^^
     enum EDisplayMode
     {
@@ -49,18 +52,12 @@ private:
     };
     unsigned int        m_displayModeIndex;
 
-    QGLShaderProgram*   m_shaderProgram;
-    Scene*              m_scene;
-
-    Mesh*               m_mesh; //TODO: remove, mesh doit etre dans la scene
-
 
     // INPUTS
     bool m_wheelButtonPressed;
-
     QPoint m_previousMousePosition;
 
-    float m_zoom;
+    float m_zoomValue;
 };
 
 #endif // GLVIEWER_H

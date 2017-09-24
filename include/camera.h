@@ -12,6 +12,7 @@ class Camera
 public:
     Camera();
 
+    void setSize(int w, int h);
     void setPerspective(float fovY, float near, float far);
     void setViewport(unsigned int oX, unsigned int oY, unsigned int width, unsigned int height);
 
@@ -20,6 +21,7 @@ public:
     QMatrix4x4 viewMatrix() const;
     QMatrix4x4 projectionMatrix();
     void rotateAround(const QQuaternion& q);
+    void rotateAround(float angle, Vector3f axis);
     void rotate(float angle, float x, float y, float z);
 
     void zoom(float z);

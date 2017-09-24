@@ -82,13 +82,6 @@ void obj::loadFromFile(const QString &fileName)
 
 //                    std::cout << "List 4" << std::endl;
                 }
-                else if (listSize == 18)
-                {
-                    // with normals
-                    // maybe later...
-                    QMessageBox::critical(0, "Error", "OBJ file format not supported");
-                    return;
-                }
                 else
                 {
                     QMessageBox::critical(0, "Error", "OBJ file format not supported");
@@ -107,7 +100,7 @@ Mesh *obj::mesh() const
     mesh->rawData(m_vertices, m_faces);
     mesh->init();
 
-    // TODO: update stuffs ...
+    // TODO: ne pas oublier de update stuffs ...
     //    mesh->computeBoundingBox();
     //    mesh->buildOctree();
 
