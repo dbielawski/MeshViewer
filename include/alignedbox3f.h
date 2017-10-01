@@ -26,7 +26,7 @@ private:
     unsigned int m_vertexBufferId;
     unsigned int m_indexBufferId;
 
-    Color3f m_color;
+    Color4f m_color;
 
     QGLFunctions*       m_functions;
     QGLShaderProgram*   m_shaderProgram;

@@ -20,9 +20,9 @@ public:
 
     QMatrix4x4 viewMatrix() const;
     QMatrix4x4 projectionMatrix();
-    void rotateAround(const QQuaternion& q);
-    void rotateAround(float angle, Vector3f axis);
-    void rotate(float angle, float x, float y, float z);
+
+    void rotateAroundTarget(float angle, Vector3f axis);
+    void rotate(float angle, Vector3f axis);
 
     void zoom(float z);
 

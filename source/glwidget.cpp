@@ -30,7 +30,10 @@ GLWidget::GLWidget(QWidget *parent) :
 
 
     m_wheelButtonPressed = false;
-    m_zoomValue = 1.f;
+    m_leftButtonPressed = false;
+    m_rightButtonPressed = false;
+
+    m_zoomStepValue = 1.f;
 }
 
 GLWidget::~GLWidget()
@@ -77,17 +80,14 @@ void GLWidget::paintGL()
 
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    //        std::cout << "mouseMoveEvent" << std::endl;
-
     int dx = event->x() - m_previousMousePosition.x();
     int dy = event->y() - m_previousMousePosition.y();
 
-    if (m_wheelButtonPressed)
+    if (m_leftButtonPressed)
     {
-//        m_mesh->mView.rotate(dx, 0.f, 1.f);
-//        m_mesh->mView.rotate(dy, 1.f, 0.f);
+        //std::cout << "mouseMoveEvent" << std::endl;
 
-        m_scene->camera()->rotateAround(dx, Vector3f(0.f, 1.f, 0.f));
+        m_scene->camera()->rotateAroundTarget(dx * .01, Vector3f(0.f, 1.f, 0.f));
         //m_scene->camera()->rotateAround(dy, Vector3f(1.f, 0.f, 0.f));
     }
 
@@ -104,8 +104,10 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
     switch (event->button())
     {
     case Qt::LeftButton:
+        m_leftButtonPressed = true;
         break;
     case Qt::RightButton:
+        m_rightButtonPressed = true;
         break;
     case Qt::MiddleButton:
         m_wheelButtonPressed = true;
@@ -121,8 +123,10 @@ void GLWidget::mouseReleaseEvent(QMouseEvent *event)
     switch (event->button())
     {
     case Qt::LeftButton:
+        m_leftButtonPressed = false;
         break;
     case Qt::RightButton:
+        m_rightButtonPressed = false;
         break;
     case Qt::MiddleButton:
         m_wheelButtonPressed = false;
@@ -140,13 +144,13 @@ void GLWidget::wheelEvent(QWheelEvent *event)
 
     if (event->delta() > 0.f)
     {
-//        std::cout << "zoomm in " << std::endl;
-        m_zoomValue += 0.1f;
+        //        std::cout << "zoomm in " << std::endl;
+        m_scene->camera()->zoom(m_zoomStepValue);
     }
     else
     {
-//        std::cout << "zoomm out" << std::endl;
-        m_zoomValue -= 0.1f;
+        //        std::cout << "zoomm out" << std::endl;
+        m_scene->camera()->zoom(-m_zoomStepValue);
     }
 
     updateGL();
@@ -160,11 +164,11 @@ void GLWidget::keyPressEvent(QKeyEvent *event)
     switch ( event->key() )
     {
     case Qt::Key_Q:
-        m_scene->camera()->rotate(10, 0.f, 1.f, 0.f);
+        m_scene->camera()->rotate(10, Vector3f(0.f, 1.f, 0.f));
         updateGL();
         break;
     case Qt::Key_D:
-        m_scene->camera()->rotate(-10, 0.f, 1.f, 0.f);
+        m_scene->camera()->rotate(-10, Vector3f(0.f, 1.f, 0.f));
         updateGL();
         break;
     case Qt::Key_Z:

@@ -12,7 +12,7 @@ Scene::Scene() :
     m_camera(new Camera),
     m_backgroundColor(.9f, .9f, .9f)
 {
-    m_camera->lookAt(Point3f(3.f, 4.f, 3.f),
+    m_camera->lookAt(Point3f(3.f, 0.f, 3.f),
                      Point3f(0.f, 0.f, 0.f),
                      Vector3f(0.f, 1.f, 0.f));
 

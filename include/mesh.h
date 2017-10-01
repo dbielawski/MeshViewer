@@ -25,6 +25,7 @@ public:
     void rawData(const QVector<Vertex>& vertices, const QVector<FaceIndex>& indices);
 
 
+    void computeNormals();
     void clear();
     void computeBoundingBox();
     void buildOctree();

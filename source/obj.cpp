@@ -6,8 +6,6 @@
 
 #include "mesh.h"
 
-#include <iostream>
-
 
 obj::obj(const QString &fileName)
 {
@@ -30,6 +28,8 @@ void obj::loadFromFile(const QString &fileName)
     m_vertices.clear();
     m_faces.clear();
 
+    QVector<Vector3f> normals;
+
     do
     {
         line = in.readLine();
@@ -47,7 +47,7 @@ void obj::loadFromFile(const QString &fileName)
 
                 // WARNING: magic number (color)
                 Vertex v(Point3f(x.toFloat(), y.toFloat(), z.toFloat()),
-                         Color3f(.5f, .5f, .5f));
+                         Color4f(.5f, .5f, .5f));
 
                 m_vertices.append(v);
             }
@@ -64,8 +64,6 @@ void obj::loadFromFile(const QString &fileName)
                     QString v2 = list.at(2);
 
                     m_faces.append(FaceIndex(v0.toInt() - 1, v1.toInt() - 1, v2.toInt() - 1));
-
-//                    std::cout << "List 3" << std::endl;
                 }
                 else if (listSize == 4)
                 {
@@ -79,8 +77,6 @@ void obj::loadFromFile(const QString &fileName)
 
                     m_faces.append(i1);
                     m_faces.append(i2);
-
-//                    std::cout << "List 4" << std::endl;
                 }
                 else
                 {
@@ -88,9 +84,25 @@ void obj::loadFromFile(const QString &fileName)
                     return;
                 }
             }
+            else if (line.at(0) == 'v' && line.at(1) == 'n') // Normals
+            {
+                QStringList list = line.split(' ');
+                list.removeAt(0); // Remove the 'vn' character
+
+                QString n0 = list.at(0);
+                QString n1 = list.at(1);
+                QString n2 = list.at(2);
+
+                Vector3f normal(n0.toFloat(), n1.toFloat(), n2.toFloat());
+                normals.append(normal);
+            }
         }
 
     } while (!line.isNull());
+
+    // If there are normals
+    for (int i = 0; i < normals.size(); ++i)
+        m_vertices.value(i).normal = normals.at(i);
 
 }
 
@@ -99,10 +111,6 @@ Mesh *obj::mesh() const
     Mesh* mesh = new Mesh;
     mesh->rawData(m_vertices, m_faces);
     mesh->init();
-
-    // TODO: ne pas oublier de update stuffs ...
-    //    mesh->computeBoundingBox();
-    //    mesh->buildOctree();
 
     return mesh;
 }

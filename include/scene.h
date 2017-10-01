@@ -24,8 +24,8 @@ public:
     void addMesh(Mesh& model);
     void addLight(const Light& light);
 
-    void setBackgroundColor(const Color3f& color)   { m_backgroundColor = color; }
-    Color3f backgroundColor() const                 { return m_backgroundColor; }
+    void setBackgroundColor(const Color4f& color)   { m_backgroundColor = color; }
+    Color4f backgroundColor() const                 { return m_backgroundColor; }
 
     Camera* camera() const                          { return m_camera; }
     QGLShaderProgram* shaderProgram() const         { return m_shaderProgram; }
@@ -37,7 +37,7 @@ private:
     QGLShaderProgram*       m_shaderProgram;
 
     Camera*                 m_camera;
-    Color3f                 m_backgroundColor;
+    Color4f                 m_backgroundColor;
 };
 
 #endif // SCENE_H

@@ -61,61 +61,70 @@ QMatrix4x4 Camera::projectionMatrix()
     return m_projectionMatrix;
 }
 
-void Camera::rotateAround(const QQuaternion& q)
+void Camera::rotateAroundTarget(float angle, Vector3f axis)
 {
-    Point3f center = m_target - m_position;
-    m_viewMatrix.translate(QVector3D(center.x, center.y, center.z));
-    m_viewMatrix.rotate(q);
-    m_viewMatrix.translate(QVector3D(m_position.x, m_position.y, m_position.z));
+    Vector3f dirToCenter = m_target - m_position;
+
+    QMatrix4x4 inverted = m_viewMatrix.inverted();
+
+    inverted.translate(QVector3D(dirToCenter.x, dirToCenter.y, dirToCenter.z));
+    inverted.rotate(angle, axis.x, axis.y, axis.z);
+    inverted.translate(QVector3D(-dirToCenter.x, -dirToCenter.y, -dirToCenter.z));
+
+    m_position.x = inverted.column(3).x();
+    m_position.y = inverted.column(3).y();
+    m_position.z = inverted.column(3).z();
 
     updateView();
 }
 
-void Camera::rotateAround(float angle, Vector3f axis)
+void Camera::rotate(float angle, Vector3f axis)
 {
-    Point3f center = m_target - m_position;
-
-//    m_viewMatrix.translate(QVector3D(-center.x, -center.y, -center.z));
-    m_viewMatrix.rotate(10, axis.x, axis.y, axis.z);
-//    m_viewMatrix.translate(QVector3D(center.x, center.y, center.z));
-
-    updateView();
-}
-
-void Camera::rotate(float angle, float x, float y, float z)
-{
-    m_viewMatrix.rotate(angle, x, y, z);
+    QMatrix4x4 inverted = m_viewMatrix.inverted();
+    inverted.rotate(angle, axis.x, axis.y, axis.z);
+    m_position.x = inverted.column(3).x();
+    m_position.y = inverted.column(3).y();
+    m_position.z = inverted.column(3).z();
 
     updateView();
 }
 
 void Camera::zoom(float z)
 {
-    Point3f p = (m_position - m_target);
-    Vector3f v(p.x, p.y, p.z);
-    float dist = v.norm();
+    // Get the direction
+    Vector3f p = (m_position - m_target);
 
+    // Get the distance between the camera and the target
+    float dist = p.norm();
+
+    // Check if the distance is greater
+    // Don't want to go through the target
     if (dist > z)
     {
         m_position = m_position + direction() * z;
+        updateView();
     }
-
-    updateView();
 }
 
 Vector3f Camera::up() const
 {
-    return Vector3f(m_viewMatrix(0, 1), m_viewMatrix(1, 1), m_viewMatrix(2, 1));
+    QMatrix4x4 inverted = m_viewMatrix.inverted();
+
+    return Vector3f(inverted(0, 1), inverted(1, 1), inverted(2, 1));
 }
 
 Vector3f Camera::right() const
 {
-    return Vector3f(m_viewMatrix(0, 0), m_viewMatrix(1, 0), m_viewMatrix(2, 0));
+    QMatrix4x4 inverted = m_viewMatrix.inverted();
+
+    return Vector3f(inverted(0, 0), inverted(1, 0), inverted(2, 0));
 }
 
 Vector3f Camera::direction() const
 {
-    return Vector3f(-m_viewMatrix(0, 2), -m_viewMatrix(1, 2), -m_viewMatrix(2, 2));
+    QMatrix4x4 inverted = m_viewMatrix.inverted();
+
+    return Vector3f(-inverted(0, 2), -inverted(1, 2), -inverted(2, 2));
 }
 
 void Camera::updateView()

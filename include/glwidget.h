@@ -54,10 +54,13 @@ private:
 
 
     // INPUTS
-    bool m_wheelButtonPressed;
+    bool    m_wheelButtonPressed;
+    bool    m_leftButtonPressed;
+    bool    m_rightButtonPressed;
+
     QPoint m_previousMousePosition;
 
-    float m_zoomValue;
+    float m_zoomStepValue;
 };
 
 #endif // GLVIEWER_H

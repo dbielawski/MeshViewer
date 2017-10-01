@@ -1,9 +1,9 @@
 #version 330 core
 
 in vec3 vtx_position;
-in vec3 vtx_color;
+in vec4 vtx_color;
 
-out vec3 color;
+out vec4 color;
 
 uniform mat4 mat_obj;
 uniform mat4 mat_view;

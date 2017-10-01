@@ -25,22 +25,22 @@ struct FaceIndex
     }
 };
 
-struct Color3f
+struct Color4f
 {
-    float r, g, b;
+    float r, g, b, a;
 
-    Color3f(float v): r(v), g(v), b(v)
+    Color4f(float v): r(v), g(v), b(v), a(1.f)
     {}
 
-    Color3f(float red = 0.f, float green = 0.f, float blue = 0.f) :
-        r(red), g(green), b(blue)
+    Color4f(float red = 0.f, float green = 0.f, float blue = 0.f, float alpha = 1.f) :
+        r(red), g(green), b(blue), a(alpha)
     {}
 
-    Color3f(const Color3f& c):
-        r(c.r), g(c.g), b(c.b)
+    Color4f(const Color4f& c):
+        r(c.r), g(c.g), b(c.b), a(c.a)
     {}
 
-    inline Color3f& operator += (const Color3f& c)
+    inline Color4f& operator += (const Color4f& c)
     {
         r += c.r;
         g += c.g;
@@ -49,9 +49,9 @@ struct Color3f
     }
 };
 
-inline Color3f operator +(const Color3f& l, const Color3f& r)
+inline Color4f operator +(const Color4f& l, const Color4f& r)
 {
-    return Color3f(l.r + r.r, l.g + r.g, l.b + r.b);
+    return Color4f(l.r + r.r, l.g + r.g, l.b + r.b);
 }
 
 struct Vector3f
@@ -91,6 +91,15 @@ struct Vector3f
     {
         float n = norm();
         return Vector3f(x / n, y / n, z / n);
+    }
+
+    inline Vector3f& operator =(const Vector3f& v)
+    {
+        this->x = v.x;
+        this->y = v.y;
+        this->z = v.z;
+
+        return *this;
     }
 
     inline Vector3f& operator +=(const Vector3f& v)
@@ -185,28 +194,44 @@ inline Point3f operator +(const Vector3f& l, const Point3f& r)
     return Point3f(l.x + r.x, l.y + r.y, l.z + r.z);
 }
 
-inline Point3f operator -(const Point3f& l, const Point3f& r)
+inline Vector3f operator -(const Point3f& l, const Point3f& r)
 {
-    return Point3f(l.x - r.x, l.y - r.y, l.z - r.z);
+    return Vector3f(l.x - r.x, l.y - r.y, l.z - r.z);
 }
-
 
 struct Vertex
 {
     Point3f position;
-    Color3f color;
+    Color4f color;
+    Vector3f normal;
 
     Vertex() :
-        position(Point3f(0.f, 0.f, 0.f)), color(Color3f(0.f, 0.f, 0.f))
+        position(Point3f(0.f, 0.f, 0.f)), color(Color4f(0.f, 0.f, 0.f))
     {}
 
-    Vertex(const Point3f& p, const Color3f& c) :
+    Vertex(const Point3f& p, const Color4f& c) :
         position(p), color(c)
     {}
 
     Vertex(const Vertex& v):
         position(v.position), color(v.color)
     {}
+};
+
+struct Face
+{
+    Vertex v0;
+    Vertex v1;
+    Vertex V2;
+    Vertex V3;
+
+    FaceIndex index1;
+    FaceIndex index2;
+
+    Face()
+    {
+
+    }
 };
 
 #endif // UTILS_H

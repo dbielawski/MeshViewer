@@ -97,7 +97,7 @@ Mesh* pgm3d::mesh() const
             Point3i offset(indexTo3Dcoordinates(i, m_width, m_height));
 
             float grayValue = m_data[i] / float(m_maxGrayscaleValue);
-            Color3f color(grayValue, grayValue, grayValue);
+            Color4f color(grayValue, grayValue, grayValue);
 
             Vertex frontBottomLeft(offset + Point3f(-.5f, .5f, -.5f), color);
             Vertex frontBottomRight(offset + Point3f(.5f, .5f, -.5f), color);
