@@ -21,6 +21,8 @@ public:
     GLWidget(QWidget *parent = 0);
     ~GLWidget();
 
+    Scene* scene() const { return m_scene; }
+
 protected:
     virtual void initializeGL() override;
     virtual void resizeGL(int w, int h) override;
@@ -50,17 +52,17 @@ private:
     GLuint m_displayModeValues[EDisplayMode::DisplayModeCount] = {
         GL_POINT, GL_LINE, GL_FILL
     };
-    unsigned int        m_displayModeIndex;
 
+    unsigned int        m_displayModeIndex;
 
     // INPUTS
     bool    m_wheelButtonPressed;
     bool    m_leftButtonPressed;
     bool    m_rightButtonPressed;
 
-    QPoint m_previousMousePosition;
+    QPoint  m_previousMousePosition;
 
-    float m_zoomStepValue;
+    float   m_zoomStepValue;
 };
 
 #endif // GLVIEWER_H

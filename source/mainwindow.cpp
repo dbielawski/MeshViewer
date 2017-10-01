@@ -7,6 +7,7 @@
 
 /*  */
 #include "pgm3d.h"
+#include "obj.h"
 /*  */
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -76,12 +77,27 @@ void MainWindow::createActions()
 void MainWindow::openFile()
 {
     // TODO: filtrer par type de fichier
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), tr("*.pgm3d"));
+//    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), tr("*.pgm3d"));
 
-    // Tester s'il est vide, alors on arrete
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"),
+                                                    "../models/",
+                                                    tr("OBJ Files (*.obj);; PGM3D Files (*.pgm3d)"));
 
-    // Charger le fichier
-    // Load Model
+    if(fileName.isEmpty())
+        return;
+
+    QFileInfo fi(fileName);
+    QString ext = fi.suffix();
+
+    Model3d* model;
+    if(ext.toStdString() == "pgm3d")
+        model = new pgm3d(fileName);
+    else if (ext.toStdString() == "pgm3d")
+        model = new obj(fileName);
+
+    Mesh* mesh = model->mesh();
+    m_viewer->scene()->addMesh(*mesh);
+    m_viewer->updateGL();
 }
 
 void MainWindow::clearScene()

@@ -4,6 +4,7 @@
 #include "model3d.h"
 #include "utils.h"
 
+#include <QVector>
 
 class pgm3d : public Model3d
 {
@@ -16,7 +17,7 @@ public:
     unsigned int height() const             { return m_height;  }
     unsigned int depth() const              { return m_depth;   }
     unsigned int maxGrayscaleValue() const  { return m_maxGrayscaleValue; }
-    unsigned int* data() const              { return m_data; }
+    QVector<uint8_t> data() const           { return m_data; }
 
 
     virtual void loadFromFile(const QString& fileName) override;
@@ -44,11 +45,12 @@ private:
     //        Vector3f()
     //    };
 
-    unsigned int m_width;
-    unsigned int m_height;
-    unsigned int m_depth;
-    unsigned int m_maxGrayscaleValue;
-    unsigned int* m_data;
+    unsigned int        m_width;
+    unsigned int        m_height;
+    unsigned int        m_depth;
+    unsigned int        m_maxGrayscaleValue;
+    QVector<uint8_t>    m_data;
+    QVector<Vertex>     m_dataVertex;
 };
 
 #endif // PGM3D_H

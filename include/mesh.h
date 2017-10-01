@@ -9,6 +9,7 @@
 #include "scene.h"
 #include "alignedbox3f.h"
 
+
 class QGLFunctions;
 class QGLShaderProgram;
 
