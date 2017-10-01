@@ -4,7 +4,11 @@
 
 #include <QFileDialog>
 #include <QLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
 
+#include "glwidget.h"
 /*  */
 #include "pgm3d.h"
 #include "obj.h"
@@ -16,9 +20,43 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_viewer = new GLWidget;
+//    QWidget* mainWidget = new QWidget(this);
+//    QBoxLayout* mainWidgetLayout = new QBoxLayout(QBoxLayout::TopToBottom, mainWidget);
 
-    ui->centralWidget->layout()->addWidget(m_viewer);
+//    m_viewer = new GLWidget(mainWidget);
+
+//    m_slider = new QSlider(Qt::Horizontal, mainWidget);
+//    m_slider->setMinimum(0);
+//    m_slider->setMaximum(255);
+
+//    QWidget* sliderWidget = new QWidget(mainWidget);
+//    //QWidget* sliderAndCurrentSliderValueWidget = new QWidget(sliderWidget);
+
+//    QBoxLayout* sliderLayout = new QBoxLayout(QBoxLayout::LeftToRight, sliderWidget);
+//    //QBoxLayout* sliderAndCurrentSliderValueLayout = new QBoxLayout(QBoxLayout::TopToBottom, sliderAndCurrentSliderValueWidget);
+
+//    QLabel* minSliderValue = new QLabel(sliderWidget);
+//    minSliderValue->setText(QString("0"));
+//    //QLabel* currentSliderValue = new QLabel(sliderWidget);
+//    //currentSliderValue->setText(QString("128"));
+//    QLabel* maxSliderValue = new QLabel(sliderWidget);
+//    maxSliderValue->setText(QString("255"));
+
+//    //sliderAndCurrentSliderValueLayout->addWidget(m_slider);
+//    //sliderAndCurrentSliderValueLayout->addWidget(currentSliderValue);
+
+//    sliderLayout->addWidget(minSliderValue);
+//    sliderLayout->addWidget(m_slider);
+//    //sliderLayout->addItem(sliderAndCurrentSliderValueLayout);
+//    sliderLayout->addWidget(maxSliderValue);
+
+
+//    mainWidgetLayout->addWidget(m_viewer);
+//    mainWidgetLayout->addWidget(sliderWidget);
+
+//    mainWidget->setLayout(mainWidgetLayout);
+
+//    ui->centralWidget->layout()->addWidget(mainWidget);
 
     createActions(); // Create action before menu !
     createMenus();
@@ -77,7 +115,7 @@ void MainWindow::createActions()
 void MainWindow::openFile()
 {
     // TODO: filtrer par type de fichier
-//    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), tr("*.pgm3d"));
+    //    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), tr("*.pgm3d"));
 
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"),
                                                     "../models/",

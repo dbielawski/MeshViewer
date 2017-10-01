@@ -1,20 +1,24 @@
 #include "mainwindow.h"
 #include <QApplication>
+#include <QDesktopWidget>
+
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;
+
+    QRect screenGeometry = QApplication::desktop()->screenGeometry();
+    int x = (screenGeometry.width() - w.width()) / 2;
+    int y = (screenGeometry.height() - w.height()) / 2;
+    w.move(x, y);
+
     w.show();
 
     return a.exec();
 }
 
-// FIXEME: fixer le bug d'affichage des models
-// TODO: implementer classe camera
-// TODO: ajouter interaction dans la classe GLWidget
-// TODO: nettoyer le code, camera scene ...
-// TODO: implementer AABB
+//TODO: Tester les obj avec des normales
 // TODO: faire afficher la AABB
 // TODO: implementer Octree
 // TODO: ajouter la lumiere

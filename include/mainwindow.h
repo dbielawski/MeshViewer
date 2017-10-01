@@ -2,10 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSlider>
 
 #include "utils.h"
 
-#include "glwidget.h"
+
+class GLWidget;
 
 namespace Ui {
 class MainWindow;
@@ -41,6 +43,8 @@ private:
     QAction*    m_drawPointsAction;
     QAction*    m_drawLinesAction;
     QAction*    m_drawFilledAction;
+
+    QSlider *m_slider;
 };
 
 #endif // MAINWINDOW_H
