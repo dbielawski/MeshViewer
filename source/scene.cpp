@@ -30,7 +30,7 @@ void Scene::init()
 {
     //    m_shaderProgram = new QGLShaderProgram;
 
-    if (!m_shaderProgram->addShaderFromSourceFile(QGLShader::Vertex, ":/shaders/simpleshader.frag"))
+    if (!m_shaderProgram->addShaderFromSourceFile(QGLShader::Vertex, ":/shaders/simpleshader.vert"))
     {
         std::cout << "Shaders cannot be Vertex" << std::endl;
         exit(-1);
