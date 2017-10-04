@@ -30,8 +30,6 @@ private:
     void createActions();
 
     Ui::MainWindow *ui;
-    GLWidget* m_viewer;
-
 
     QMenu*      m_fileMenu;
     QAction*    m_openAction;
@@ -43,8 +41,6 @@ private:
     QAction*    m_drawPointsAction;
     QAction*    m_drawLinesAction;
     QAction*    m_drawFilledAction;
-
-    QSlider *m_slider;
 };
 
 #endif // MAINWINDOW_H

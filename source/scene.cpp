@@ -3,14 +3,13 @@
 #include "camera.h"
 #include "mesh.h"
 #include "light.h"
-#include <iostream>
-#include <assert.h>
+#include <QDebug>
 
 
 Scene::Scene() :
     m_shaderProgram(new QGLShaderProgram),
     m_camera(new Camera),
-    m_backgroundColor(.9f, .9f, .9f)
+    m_backgroundColor(0.f, 0.f, 0.f)
 {
     m_camera->lookAt(Point3f(3.f, 0.f, 3.f),
                      Point3f(0.f, 0.f, 0.f),
@@ -28,30 +27,27 @@ Scene::~Scene()
 
 void Scene::init()
 {
-    //    m_shaderProgram = new QGLShaderProgram;
-
     if (!m_shaderProgram->addShaderFromSourceFile(QGLShader::Vertex, ":/shaders/simpleshader.vert"))
     {
-        std::cout << "Shaders cannot be Vertex" << std::endl;
+        qDebug() << "Shaders cannot be Vertex";
         exit(-1);
     }
 
     if (!m_shaderProgram->addShaderFromSourceFile(QGLShader::Fragment, ":/shaders/simpleshader.frag"))
     {
-        std::cout << "Shaders cannot be Fragment" << std::endl;
+        qDebug() << "Fragment Shaders cannot be loader";
         exit(-1);
     }
-    m_shaderProgram->link();
 
-    if (!m_shaderProgram->isLinked())
+    if (!m_shaderProgram->link())
     {
-        std::cout << "Shaders cannot be linked" << std::endl;
+        qDebug() << "Shaders cannot be linked";
         exit(-1);
     }
 
     if (!m_shaderProgram->bind())
     {
-        std::cout << "Shaders cannot be binded" << std::endl;
+        qDebug() << "Shaders cannot be binded";
         exit(-1);
     }
 }
@@ -73,9 +69,6 @@ void Scene::clear()
 
 void Scene::addMesh(Mesh& mesh)
 {
-    mesh.attachCamera(m_camera);
-
-//    mesh.attachShader(m_shaderProgram);
     mesh.attachScene(this);
 
     m_meshList.append(&mesh);

@@ -130,12 +130,12 @@ void MainWindow::openFile()
     Model3d* model;
     if(ext.toStdString() == "pgm3d")
         model = new pgm3d(fileName);
-    else if (ext.toStdString() == "pgm3d")
+    else if (ext.toStdString() == "obj")
         model = new obj(fileName);
 
     Mesh* mesh = model->mesh();
-    m_viewer->scene()->addMesh(*mesh);
-    m_viewer->updateGL();
+    ui->openGLWidget->scene()->addMesh(*mesh);
+    ui->openGLWidget->updateGL();
 }
 
 void MainWindow::clearScene()

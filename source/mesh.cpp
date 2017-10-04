@@ -5,27 +5,10 @@
 #include <iostream>
 #include <assert.h>
 
-Mesh::Mesh() : m_octree(nullptr)
+Mesh::Mesh() : m_octree(Q_NULLPTR), m_scenePtr(Q_NULLPTR)
 {
     m_functions = new QGLFunctions;
     m_functions->initializeGLFunctions();
-
-    m_shaderProgramPtr = new QGLShaderProgram;
-    m_shaderProgramPtr->addShaderFromSourceFile(QGLShader::Vertex, ":/shaders/simpleshader.vert");
-    m_shaderProgramPtr->addShaderFromSourceFile(QGLShader::Fragment, ":/shaders/simpleshader.frag");
-    m_shaderProgramPtr->link();
-
-    if (!m_shaderProgramPtr->isLinked())
-    {
-        std::cout << "Shaders cannot be linked" << std::endl;
-        exit(-1);
-    }
-
-    if (!m_shaderProgramPtr->bind())
-    {
-        std::cout << "Shaders cannot be binded" << std::endl;
-        exit(-1);
-    }
 
     m_transform.setToIdentity();
 }
@@ -54,46 +37,44 @@ void Mesh::init()
 
 void Mesh::render() const
 {
-    // TODO: enlever
-    assert(m_shaderProgramPtr->bind());
-
-    m_functions->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
-    m_functions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
-
-    m_shaderProgramPtr->setUniformValue("mat_obj", m_transform);
-    m_shaderProgramPtr->setUniformValue("mat_view", m_scenePtr->camera()->viewMatrix());
-    m_shaderProgramPtr->setUniformValue("mat_proj", m_scenePtr->camera()->projectionMatrix());
-
-    int vertexLoc = m_shaderProgramPtr->attributeLocation("vtx_position");
-    int colorLoc  = m_shaderProgramPtr->attributeLocation("vtx_color");
-    int normalLoc  = m_shaderProgramPtr->attributeLocation("vtx_normal");
-
-    if (vertexLoc >= 0)
+    if (m_scenePtr != Q_NULLPTR
+            && m_scenePtr->shaderProgram()->bind())
     {
-        m_functions->glVertexAttribPointer(vertexLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-        m_functions->glEnableVertexAttribArray(vertexLoc);
+        m_functions->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
+        m_functions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
+
+        m_scenePtr->shaderProgram()->setUniformValue("mat_obj", m_transform);
+        m_scenePtr->shaderProgram()->setUniformValue("mat_view", m_scenePtr->camera()->viewMatrix());
+        m_scenePtr->shaderProgram()->setUniformValue("mat_proj", m_scenePtr->camera()->projectionMatrix());
+
+        int vertexLoc = m_scenePtr->shaderProgram()->attributeLocation("vtx_position");
+        int colorLoc  = m_scenePtr->shaderProgram()->attributeLocation("vtx_color");
+        int normalLoc = m_scenePtr->shaderProgram()->attributeLocation("vtx_normal");
+
+        if (vertexLoc >= 0)
+        {
+            m_functions->glVertexAttribPointer(vertexLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+            m_functions->glEnableVertexAttribArray(vertexLoc);
+        }
+
+        if (colorLoc >= 0)
+        {
+            m_functions->glVertexAttribPointer(colorLoc, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+            m_functions->glEnableVertexAttribArray(colorLoc);
+        }
+
+        if (normalLoc >= 0)
+        {
+            m_functions->glVertexAttribPointer(normalLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+            m_functions->glEnableVertexAttribArray(normalLoc);
+        }
+
+        glDrawElements(GL_TRIANGLES, 3 * m_faces.size(), GL_UNSIGNED_INT, (void*)0);
+
+        if (vertexLoc >= 0) m_functions->glDisableVertexAttribArray(vertexLoc);
+        if (colorLoc >= 0)  m_functions->glDisableVertexAttribArray(colorLoc);
+        if (normalLoc >= 0)  m_functions->glDisableVertexAttribArray(normalLoc);
     }
-    else // TODO: enlever
-        assert(false);
-
-    if (colorLoc >= 0)
-    {
-        m_functions->glVertexAttribPointer(colorLoc, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
-        m_functions->glEnableVertexAttribArray(colorLoc);
-    }
-    else // TODO: enlever
-        assert(false);
-
-    if (normalLoc >= 0)
-    {
-        m_functions->glVertexAttribPointer(normalLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
-        m_functions->glEnableVertexAttribArray(normalLoc);
-    }
-
-    glDrawElements(GL_TRIANGLES, 3 * m_faces.size(), GL_UNSIGNED_INT, (void*)0);
-
-    if (vertexLoc >= 0) m_functions->glDisableVertexAttribArray(vertexLoc);
-    if (colorLoc >= 0)  m_functions->glDisableVertexAttribArray(colorLoc);
 }
 
 void Mesh::rawData(const QVector<Vertex>& vertices, const QVector<FaceIndex>& faces)

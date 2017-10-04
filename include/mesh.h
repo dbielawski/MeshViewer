@@ -25,28 +25,20 @@ public:
     void render() const;
     void rawData(const QVector<Vertex>& vertices, const QVector<FaceIndex>& indices);
 
-
     void computeNormals();
     void clear();
     void computeBoundingBox();
     void buildOctree();
 
-    AlignedBox3f boundingBox() const                { return m_boundingBox; }
-    Octree* octree() const                          { return m_octree;      }
-    QMatrix4x4 transform() const                    { return m_transform;   }
+    AlignedBox3f boundingBox() const    { return m_boundingBox; }
+    Octree* octree() const              { return m_octree;      }
+    QMatrix4x4 transform() const        { return m_transform;   }
 
-    void attachShader(QGLShaderProgram* shaderProgram)  { m_shaderProgramPtr = shaderProgram;   }
-    QGLShaderProgram* shader() const                    { return m_shaderProgramPtr;            }
-
-    void attachCamera(Camera* camera)               { m_cameraPtr = camera; }
-    Camera* camera() const                          { return m_cameraPtr;   }
-
-    void attachScene(Scene* scene) { m_scenePtr = scene; }
+    void attachScene(Scene* scene)      { m_scenePtr = scene; }
 
 private:
     QGLFunctions*       m_functions;
 
-    QGLShaderProgram*   m_shaderProgramPtr;
     uint                m_vertexBufferId;
     uint                m_indexBufferId;
 
@@ -56,7 +48,6 @@ private:
 
     AlignedBox3f        m_boundingBox;
     Octree*             m_octree;
-    Camera*             m_cameraPtr;
 
     Scene*              m_scenePtr;
 };

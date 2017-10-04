@@ -54,11 +54,8 @@ void GLWidget::initializeGL()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    Model3d* model = new obj(":/models/cube_tr.obj");
-    Mesh* m_mesh = model->mesh();
 
     m_scene->init();
-    m_scene->addMesh(*m_mesh);
 }
 
 void GLWidget::resizeGL(int w, int h)
