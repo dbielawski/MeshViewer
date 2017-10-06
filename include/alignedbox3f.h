@@ -12,18 +12,19 @@ class AlignedBox3f
 {
 public:
     AlignedBox3f();
-    AlignedBox3f(const Vector3f& min, const Vector3f& max);
+    AlignedBox3f(const Point3f& min, const Point3f& max);
 
     void init();
     void render() const;
-    void extend(const Vector3f& v);
-    bool contain(const Vector3f& v) const;
+    void extend(const Point3f& p);
+    bool contain(const Point3f& p) const;
+    void reset();
 
 private:
     void setupPoints();
 
-    Vector3f    m_min;
-    Vector3f    m_max;
+    Point3f    m_min;
+    Point3f    m_max;
 
     uint        m_vertexBufferId;
     uint        m_indexBufferId;

@@ -18,7 +18,7 @@ public:
 
     void lookAt(const Point3f& position, const Point3f& target, const Vector3f& up);
 
-    QMatrix4x4 viewMatrix() const;
+    QMatrix4x4 viewMatrix();
     QMatrix4x4 projectionMatrix();
 
     void rotateAroundTarget(float angle, Vector3f axis);

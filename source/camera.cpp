@@ -43,13 +43,16 @@ void Camera::lookAt(const Point3f& position, const Point3f& target, const Vector
 
     m_viewMatrix.setToIdentity();
 
-    m_viewMatrix.lookAt(QVector3D(position.x, position.y, position.z),
-                        QVector3D(target.x, target.y, target.z),
-                        QVector3D(up.x, up.y, up.z));
+
 }
 
-QMatrix4x4 Camera::viewMatrix() const
+QMatrix4x4 Camera::viewMatrix()
 {
+    m_viewMatrix.setToIdentity();
+
+    m_viewMatrix.lookAt(QVector3D(m_position.x, m_position.y, m_position.z),
+                        QVector3D(m_target.x, m_target.y, m_target.z),
+                        QVector3D(m_up.x, m_up.y, m_up.z));
     return m_viewMatrix;
 }
 
@@ -65,28 +68,29 @@ void Camera::rotateAroundTarget(float angle, Vector3f axis)
 {
     Vector3f dirToCenter = m_target - m_position;
 
-    QMatrix4x4 inverted = m_viewMatrix.inverted();
+    QMatrix4x4 tmp;
+    tmp.setToIdentity();
 
-    inverted.translate(QVector3D(dirToCenter.x, dirToCenter.y, dirToCenter.z));
-    inverted.rotate(angle, axis.x, axis.y, axis.z);
-    inverted.translate(QVector3D(-dirToCenter.x, -dirToCenter.y, -dirToCenter.z));
+    tmp.translate(m_position.x , m_position.y, m_position.z);
+    tmp.translate(QVector3D(dirToCenter.x, dirToCenter.y, dirToCenter.z));
+    tmp.rotate(-angle, QVector3D(axis.x, axis.y, axis.z));
+    tmp.translate(QVector3D(-dirToCenter.x, -dirToCenter.y, -dirToCenter.z));
 
-    m_position.x = inverted.column(3).x();
-    m_position.y = inverted.column(3).y();
-    m_position.z = inverted.column(3).z();
-
-    updateView();
+    m_position.x = tmp.column(3).x();
+    m_position.y = tmp.column(3).y();
+    m_position.z = tmp.column(3).z();
 }
 
 void Camera::rotate(float angle, Vector3f axis)
 {
-    QMatrix4x4 inverted = m_viewMatrix.inverted();
-    inverted.rotate(angle, axis.x, axis.y, axis.z);
-    m_position.x = inverted.column(3).x();
-    m_position.y = inverted.column(3).y();
-    m_position.z = inverted.column(3).z();
+    QMatrix4x4 tmp;
+    tmp.setToIdentity();
+    tmp.translate(m_position.x , m_position.y, m_position.z);
 
-    updateView();
+    tmp.rotate(angle, axis.x, axis.y, axis.z);
+    m_position.x = tmp.column(3).x();
+    m_position.y = tmp.column(3).y();
+    m_position.z = tmp.column(3).z();
 }
 
 void Camera::zoom(float z)

@@ -103,7 +103,6 @@ void obj::loadFromFile(const QString &fileName)
     // If there are normals
     for (int i = 0; i < normals.size(); ++i)
         m_vertices.value(i).normal = normals.at(i);
-
 }
 
 Mesh *obj::mesh() const

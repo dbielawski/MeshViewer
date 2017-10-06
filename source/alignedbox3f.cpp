@@ -6,7 +6,7 @@ AlignedBox3f::AlignedBox3f()
 
 }
 
-AlignedBox3f::AlignedBox3f(const Vector3f &min, const Vector3f &max) :
+AlignedBox3f::AlignedBox3f(const Point3f& min, const Point3f& max) :
     m_min(min), m_max(max)
 {
 
@@ -43,21 +43,26 @@ void AlignedBox3f::render() const
 //    if (colorLoc >= 0)  m_functions->glDisableVertexAttribArray(colorLoc);
 }
 
-void AlignedBox3f::extend(const Vector3f &v)
+void AlignedBox3f::extend(const Point3f& p)
 {
-    m_min = qMin(m_min.x, v.x);
-    m_min = qMin(m_min.y, v.y);
-    m_min = qMin(m_min.z, v.z);
+    m_min.x = qMin(m_min.x, p.x);
+    m_min.y = qMin(m_min.y, p.y);
+    m_min.z = qMin(m_min.z, p.z);
 
-    m_max.x = qMin(m_max.x, v.x);
-    m_max.x = qMin(m_max.y, v.y);
-    m_max.x = qMin(m_max.z, v.z);
+    m_max.x = qMin(m_max.x, p.x);
+    m_max.y = qMin(m_max.y, p.y);
+    m_max.z = qMin(m_max.z, p.z);
 }
 
-bool AlignedBox3f::contain(const Vector3f &v) const
+bool AlignedBox3f::contain(const Point3f& p) const
 {
-    return (m_min.x >= v.x) && (m_min.y >= v.y) && (m_min.z >= v.z)
-            && (m_max.x <= v.x) && (m_max.y <= v.y) && (m_max.z <= v.z);
+    return (m_min.x >= p.x) && (m_min.y >= p.y) && (m_min.z >= p.z)
+            && (m_max.x <= p.x) && (m_max.y <= p.y) && (m_max.z <= p.z);
+}
+
+void AlignedBox3f::reset()
+{
+    // TODO: implementer
 }
 
 void AlignedBox3f::setupPoints()

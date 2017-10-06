@@ -89,6 +89,10 @@ void MainWindow::createActions()
     m_openAction->setStatusTip(tr("Open an existing file"));
     connect(m_openAction, SIGNAL(triggered(bool)), this, SLOT(openFile()));
 
+    m_saveAsObjAction = new QAction(tr("&Save as Obj"), this);
+    m_saveAsObjAction->setShortcut(QKeySequence(tr("Ctrl+S")));
+    m_saveAsObjAction->setStatusTip(tr("Save the model as OBJ file"));
+
     m_clearSceneAction = new QAction(tr("&Clear scene"), this);
     m_clearSceneAction->setShortcut(QKeySequence(tr("Ctrl+W")));
     m_clearSceneAction->setStatusTip(tr("Clear the scene"));

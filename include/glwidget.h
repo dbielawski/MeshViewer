@@ -63,6 +63,9 @@ private:
     QPoint  m_previousMousePosition;
 
     float   m_zoomStepValue;
+
+    float m_dx;
+    float m_dy;
 };
 
 #endif // GLVIEWER_H

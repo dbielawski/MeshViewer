@@ -69,11 +69,12 @@ void Mesh::render() const
             m_functions->glEnableVertexAttribArray(normalLoc);
         }
 
+
         glDrawElements(GL_TRIANGLES, 3 * m_faces.size(), GL_UNSIGNED_INT, (void*)0);
 
         if (vertexLoc >= 0) m_functions->glDisableVertexAttribArray(vertexLoc);
         if (colorLoc >= 0)  m_functions->glDisableVertexAttribArray(colorLoc);
-        if (normalLoc >= 0)  m_functions->glDisableVertexAttribArray(normalLoc);
+        if (normalLoc >= 0) m_functions->glDisableVertexAttribArray(normalLoc);
     }
 }
 
@@ -112,7 +113,10 @@ void Mesh::computeNormals()
 
 void Mesh::computeBoundingBox()
 {
-    // TODO: implementer
+    m_boundingBox.reset();
+
+    for (int i = 0; i < m_vertices.size(); ++i)
+        m_boundingBox.extend(m_vertices.at(i).position);
 }
 
 void Mesh::buildOctree()

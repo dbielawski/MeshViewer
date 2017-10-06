@@ -34,6 +34,7 @@ GLWidget::GLWidget(QWidget *parent) :
     m_rightButtonPressed = false;
 
     m_zoomStepValue = 1.f;
+    m_dx = 0;
 }
 
 GLWidget::~GLWidget()
@@ -51,11 +52,19 @@ void GLWidget::initializeGL()
     glDepthFunc(GL_LESS);
     glPointSize(15.f);
 
-    glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
 
+    // FIXME: remove
+    Model3d* m = new obj(":/models/cube_tr.obj");
+    Mesh* mesh = m->mesh();
+    //
 
     m_scene->init();
+
+    // TODO: remove
+    m_scene->addMesh(*mesh);
+    //
 }
 
 void GLWidget::resizeGL(int w, int h)
@@ -82,10 +91,23 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
     if (m_leftButtonPressed)
     {
-        //std::cout << "mouseMoveEvent" << std::endl;
+        if (dx > 0)
+            m_dx = 1;
+        else if (dx < 0)
+            m_dx = -1;
+        else
+            m_dx = 0;
 
-        m_scene->camera()->rotateAroundTarget(dx * .01, Vector3f(0.f, 1.f, 0.f));
-        //m_scene->camera()->rotateAround(dy, Vector3f(1.f, 0.f, 0.f));
+        if (dy > 0)
+            m_dy = 1;
+        else if (dy < 0)
+            m_dy = -1;
+        else
+            m_dy = 0;
+
+        // WARNING: magic numbers/ mouse sensitivity...
+        m_scene->camera()->rotateAroundTarget(m_dx * 1.5, Vector3f(0.f, 1.f, 0.f));
+        m_scene->camera()->rotateAroundTarget(m_dy * 1.5, Vector3f(1.f, 0.f, 0.f));
     }
 
     m_previousMousePosition = event->pos();
@@ -136,17 +158,12 @@ void GLWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void GLWidget::wheelEvent(QWheelEvent *event)
 {
-    //    std::cout << "key event in board:" <<  event->buttons() << std::endl;
-    //    std::cout << "wheelEvent" << std::endl;
-
     if (event->delta() > 0.f)
     {
-        //        std::cout << "zoomm in " << std::endl;
         m_scene->camera()->zoom(m_zoomStepValue);
     }
     else
     {
-        //        std::cout << "zoomm out" << std::endl;
         m_scene->camera()->zoom(-m_zoomStepValue);
     }
 

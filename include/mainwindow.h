@@ -33,6 +33,7 @@ private:
 
     QMenu*      m_fileMenu;
     QAction*    m_openAction;
+    QAction*    m_saveAsObjAction;
     QAction*    m_clearSceneAction;
     QAction*    m_quitAction;
 
