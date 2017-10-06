@@ -44,7 +44,7 @@ void pgm3d::loadFromFile(const QString& fileName)
     std::string format;
 
     int headerCount(0);
-    int x = 0,y = 0, z = 0;
+    unsigned int x = 0,y = 0, z = 0;
     while(inputFile >> data && inputFile)
     {
         if(data[0] == '#')
@@ -108,24 +108,12 @@ void pgm3d::loadFromFile(const QString& fileName)
         }
     }
 
-    if( !(m_width * m_height * m_depth == m_data.size()))
+    if( !(m_width * m_height * m_depth == (unsigned int) m_data.size()))
     {
         QMessageBox::critical(0, "Error", "Bad file fromat : Missing data.");
         return;
     }
 }
-
-// TODO: deplacer la fonction
-/*
-Point3i indexTo3Dcoordinates(unsigned int index, unsigned int width, unsigned int height, unsigned int depth)
-{
-unsigned int x = index % width;
-unsigned int y = index % height;
-unsigned int z = index % depth;
-
-return Point3i(x, y, z);
-}
-*/
 
 Mesh* pgm3d::mesh() const
 {
@@ -156,8 +144,8 @@ Mesh* pgm3d::mesh() const
             Color4f color = m_dataVertex[i].color;
 
             /*
-            1--------5
-            /|       /|
+              1--------5
+             /|       /|
             0-+------4 |
             | |      | |
             | 3------+-7
