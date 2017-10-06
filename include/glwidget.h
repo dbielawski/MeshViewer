@@ -23,6 +23,8 @@ public:
 
     Scene* scene() const { return m_scene; }
 
+	void setDrawMode(unsigned int displayMode) { m_displayModeIndex = displayMode; }
+
 protected:
     virtual void initializeGL() override;
     virtual void resizeGL(int w, int h) override;

@@ -36,6 +36,9 @@ public:
 
     void attachScene(Scene* scene)      { m_scenePtr = scene; }
 
+    unsigned int verticesCount() const  { return m_vertices.size(); }
+    unsigned int trianglesCount() const { return m_faces.size();    }
+
 private:
     QGLFunctions*       m_functions;
 
@@ -44,6 +47,7 @@ private:
 
     QVector<Vertex>     m_vertices;
     QVector<FaceIndex>  m_faces;
+
     QMatrix4x4          m_transform;
 
     AlignedBox3f        m_boundingBox;

@@ -5,6 +5,8 @@
 #include "light.h"
 #include <QDebug>
 
+#include <iostream>
+
 
 Scene::Scene() :
     m_shaderProgram(new QGLShaderProgram),
@@ -60,11 +62,21 @@ void Scene::render() const
 
 void Scene::clear()
 {
-    for (const Light* l : m_lightList)
-        delete l;
+	for(int i = 0 ; i < m_lightList.size(); i++) {
+		const Light* l = m_lightList.at(i);
+		m_lightList.pop_front();
+		delete l;
+	}
 
-    for (const Mesh* m : m_meshList)
-        delete m;
+	for(int i = 0 ; i < m_meshList.size(); i++) {
+		const Mesh* m = m_meshList.at(i);
+		m_meshList.pop_front();
+		delete m;
+	}
+
+	this->render();
+
+
 }
 
 void Scene::addMesh(Mesh& mesh)

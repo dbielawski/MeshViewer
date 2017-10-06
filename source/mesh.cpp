@@ -30,7 +30,7 @@ void Mesh::init()
     m_functions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
     m_functions->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(FaceIndex) * m_faces.size(), &m_faces[0], GL_STATIC_DRAW);
 
-    //    computeNormals();
+        computeNormals();
     //    computeBoundingBox();
     //    buildOctree();
 }
@@ -123,4 +123,3 @@ void Mesh::buildOctree()
 {
     // TODO: implementer
 }
-

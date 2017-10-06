@@ -106,8 +106,8 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
             m_dy = 0;
 
         // WARNING: magic numbers/ mouse sensitivity...
-        m_scene->camera()->rotateAroundTarget(m_dx * 1.5, Vector3f(0.f, 1.f, 0.f));
-        m_scene->camera()->rotateAroundTarget(m_dy * 1.5, Vector3f(1.f, 0.f, 0.f));
+        m_scene->camera()->rotateAroundTarget(m_dx * 2, Vector3f(0.f, 1.f, 0.f));
+        m_scene->camera()->rotateAroundTarget(m_dy * 2, Vector3f(1.f, 0.f, 0.f));
     }
 
     m_previousMousePosition = event->pos();
