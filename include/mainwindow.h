@@ -24,10 +24,16 @@ public:
 private slots:
     void openFile();
     void clearScene();
+	void updateAlpha(int);
+	void setDrawPoint();
+	void setDrawLine();
+	void setDrawFilled();
 
 private:
     void createMenus();
     void createActions();
+
+	void setDraw(unsigned int);
 
     Ui::MainWindow *ui;
 

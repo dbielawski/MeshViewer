@@ -14,49 +14,15 @@
 #include "obj.h"
 /*  */
 
+#include <QMessageBox>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-//    QWidget* mainWidget = new QWidget(this);
-//    QBoxLayout* mainWidgetLayout = new QBoxLayout(QBoxLayout::TopToBottom, mainWidget);
-
-//    m_viewer = new GLWidget(mainWidget);
-
-//    m_slider = new QSlider(Qt::Horizontal, mainWidget);
-//    m_slider->setMinimum(0);
-//    m_slider->setMaximum(255);
-
-//    QWidget* sliderWidget = new QWidget(mainWidget);
-//    //QWidget* sliderAndCurrentSliderValueWidget = new QWidget(sliderWidget);
-
-//    QBoxLayout* sliderLayout = new QBoxLayout(QBoxLayout::LeftToRight, sliderWidget);
-//    //QBoxLayout* sliderAndCurrentSliderValueLayout = new QBoxLayout(QBoxLayout::TopToBottom, sliderAndCurrentSliderValueWidget);
-
-//    QLabel* minSliderValue = new QLabel(sliderWidget);
-//    minSliderValue->setText(QString("0"));
-//    //QLabel* currentSliderValue = new QLabel(sliderWidget);
-//    //currentSliderValue->setText(QString("128"));
-//    QLabel* maxSliderValue = new QLabel(sliderWidget);
-//    maxSliderValue->setText(QString("255"));
-
-//    //sliderAndCurrentSliderValueLayout->addWidget(m_slider);
-//    //sliderAndCurrentSliderValueLayout->addWidget(currentSliderValue);
-
-//    sliderLayout->addWidget(minSliderValue);
-//    sliderLayout->addWidget(m_slider);
-//    //sliderLayout->addItem(sliderAndCurrentSliderValueLayout);
-//    sliderLayout->addWidget(maxSliderValue);
-
-
-//    mainWidgetLayout->addWidget(m_viewer);
-//    mainWidgetLayout->addWidget(sliderWidget);
-
-//    mainWidget->setLayout(mainWidgetLayout);
-
-//    ui->centralWidget->layout()->addWidget(mainWidget);
+	ui->alphaValue->setText(QString::number(ui->horizontalSlider->value()));
 
     createActions(); // Create action before menu !
     createMenus();
@@ -80,6 +46,7 @@ void MainWindow::createMenus()
     m_display->addAction(m_drawPointsAction);
     m_display->addAction(m_drawLinesAction);
     m_display->addAction(m_drawFilledAction);
+	m_display->setEnabled(false);
 }
 
 void MainWindow::createActions()
@@ -104,19 +71,21 @@ void MainWindow::createActions()
 
     m_drawPointsAction = new QAction(tr("&Points"), this);
     m_drawPointsAction->setStatusTip(tr("Render the model in point mode | Press M to switch"));
+	connect(m_drawPointsAction, SIGNAL(triggered(bool)), this, SLOT(setDrawPoint()));
 
     m_drawLinesAction = new QAction(tr("&Lines"), this);
     m_drawLinesAction->setStatusTip(tr("Render the model in line mode | Press M to switch"));
+	connect(m_drawLinesAction, SIGNAL(triggered(bool)), this, SLOT(setDrawLine()));
 
     m_drawFilledAction = new QAction(tr("&Filled"), this);
     m_drawFilledAction->setStatusTip(tr("Render the model with faces | Press M to switch"));
+	connect(m_drawFilledAction, SIGNAL(triggered(bool)), this, SLOT(setDrawFilled()));
+
+	connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(updateAlpha(int)));
 }
 
 void MainWindow::openFile()
 {
-    // TODO: filtrer par type de fichier
-    //    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), tr("*.pgm3d"));
-
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"),
                                                     "../models/",
                                                     tr("OBJ Files (*.obj);; PGM3D Files (*.pgm3d)"));
@@ -127,18 +96,63 @@ void MainWindow::openFile()
     QFileInfo fi(fileName);
     QString ext = fi.suffix();
 
-    Model3d* model;
-    if(ext.toStdString() == "pgm3d")
+    Model3d* model = nullptr;
+    if(ext.toStdString() == "pgm3d") {
         model = new pgm3d(fileName);
-    else if (ext.toStdString() == "obj")
+	}
+    else if (ext.toStdString() == "obj") {
         model = new obj(fileName);
+	}
+	else {
+		QMessageBox::critical(0, "Error", "File format " + ext + " is not supported.");
+		exit(EXIT_FAILURE);
+	}
+
+	if(model == nullptr) {
+		QMessageBox::critical(0, "Error", "Error while loading the model.");
+		exit(EXIT_FAILURE);
+	}
 
     Mesh* mesh = model->mesh();
     ui->openGLWidget->scene()->addMesh(*mesh);
     ui->openGLWidget->updateGL();
+
+	m_display->setEnabled(true);
 }
 
 void MainWindow::clearScene()
 {
-    // delete model
+	ui->openGLWidget->scene()->clear();
+}
+
+void MainWindow::updateAlpha(int alpha)
+{
+	ui->alphaValue->setText(QString::number(alpha));
+	float alpha_val = alpha / 255.0;
+	ui->openGLWidget->scene()->shaderProgram()->setUniformValue("alpha_val", alpha_val);
+	ui->openGLWidget->updateGL();
+
+}
+
+void MainWindow::setDrawPoint()
+{
+	// TODO : Replace with enum value
+	setDraw(0);
+}
+
+void MainWindow::setDrawLine()
+{
+	// TODO : Replace with enum value
+	setDraw(1);
+}
+
+void MainWindow::setDrawFilled()
+{
+	// TODO : Replace with enum value
+	setDraw(2);
+}
+
+void MainWindow::setDraw(unsigned int value)
+{
+	ui->openGLWidget->setDrawMode(value);
 }

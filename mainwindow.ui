@@ -44,7 +44,7 @@
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="minAlphaValue">
          <property name="text">
           <string>0</string>
          </property>
@@ -61,7 +61,7 @@
             <number>255</number>
            </property>
            <property name="value">
-            <number>128</number>
+            <number>255</number>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -69,7 +69,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_3">
+          <widget class="QLabel" name="alphaValue">
            <property name="text">
             <string>TextLabel</string>
            </property>
@@ -81,7 +81,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QLabel" name="label_2">
+        <widget class="QLabel" name="maxAlphaValue">
          <property name="text">
           <string>255</string>
          </property>
