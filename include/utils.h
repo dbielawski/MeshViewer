@@ -7,6 +7,7 @@
 namespace arm
 {
 struct Color3f;
+struct Vector2i;
 struct Vector3f;
 struct Point3i;
 struct Point3f;
@@ -54,6 +55,24 @@ inline Color4f operator +(const Color4f& l, const Color4f& r)
     return Color4f(l.r + r.r, l.g + r.g, l.b + r.b);
 }
 
+struct Vector2i
+{
+    int x, y;
+
+    Vector2i(int x_ = 0, int y_ = 0): x(x_), y(y_)
+    {}
+
+    Vector2i(const Vector2i& v) : x(v.x), y(v.y)
+    {}
+
+    inline Vector2i& operator = (const Vector2i& v)
+    {
+        x = v.x;
+        y = v.y;
+        return *this;
+    }
+};
+
 struct Vector3f
 {
     float x, y, z;
@@ -69,7 +88,7 @@ struct Vector3f
 
     inline Vector3f cross(const Vector3f& v) const
     {
-        return Vector3f((y * v.z - z * v.y) + (z * v.x - x * v.z) + (x * v.y - y * v.x));
+        return Vector3f((y * v.z - z * v.y), (z * v.x - x * v.z), (x * v.y - y * v.x));
     }
 
     inline float squaredNorm() const
@@ -84,7 +103,10 @@ struct Vector3f
 
     inline void normalise()
     {
-        *this /= norm();
+        float n = norm();
+        x /= n;
+        y /= n;
+        z /= n;
     }
 
     inline Vector3f normalised() const
@@ -98,7 +120,6 @@ struct Vector3f
         this->x = v.x;
         this->y = v.y;
         this->z = v.z;
-
         return *this;
     }
 

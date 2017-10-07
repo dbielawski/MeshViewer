@@ -40,13 +40,13 @@ void MainWindow::createMenus()
     m_fileMenu->addAction(m_clearSceneAction);
     m_fileMenu->addAction(m_quitAction);
 
-    m_display = menuBar()->addMenu(tr("&Display"));
-    m_display->addAction(m_toggleDisplayBoundingBoxAction);
-    m_display->addSeparator();
-    m_display->addAction(m_drawPointsAction);
-    m_display->addAction(m_drawLinesAction);
-    m_display->addAction(m_drawFilledAction);
-	m_display->setEnabled(false);
+    m_displayMenu = menuBar()->addMenu(tr("&Display"));
+    m_displayMenu->addAction(m_toggleDisplayBoundingBoxAction);
+    m_displayMenu->addSeparator();
+    m_displayMenu->addAction(m_drawPointsAction);
+    m_displayMenu->addAction(m_drawLinesAction);
+    m_displayMenu->addAction(m_drawFilledAction);
+    m_displayMenu->setEnabled(false);
 }
 
 void MainWindow::createActions()
@@ -121,7 +121,16 @@ void MainWindow::openFile()
     ui->openGLWidget->scene()->addMesh(*mesh);
     ui->openGLWidget->updateGL();
 
-	m_display->setEnabled(true);
+    m_displayMenu->setEnabled(true);
+
+
+    // TODO: mettre dans une fonction updateSceneInfos...
+    unsigned int verticesCount = ui->openGLWidget->scene()->verticesCount();
+    unsigned int trianglesCount = ui->openGLWidget->scene()->trianglesCount();
+
+    ui->verticesCount->setText(QString("Vertices count: " + QString::number(verticesCount)));
+    ui->trianglesCount->setText(QString("Triangles count: " + QString::number(trianglesCount)));
+    //end
 }
 
 void MainWindow::clearScene()
@@ -135,7 +144,6 @@ void MainWindow::updateAlpha(int alpha)
 	float alpha_val = alpha / 255.0;
 	ui->openGLWidget->scene()->shaderProgram()->setUniformValue("alpha_val", alpha_val);
 	ui->openGLWidget->updateGL();
-
 }
 
 void MainWindow::setDrawPoint()

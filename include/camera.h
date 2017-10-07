@@ -46,12 +46,12 @@ private:
     Point3f m_target;
     Vector3f m_up;
 
+    unsigned int m_originX;
+    unsigned int m_originY;
     float m_fovY;
     float m_near;
     float m_far;
 
-    unsigned int m_originX;
-    unsigned int m_originY;
     unsigned int m_width;
     unsigned int m_height;
 

@@ -1,7 +1,9 @@
 #include "camera.h"
 #include <iostream>
 
-Camera::Camera() : m_originX(0), m_originY(0), m_fovY(60.f), m_near(0.001f), m_far(1000.f),
+Camera::Camera() : m_originX(0), m_originY(0),
+    m_fovY(60.f),
+    m_near(0.001f), m_far(1000.f),
     m_position(0.f, 0.f, 5.f),
     m_target(0.f, 0.f, 0.f)
 {
@@ -42,8 +44,6 @@ void Camera::lookAt(const Point3f& position, const Point3f& target, const Vector
     m_up = up;
 
     m_viewMatrix.setToIdentity();
-
-
 }
 
 QMatrix4x4 Camera::viewMatrix()
@@ -96,10 +96,10 @@ void Camera::rotate(float angle, Vector3f axis)
 void Camera::zoom(float z)
 {
     // Get the direction
-    Vector3f p = (m_position - m_target);
+    const Vector3f p = m_position - m_target;
 
     // Get the distance between the camera and the target
-    float dist = p.norm();
+    const float dist = p.norm();
 
     // Check if the distance is greater
     // Don't want to go through the target

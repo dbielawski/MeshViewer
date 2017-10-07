@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
-     <widget class="QFrame" name="horizontalFrame">
+     <widget class="QFrame" name="frameUserParameters">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -28,7 +28,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QGroupBox" name="groupBox_2">
+        <widget class="QGroupBox" name="groupTransparency">
          <property name="title">
           <string>Transparency</string>
          </property>
@@ -82,7 +82,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox">
+        <widget class="QGroupBox" name="groupDisplayMode">
          <property name="title">
           <string>Display Mode</string>
          </property>
@@ -119,6 +119,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="buttonComputeNormals">
+         <property name="text">
+          <string>Compute normals</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="buttonClearScene">
          <property name="text">
           <string>Clear scene</string>
@@ -145,7 +152,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="verticalFrame">
+     <widget class="QFrame" name="openGLFrame">
       <property name="frameShape">
        <enum>QFrame::Box</enum>
       </property>
@@ -162,6 +169,46 @@
           </sizepolicy>
          </property>
         </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QFrame" name="frameInfo">
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <layout class="QVBoxLayout" name="infos">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <item>
+          <widget class="QLabel" name="verticesCount">
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="trianglesCount">
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>

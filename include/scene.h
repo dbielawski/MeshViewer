@@ -30,6 +30,9 @@ public:
     Camera* camera() const                          { return m_camera; }
     QGLShaderProgram* shaderProgram() const         { return m_shaderProgram; }
 
+    unsigned int verticesCount() const;
+    unsigned int trianglesCount() const;
+
 private:
     QVector<const Mesh*>    m_meshList;
     QVector<const Light*>   m_lightList;

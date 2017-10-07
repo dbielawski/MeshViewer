@@ -12,13 +12,12 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 
-#include "assert.h"
+#include "light.h"
 
 GLWidget::GLWidget(QWidget *parent) :
     QGLWidget(parent),
     m_scene(new Scene),
     m_displayModeIndex(EDisplayMode::FILL)
-
 {
     QGLFormat glFormat;
     glFormat.setVersion(3, 3);
@@ -55,7 +54,7 @@ void GLWidget::initializeGL()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
 
-    // FIXME: remove
+    // TODO: remove
     Model3d* m = new obj(":/models/cube_tr.obj");
     Mesh* mesh = m->mesh();
     //
@@ -64,7 +63,9 @@ void GLWidget::initializeGL()
 
     // TODO: remove
     m_scene->addMesh(*mesh);
-    //
+    DirectionalLight* dl = new DirectionalLight(Color4f(1, 0, 0), Vector3f(0, 0, 1));
+    m_scene->addLight(*dl);
+    // remove
 }
 
 void GLWidget::resizeGL(int w, int h)
@@ -99,9 +100,9 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
             m_dx = 0;
 
         if (dy > 0)
-            m_dy = 1;
-        else if (dy < 0)
             m_dy = -1;
+        else if (dy < 0)
+            m_dy = 1;
         else
             m_dy = 0;
 
@@ -153,7 +154,7 @@ void GLWidget::mouseReleaseEvent(QMouseEvent *event)
     default:
         break;
     }
-
+    event->accept();
 }
 
 void GLWidget::wheelEvent(QWheelEvent *event)
@@ -169,7 +170,6 @@ void GLWidget::wheelEvent(QWheelEvent *event)
 
     updateGL();
     event->accept();
-
 }
 
 void GLWidget::keyPressEvent(QKeyEvent *event)
@@ -214,7 +214,8 @@ void GLWidget::keyPressEvent(QKeyEvent *event)
 
 void GLWidget::keyReleaseEvent(QKeyEvent *event)
 {
-
+    Q_UNUSED(event);
+    event->accept();
 }
 
 

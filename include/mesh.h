@@ -7,7 +7,7 @@
 #include "utils.h"
 #include "camera.h"
 #include "scene.h"
-#include "alignedbox3f.h"
+#include "wireboundingbox.h"
 
 
 class QGLFunctions;
@@ -30,7 +30,7 @@ public:
     void computeBoundingBox();
     void buildOctree();
 
-    AlignedBox3f boundingBox() const    { return m_boundingBox; }
+    AlignedBox3f* boundingBox() const   { return m_boundingBox; }
     Octree* octree() const              { return m_octree;      }
     QMatrix4x4 transform() const        { return m_transform;   }
 
@@ -50,10 +50,12 @@ private:
 
     QMatrix4x4          m_transform;
 
-    AlignedBox3f        m_boundingBox;
+    AlignedBox3f*       m_boundingBox;
+    WireBoundingBox*    m_wireBoundingBox;
+
     Octree*             m_octree;
 
-    Scene*              m_scenePtr;
+    const Scene*        m_scenePtr;
 };
 
 #endif // MESH_H

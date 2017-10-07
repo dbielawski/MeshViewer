@@ -13,7 +13,7 @@ Scene::Scene() :
     m_camera(new Camera),
     m_backgroundColor(0.f, 0.f, 0.f)
 {
-    m_camera->lookAt(Point3f(3.f, 0.f, 3.f),
+    m_camera->lookAt(Point3f(0.f, 0.f, 3.f),
                      Point3f(0.f, 0.f, 0.f),
                      Vector3f(0.f, 1.f, 0.f));
 
@@ -56,6 +56,15 @@ void Scene::init()
 
 void Scene::render() const
 {
+    // For now we deal with only one light source
+    if (m_lightList.size() > 0 && m_lightList.at(0))
+    {
+        Vector3f dir = m_lightList[0]->direction();
+        Color4f intensity = m_lightList[0]->intensity(Point3f());
+        m_shaderProgram->setUniformValue("light_dir", QVector3D(dir.x, dir.y, dir.z));
+        m_shaderProgram->setUniformValue("light_intensity", QColor(intensity.r, intensity.g, intensity.b));
+    }
+
     for (const Mesh* m : m_meshList)
         m->render();
 }
@@ -75,8 +84,6 @@ void Scene::clear()
 	}
 
 	this->render();
-
-
 }
 
 void Scene::addMesh(Mesh& mesh)
@@ -89,4 +96,24 @@ void Scene::addMesh(Mesh& mesh)
 void Scene::addLight(const Light& light)
 {
     m_lightList.append(&light);
+}
+
+unsigned int Scene::verticesCount() const
+{
+    unsigned int totalVerticesCount = 0;
+
+    for (const Mesh* m : m_meshList)
+        totalVerticesCount += m->verticesCount();
+
+    return totalVerticesCount;
+}
+
+unsigned int Scene::trianglesCount() const
+{
+    unsigned int totalTrianglesCount = 0;
+
+    for (const Mesh* m : m_meshList)
+        totalTrianglesCount += m->trianglesCount();
+
+    return totalTrianglesCount;
 }

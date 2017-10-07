@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+
 #include <QApplication>
 #include <QDesktopWidget>
 
@@ -18,7 +19,14 @@ int main(int argc, char *argv[])
     return a.exec();
 }
 
-//TODO: Tester les obj avec des normales
-// TODO: faire afficher la AABB
+// FIXEME: rotation de la camera sur l'axe des Y
+// FIXEME: normales ??
+// WARNING: comment afficher mode lignes ??? oO
+
+// TODO: Tester les obj avec des normales
+// TODO: deux shaders (un simple avec lumiere, lautre sans lumiere..)
+// TOOD: slider pour la taille des points mode points..
 // TODO: implementer Octree
-// TODO: ajouter la lumiere
+// TODO: afficher octree
+// TODO: ajouter halfEdge
+// TODO: threads pour chargement des models (surtout long PGM3D)

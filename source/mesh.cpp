@@ -5,7 +5,11 @@
 #include <iostream>
 #include <assert.h>
 
-Mesh::Mesh() : m_octree(Q_NULLPTR), m_scenePtr(Q_NULLPTR)
+Mesh::Mesh() :
+    m_octree(Q_NULLPTR),
+    m_scenePtr(Q_NULLPTR),
+    m_boundingBox(new AlignedBox3f),
+    m_wireBoundingBox(new WireBoundingBox)
 {
     m_functions = new QGLFunctions;
     m_functions->initializeGLFunctions();
@@ -22,6 +26,8 @@ Mesh::~Mesh()
 
 void Mesh::init()
 {
+    computeNormals();
+
     m_functions->glGenBuffers(1, &m_vertexBufferId);
     m_functions->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
     m_functions->glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m_vertices.size(), &m_vertices[0], GL_STATIC_DRAW);
@@ -30,8 +36,11 @@ void Mesh::init()
     m_functions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
     m_functions->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(FaceIndex) * m_faces.size(), &m_faces[0], GL_STATIC_DRAW);
 
-        computeNormals();
-    //    computeBoundingBox();
+    computeBoundingBox();
+    m_wireBoundingBox->setFunctions(*m_functions);
+    m_wireBoundingBox->setAlignedBox(*m_boundingBox);
+    m_wireBoundingBox->init();
+
     //    buildOctree();
 }
 
@@ -47,9 +56,9 @@ void Mesh::render() const
         m_scenePtr->shaderProgram()->setUniformValue("mat_view", m_scenePtr->camera()->viewMatrix());
         m_scenePtr->shaderProgram()->setUniformValue("mat_proj", m_scenePtr->camera()->projectionMatrix());
 
-        int vertexLoc = m_scenePtr->shaderProgram()->attributeLocation("vtx_position");
-        int colorLoc  = m_scenePtr->shaderProgram()->attributeLocation("vtx_color");
-        int normalLoc = m_scenePtr->shaderProgram()->attributeLocation("vtx_normal");
+        const int vertexLoc = m_scenePtr->shaderProgram()->attributeLocation("vtx_position");
+        const int colorLoc  = m_scenePtr->shaderProgram()->attributeLocation("vtx_color");
+        const int normalLoc = m_scenePtr->shaderProgram()->attributeLocation("vtx_normal");
 
         if (vertexLoc >= 0)
         {
@@ -69,13 +78,14 @@ void Mesh::render() const
             m_functions->glEnableVertexAttribArray(normalLoc);
         }
 
-
         glDrawElements(GL_TRIANGLES, 3 * m_faces.size(), GL_UNSIGNED_INT, (void*)0);
 
         if (vertexLoc >= 0) m_functions->glDisableVertexAttribArray(vertexLoc);
         if (colorLoc >= 0)  m_functions->glDisableVertexAttribArray(colorLoc);
         if (normalLoc >= 0) m_functions->glDisableVertexAttribArray(normalLoc);
     }
+
+    m_wireBoundingBox->render(*m_scenePtr);
 }
 
 void Mesh::rawData(const QVector<Vertex>& vertices, const QVector<FaceIndex>& faces)
@@ -93,30 +103,32 @@ void Mesh::computeNormals()
     // Compute normals
     for (int i = 0; i < m_vertices.size(); ++i)
     {
-        FaceIndex face = m_faces.at(i);
+        const FaceIndex face = m_faces.at(i);
 
-        Point3f v0 = m_vertices.at(face.v0).position;
-        Point3f v1 = m_vertices.at(face.v1).position;
-        Point3f v2 = m_vertices.at(face.v2).position;
+        const Point3f v0 = m_vertices.at(face.v0).position;
+        const Point3f v1 = m_vertices.at(face.v1).position;
+        const Point3f v2 = m_vertices.at(face.v2).position;
 
-        Vector3f normal = (v1 - v0).cross(v2 - v0);
+        const Vector3f normal = (v1 - v0).cross(v2 - v0);
 
-        m_vertices.value(face.v0).normal += normal;
-        m_vertices.value(face.v1).normal += normal;
-        m_vertices.value(face.v2).normal += normal;
+        m_vertices[face.v0].normal += normal;
+        m_vertices[face.v1].normal += normal;
+        m_vertices[face.v2].normal += normal;
     }
 
     // Normalize all normals
     for (int i = 0; i < m_vertices.size(); ++i)
-        m_vertices.value(i).normal.normalise();
+    {
+        m_vertices[i].normal.normalise();
+    }
 }
 
 void Mesh::computeBoundingBox()
 {
-    m_boundingBox.reset();
+    m_boundingBox->reset();
 
     for (int i = 0; i < m_vertices.size(); ++i)
-        m_boundingBox.extend(m_vertices.at(i).position);
+        m_boundingBox->extend(m_vertices.at(i).position);
 }
 
 void Mesh::buildOctree()

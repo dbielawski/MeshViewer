@@ -43,7 +43,7 @@ private:
     QAction*    m_clearSceneAction;
     QAction*    m_quitAction;
 
-    QMenu*      m_display;
+    QMenu*      m_displayMenu;
     QAction*    m_toggleDisplayBoundingBoxAction;
     QAction*    m_drawPointsAction;
     QAction*    m_drawLinesAction;

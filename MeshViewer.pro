@@ -36,7 +36,8 @@ SOURCES +=  source/main.cpp\
     source/scene.cpp \
     source/light.cpp \
     source/obj.cpp \
-    source/alignedbox3f.cpp
+    source/alignedbox3f.cpp \
+    source/wireboundingbox.cpp
 
 HEADERS  += include/mainwindow.h \
     include/utils.h \
@@ -49,7 +50,8 @@ HEADERS  += include/mainwindow.h \
     include/model3d.h \
     include/light.h \
     include/obj.h \
-    include/alignedbox3f.h
+    include/alignedbox3f.h \
+    include/wireboundingbox.h
 
 FORMS    += mainwindow.ui
 
