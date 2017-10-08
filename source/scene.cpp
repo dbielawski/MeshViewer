@@ -18,6 +18,8 @@ Scene::Scene() :
                      Vector3f(0.f, 1.f, 0.f));
 
     m_camera->setPerspective(60.f, 0.001f, 1000.f);
+
+    m_displayBoundingBox = false;
 }
 
 Scene::~Scene()
@@ -66,7 +68,11 @@ void Scene::render() const
     }
 
     for (const Mesh* m : m_meshList)
-        m->render();
+    {
+        m->renderMesh();
+        if (m_displayBoundingBox)
+            m->renderBoundingBox();
+    }
 }
 
 void Scene::clear()
@@ -83,7 +89,12 @@ void Scene::clear()
 		delete m;
 	}
 
-	this->render();
+    this->render();
+}
+
+void Scene::toggleDisplayBoundingBox()
+{
+    m_displayBoundingBox = !m_displayBoundingBox;
 }
 
 void Scene::addMesh(Mesh& mesh)
@@ -116,4 +127,14 @@ unsigned int Scene::trianglesCount() const
         totalTrianglesCount += m->trianglesCount();
 
     return totalTrianglesCount;
+}
+
+unsigned int Scene::facesCount() const
+{
+    unsigned int totalFacesCount = 0;
+
+    for (const Mesh* m : m_meshList)
+        totalFacesCount += m->facesCount();
+
+    return totalFacesCount;
 }

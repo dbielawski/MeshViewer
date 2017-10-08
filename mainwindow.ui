@@ -184,14 +184,21 @@
          <item>
           <widget class="QLabel" name="verticesCount">
            <property name="text">
-            <string>TextLabel</string>
+            <string>vertices</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QLabel" name="trianglesCount">
            <property name="text">
-            <string>TextLabel</string>
+            <string>triangles</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="facesCount">
+           <property name="text">
+            <string>Faces</string>
            </property>
           </widget>
          </item>

@@ -58,3 +58,10 @@ FORMS    += mainwindow.ui
 RESOURCES += \
     resources.qrc
 
+CONFIG(release, debug|release) {
+    message( "release" )
+    QMAKE_CXXFLAGS += -O3
+}
+CONFIG(debug, debug|release) {
+    message( "debug" )
+}

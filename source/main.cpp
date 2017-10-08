@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 }
 
 // FIXEME: rotation de la camera sur l'axe des Y
-// FIXEME: normales ??
+// FIXEME: regler le parser de obj (pour tout type de fichiers)
 // WARNING: comment afficher mode lignes ??? oO
 
 // TODO: Tester les obj avec des normales

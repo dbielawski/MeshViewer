@@ -23,7 +23,7 @@ public:
 
     Scene* scene() const { return m_scene; }
 
-	void setDrawMode(unsigned int displayMode) { m_displayModeIndex = displayMode; }
+    void setDrawMode(unsigned int displayMode) { m_displayModeIndex = displayMode; }
 
 protected:
     virtual void initializeGL() override;
@@ -55,7 +55,7 @@ private:
         GL_POINT, GL_LINE, GL_FILL
     };
 
-    unsigned int        m_displayModeIndex;
+    unsigned int    m_displayModeIndex;
 
     // INPUTS
     bool    m_wheelButtonPressed;

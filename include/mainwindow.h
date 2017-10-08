@@ -35,6 +35,8 @@ private:
 
 	void setDraw(unsigned int);
 
+    void updateInfos() const;
+
     Ui::MainWindow *ui;
 
     QMenu*      m_fileMenu;

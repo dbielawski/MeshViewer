@@ -4,3 +4,8 @@ Octree::Octree()
 {
 
 }
+
+Octree::~Octree()
+{
+
+}

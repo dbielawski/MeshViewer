@@ -1,7 +1,7 @@
 #include "alignedbox3f.h"
 #include <QtMath>
 
-AlignedBox3f::AlignedBox3f()
+AlignedBox3f::AlignedBox3f() : m_min(Point3f(0, 0, 0)), m_max(Point3f(0, 0, 0))
 {
 
 }
@@ -31,5 +31,11 @@ bool AlignedBox3f::contain(const Point3f& p) const
 
 void AlignedBox3f::reset()
 {
-    // TODO: implementer reset
+    m_min = Point3f();
+    m_max = Point3f();
+}
+
+Point3f AlignedBox3f::center() const
+{
+    return Point3f(m_max.x - m_min.x, m_max.y - m_min.y, m_max.z - m_min.z);
 }

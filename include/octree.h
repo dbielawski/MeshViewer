@@ -24,6 +24,7 @@ public:
     };
 
     Octree();
+    ~Octree();
 
     void render() const;
 

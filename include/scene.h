@@ -21,6 +21,8 @@ public:
     void render() const;
     void clear();
 
+    void toggleDisplayBoundingBox();
+
     void addMesh(Mesh& model);
     void addLight(const Light& light);
 
@@ -32,6 +34,7 @@ public:
 
     unsigned int verticesCount() const;
     unsigned int trianglesCount() const;
+    unsigned int facesCount() const;
 
 private:
     QVector<const Mesh*>    m_meshList;
@@ -41,6 +44,8 @@ private:
 
     Camera*                 m_camera;
     Color4f                 m_backgroundColor;
+
+    bool m_displayBoundingBox;
 };
 
 #endif // SCENE_H

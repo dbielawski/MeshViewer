@@ -2,8 +2,6 @@
 
 #include <QGLFunctions>
 #include <QGLShaderProgram>
-#include <iostream>
-#include <assert.h>
 
 Mesh::Mesh() :
     m_octree(Q_NULLPTR),
@@ -21,12 +19,16 @@ Mesh::~Mesh()
 {
     m_functions->glDeleteBuffers(1, &m_vertexBufferId);
     m_functions->glDeleteBuffers(1, &m_indexBufferId);
+
     delete m_functions;
+    delete m_boundingBox;
+    delete m_wireBoundingBox;
+    delete m_octree;
 }
 
 void Mesh::init()
 {
-    computeNormals();
+    //computeNormals();
 
     m_functions->glGenBuffers(1, &m_vertexBufferId);
     m_functions->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
@@ -41,10 +43,14 @@ void Mesh::init()
     m_wireBoundingBox->setAlignedBox(*m_boundingBox);
     m_wireBoundingBox->init();
 
+    Point3f center = m_boundingBox->center();
+
+    //m_transform.translate(center.x, center.y, center.z);
+
     //    buildOctree();
 }
 
-void Mesh::render() const
+void Mesh::renderMesh() const
 {
     if (m_scenePtr != Q_NULLPTR
             && m_scenePtr->shaderProgram()->bind())
@@ -84,7 +90,10 @@ void Mesh::render() const
         if (colorLoc >= 0)  m_functions->glDisableVertexAttribArray(colorLoc);
         if (normalLoc >= 0) m_functions->glDisableVertexAttribArray(normalLoc);
     }
+}
 
+void Mesh::renderBoundingBox() const
+{
     m_wireBoundingBox->render(*m_scenePtr);
 }
 
@@ -118,9 +127,7 @@ void Mesh::computeNormals()
 
     // Normalize all normals
     for (int i = 0; i < m_vertices.size(); ++i)
-    {
         m_vertices[i].normal.normalise();
-    }
 }
 
 void Mesh::computeBoundingBox()

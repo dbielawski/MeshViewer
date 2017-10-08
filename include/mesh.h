@@ -10,9 +10,6 @@
 #include "wireboundingbox.h"
 
 
-class QGLFunctions;
-class QGLShaderProgram;
-
 class Octree;
 
 class Mesh
@@ -22,7 +19,8 @@ public:
     ~Mesh();
 
     void init();
-    void render() const;
+    void renderMesh() const;
+    void renderBoundingBox() const;
     void rawData(const QVector<Vertex>& vertices, const QVector<FaceIndex>& indices);
 
     void computeNormals();
@@ -38,6 +36,7 @@ public:
 
     unsigned int verticesCount() const  { return m_vertices.size(); }
     unsigned int trianglesCount() const { return m_faces.size();    }
+    unsigned int facesCount() const     { return m_faces.size();    }
 
 private:
     QGLFunctions*       m_functions;

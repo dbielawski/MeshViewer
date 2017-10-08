@@ -9,6 +9,7 @@ namespace arm
 struct Color3f;
 struct Vector2i;
 struct Vector3f;
+struct Vector3i;
 struct Point3i;
 struct Point3f;
 struct Vertex;
@@ -71,6 +72,14 @@ struct Vector2i
         y = v.y;
         return *this;
     }
+};
+struct Vector3i
+{
+    int x, y, z;
+
+    Vector3i(int x_ = 0, int y_ = 0, int z_ = 0) :
+        x(x_), y(y_), z(z_)
+    {}
 };
 
 struct Vector3f

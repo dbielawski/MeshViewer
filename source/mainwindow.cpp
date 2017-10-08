@@ -16,6 +16,9 @@
 
 #include <QMessageBox>
 
+#include <QtConcurrent/QtConcurrent>
+#include <QFuture>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -75,17 +78,20 @@ void MainWindow::createActions()
 
     m_drawPointsAction = new QAction(tr("&Points"), this);
     m_drawPointsAction->setStatusTip(tr("Render the model in point mode | Press M to switch"));
-	connect(m_drawPointsAction, SIGNAL(triggered(bool)), this, SLOT(setDrawPoint()));
+    connect(m_drawPointsAction, SIGNAL(triggered(bool)), this, SLOT(setDrawPoint()));
 
     m_drawLinesAction = new QAction(tr("&Lines"), this);
     m_drawLinesAction->setStatusTip(tr("Render the model in line mode | Press M to switch"));
-	connect(m_drawLinesAction, SIGNAL(triggered(bool)), this, SLOT(setDrawLine()));
+    connect(m_drawLinesAction, SIGNAL(triggered(bool)), this, SLOT(setDrawLine()));
 
     m_drawFilledAction = new QAction(tr("&Filled"), this);
     m_drawFilledAction->setStatusTip(tr("Render the model with faces | Press M to switch"));
-	connect(m_drawFilledAction, SIGNAL(triggered(bool)), this, SLOT(setDrawFilled()));
+    connect(m_drawFilledAction, SIGNAL(triggered(bool)), this, SLOT(setDrawFilled()));
 
     connect(ui->transparencySlider, SIGNAL(valueChanged(int)), this, SLOT(updateAlpha(int)));
+
+    // Update infos in the right panel (vertices count...)
+    updateInfos();
 }
 
 void MainWindow::openFile()
@@ -103,68 +109,77 @@ void MainWindow::openFile()
     Model3d* model = nullptr;
     if(ext.toStdString() == "pgm3d") {
         model = new pgm3d(fileName);
-	}
+    }
     else if (ext.toStdString() == "obj") {
         model = new obj(fileName);
-	}
-	else {
-		QMessageBox::critical(0, "Error", "File format " + ext + " is not supported.");
-		exit(EXIT_FAILURE);
-	}
+    }
+    else {
+        QMessageBox::critical(0, "Error", "File format " + ext + " is not supported.");
+        exit(EXIT_FAILURE);
+    }
 
-	if(model == nullptr) {
-		QMessageBox::critical(0, "Error", "Error while loading the model.");
-		exit(EXIT_FAILURE);
-	}
+    if(model == nullptr) {
+        QMessageBox::critical(0, "Error", "Error while loading the model.");
+        exit(EXIT_FAILURE);
+    }
 
     Mesh* mesh = model->mesh();
+
+    // WARNING: test
+    //    QFuture<Mesh*> future = QtConcurrent::run(model, &Model3d::mesh);
+    //    Mesh* mesh = future.result();
+    // WARNING: test
+
     ui->openGLWidget->scene()->addMesh(*mesh);
     ui->openGLWidget->updateGL();
 
     m_displayMenu->setEnabled(true);
-
-
-    // TODO: mettre dans une fonction updateSceneInfos...
-    unsigned int verticesCount = ui->openGLWidget->scene()->verticesCount();
-    unsigned int trianglesCount = ui->openGLWidget->scene()->trianglesCount();
-
-    ui->verticesCount->setText(QString("Vertices count: " + QString::number(verticesCount)));
-    ui->trianglesCount->setText(QString("Triangles count: " + QString::number(trianglesCount)));
-    //end
+    updateInfos();
 }
 
 void MainWindow::clearScene()
 {
-	ui->openGLWidget->scene()->clear();
+    ui->openGLWidget->scene()->clear();
 }
 
 void MainWindow::updateAlpha(int alpha)
 {
-	ui->alphaValue->setText(QString::number(alpha));
-	float alpha_val = alpha / 255.0;
-	ui->openGLWidget->scene()->shaderProgram()->setUniformValue("alpha_val", alpha_val);
-	ui->openGLWidget->updateGL();
+    ui->alphaValue->setText(QString::number(alpha));
+    float alpha_val = alpha / 255.0;
+    ui->openGLWidget->scene()->shaderProgram()->setUniformValue("alpha_val", alpha_val);
+    ui->openGLWidget->updateGL();
 }
 
 void MainWindow::setDrawPoint()
 {
-	// TODO : Replace with enum value
-	setDraw(0);
+    // TODO : Replace with enum value
+    setDraw(0);
 }
 
 void MainWindow::setDrawLine()
 {
-	// TODO : Replace with enum value
-	setDraw(1);
+    // TODO : Replace with enum value
+    setDraw(1);
 }
 
 void MainWindow::setDrawFilled()
 {
-	// TODO : Replace with enum value
-	setDraw(2);
+    // TODO : Replace with enum value
+    setDraw(2);
 }
 
 void MainWindow::setDraw(unsigned int value)
 {
-	ui->openGLWidget->setDrawMode(value);
+    ui->openGLWidget->setDrawMode(value);
+}
+
+void MainWindow::updateInfos() const
+{
+    unsigned int verticesCount = ui->openGLWidget->scene()->verticesCount();
+    unsigned int trianglesCount = ui->openGLWidget->scene()->trianglesCount();
+    unsigned int facesCount = ui->openGLWidget->scene()->facesCount();
+
+    ui->verticesCount->setText(QString("Vertices: " + QString::number(verticesCount)));
+    ui->trianglesCount->setText(QString("Triangles: " + QString::number(trianglesCount)));
+    ui->facesCount->setText(QString("Faces : " + QString::number(facesCount)));
 }

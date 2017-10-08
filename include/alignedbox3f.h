@@ -15,6 +15,8 @@ public:
     bool contain(const Point3f& p) const;
     void reset();
 
+    Point3f center() const;
+
     Point3f min() const { return m_min; }
     Point3f max() const { return m_max; }
 

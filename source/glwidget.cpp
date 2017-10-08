@@ -55,16 +55,16 @@ void GLWidget::initializeGL()
     glEnable(GL_BLEND);
 
     // TODO: remove
-    Model3d* m = new obj(":/models/cube_tr.obj");
-    Mesh* mesh = m->mesh();
+    //Model3d* m = new obj(":/models/cube_tr.obj");
+    //Mesh* mesh = m->mesh();
     //
 
     m_scene->init();
 
     // TODO: remove
-    m_scene->addMesh(*mesh);
-    DirectionalLight* dl = new DirectionalLight(Color4f(1, 0, 0), Vector3f(0, 0, 1));
-    m_scene->addLight(*dl);
+    //m_scene->addMesh(*mesh);
+    //DirectionalLight* dl = new DirectionalLight(Color4f(1, 0, 0), Vector3f(0, 0, 1));
+    //m_scene->addLight(*dl);
     // remove
 }
 
@@ -160,13 +160,9 @@ void GLWidget::mouseReleaseEvent(QMouseEvent *event)
 void GLWidget::wheelEvent(QWheelEvent *event)
 {
     if (event->delta() > 0.f)
-    {
         m_scene->camera()->zoom(m_zoomStepValue);
-    }
     else
-    {
         m_scene->camera()->zoom(-m_zoomStepValue);
-    }
 
     updateGL();
     event->accept();
@@ -174,15 +170,14 @@ void GLWidget::wheelEvent(QWheelEvent *event)
 
 void GLWidget::keyPressEvent(QKeyEvent *event)
 {
-    // TODO: faire au propre
     switch ( event->key() )
     {
     case Qt::Key_Q:
-        m_scene->camera()->rotate(10, Vector3f(0.f, 1.f, 0.f));
+
         updateGL();
         break;
     case Qt::Key_D:
-        m_scene->camera()->rotate(-10, Vector3f(0.f, 1.f, 0.f));
+
         updateGL();
         break;
     case Qt::Key_Z:
@@ -200,14 +195,12 @@ void GLWidget::keyPressEvent(QKeyEvent *event)
         break;
 
     case Qt::Key_B:
-        // Toggle display AABB
+        m_scene->toggleDisplayBoundingBox();
         updateGL();
         break;
     default:
         break;
     }
-
-    //    std::cout << "key event in board:" <<  event->key() << std::endl;
 
     event->accept();
 }
