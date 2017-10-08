@@ -35,6 +35,12 @@ void AlignedBox3f::reset()
     m_max = Point3f();
 }
 
+Vector3f AlignedBox3f::size() const
+{
+    Vector3f size(m_max.x - m_min.x, m_max.y - m_min.y, m_max.z - m_min.z);
+    return size;
+}
+
 Point3f AlignedBox3f::center() const
 {
     return Point3f(m_max.x - m_min.x, m_max.y - m_min.y, m_max.z - m_min.z);

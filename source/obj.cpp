@@ -106,8 +106,16 @@ void obj::loadFromFile(const QString &fileName)
                         face[i] = vertexIndex.toInt();
                         faceNormals[i] = normalIndex.toInt();
                     }
-                    m_faces.append(FaceIndex(face[0] - 1, face[1] - 1, face[2] - 1));
-                    normalIndices.append(Vector3i(faceNormals[0] - 1, faceNormals[1] - 1, faceNormals[2] - 1));
+
+                    if (listSize == 3)
+                    {
+                        m_faces.append(FaceIndex(face[0] - 1, face[1] - 1, face[2] - 1));
+                        normalIndices.append(Vector3i(faceNormals[0] - 1, faceNormals[1] - 1, faceNormals[2] - 1));
+                    }
+                    else if (listSize == 4)
+                    {
+                        // TODO: faire
+                    }
                 }
                 else
                 {
@@ -130,6 +138,8 @@ void obj::loadFromFile(const QString &fileName)
 
     } while (!line.isNull());
 
+    file.close();
+
     // set normals
     // vertex/textCoord/normals format
     if (!normalIndices.isEmpty())
@@ -147,6 +157,47 @@ void obj::loadFromFile(const QString &fileName)
         for (int i = 0; i < normals.size(); ++i)
             m_vertices.value(i).normal = normals.at(i);
     }
+}
+
+void obj::writeFile(const QString &fileName, const Mesh& mesh) const
+{
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        QMessageBox::critical(0, "Error while writing file", file.errorString());
+        return;
+    }
+
+    QTextStream out(&file);
+
+    // Write Vertex
+    for (int i = 0; i < m_vertices.size(); ++i)
+    {
+        QString line = "v ";
+        line += QString::number(m_vertices.at(i).position.x) + " "
+                + QString::number(m_vertices.at(i).position.y) + " "
+                + QString::number(m_vertices.at(i).position.z);
+        out << line;
+    }
+
+    // Write Normal
+    for (int i = 0; i < m_vertices.size(); ++i)
+    {
+        QString line = "v ";
+        line += QString::number(m_vertices.at(i).position.x) + " "
+                + QString::number(m_vertices.at(i).position.y) + " "
+                + QString::number(m_vertices.at(i).position.z);
+        out << line;
+    }
+
+    // Write Face
+    for (int i = 0; i < m_vertices.size(); ++i)
+    {
+
+    }
+
+    file.close();
 }
 
 Mesh *obj::mesh() const

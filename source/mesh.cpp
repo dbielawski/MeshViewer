@@ -7,9 +7,9 @@ Mesh::Mesh() :
     m_octree(Q_NULLPTR),
     m_scenePtr(Q_NULLPTR),
     m_boundingBox(new AlignedBox3f),
-    m_wireBoundingBox(new WireBoundingBox)
+    m_wireBoundingBox(new WireBoundingBox),
+    m_functions(new QGLFunctions)
 {
-    m_functions = new QGLFunctions;
     m_functions->initializeGLFunctions();
 
     m_transform.setToIdentity();
@@ -43,7 +43,7 @@ void Mesh::init()
     m_wireBoundingBox->setAlignedBox(*m_boundingBox);
     m_wireBoundingBox->init();
 
-    Point3f center = m_boundingBox->center();
+    //Point3f center = m_boundingBox->center();
 
     //m_transform.translate(center.x, center.y, center.z);
 

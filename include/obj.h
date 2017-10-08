@@ -12,6 +12,9 @@ public:
     obj(const QString& fileName);
 
     virtual void loadFromFile(const QString& fileName) override;
+
+    void writeFile(const QString& fileName, const Mesh& mesh) const;
+
     virtual Mesh* mesh() const override;
 
     QVector<Vertex> vertices() const;

@@ -23,16 +23,21 @@ public:
         */
     };
 
-    Octree();
+    Octree(const QVector<Vertex>& vertices);
     ~Octree();
+
+    void build();
 
     void render() const;
 
 private:
     void renderNode() const;
+    void buildNode();
 
     unsigned int m_depth;
     unsigned int m_maxDepth;
+
+    const QVector<Vertex>* m_verticesPtr;
 };
 
 #endif // OCTREE_H
