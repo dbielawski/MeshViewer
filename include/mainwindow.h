@@ -24,7 +24,12 @@ public:
 private slots:
     void openFile();
     void clearScene();
+
 	void updateAlpha(int);
+    void updatePointSize(int);
+
+    void toggleDisplayBoundingBox();
+
 	void setDrawPoint();
 	void setDrawLine();
 	void setDrawFilled();

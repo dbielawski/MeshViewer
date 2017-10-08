@@ -20,12 +20,11 @@ int main(int argc, char *argv[])
 }
 
 // FIXEME: rotation de la camera sur l'axe des Y
-// FIXEME: regler le parser de obj (pour tout type de fichiers)
 // WARNING: comment afficher mode lignes ??? oO
 
-// TODO: Tester les obj avec des normales
-// TODO: deux shaders (un simple avec lumiere, lautre sans lumiere..)
-// TOOD: slider pour la taille des points mode points..
+// TODO: deux shaders (un pour le model, lautre pour les AABB, Octree..)
+// TODO: exporter les fichiers en OBJ
+// TODO: gerer le centrage du model avec la cemera
 // TODO: implementer Octree
 // TODO: afficher octree
 // TODO: ajouter halfEdge

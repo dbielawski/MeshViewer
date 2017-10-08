@@ -25,6 +25,11 @@ public:
 
     void setDrawMode(unsigned int displayMode) { m_displayModeIndex = displayMode; }
 
+    float pointSizeMin() const;
+    float pointSizeMax() const;
+    float pointSize() const;
+    void pointSize(float size);
+
 protected:
     virtual void initializeGL() override;
     virtual void resizeGL(int w, int h) override;
@@ -41,6 +46,7 @@ protected:
 private:
     Scene*              m_scene;
 
+    GLfloat m_pointSize;
 
     // TODO: ameliorer ? ^^
     enum EDisplayMode

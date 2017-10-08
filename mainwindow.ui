@@ -88,28 +88,28 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
-           <widget class="QPushButton" name="buttonPointsMode">
+           <widget class="QPushButton" name="pointsModeButton">
             <property name="text">
              <string>POINTS</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="buttonLinesMode">
+           <widget class="QPushButton" name="linesModeButton">
             <property name="text">
              <string>LINES</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="buttonTrianglesMode">
+           <widget class="QPushButton" name="trianglesModeButton">
             <property name="text">
              <string>TRIANGLES</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="buttonFillMode">
+           <widget class="QPushButton" name="fillModeButton">
             <property name="text">
              <string>FILL</string>
             </property>
@@ -119,14 +119,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="buttonComputeNormals">
+        <widget class="QPushButton" name="computeNormalsButton">
          <property name="text">
           <string>Compute normals</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="buttonClearScene">
+        <widget class="QPushButton" name="clearSceneButton">
          <property name="text">
           <string>Clear scene</string>
          </property>
@@ -199,6 +199,19 @@
           <widget class="QLabel" name="facesCount">
            <property name="text">
             <string>Faces</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="pointSizeSlider">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>

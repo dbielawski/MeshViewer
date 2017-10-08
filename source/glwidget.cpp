@@ -34,6 +34,8 @@ GLWidget::GLWidget(QWidget *parent) :
 
     m_zoomStepValue = 1.f;
     m_dx = 0;
+
+    m_pointSize = 1.f;
 }
 
 GLWidget::~GLWidget()
@@ -49,7 +51,7 @@ void GLWidget::initializeGL()
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-    glPointSize(15.f);
+    glPointSize(m_pointSize);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
@@ -211,4 +213,26 @@ void GLWidget::keyReleaseEvent(QKeyEvent *event)
     event->accept();
 }
 
+float GLWidget::pointSizeMin() const
+{
+    return 1.f;
+}
+
+float GLWidget::pointSizeMax() const
+{
+    GLfloat max;
+    glGetFloatv(GL_POINT_SIZE_MAX, &max);
+
+    return 50.f;
+}
+
+float GLWidget::pointSize() const
+{
+    return m_pointSize;
+}
+
+void GLWidget::pointSize(float size)
+{
+    glPointSize(size);
+}
 

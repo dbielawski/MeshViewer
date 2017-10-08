@@ -75,6 +75,7 @@ void MainWindow::createActions()
 
     m_toggleDisplayBoundingBoxAction = new QAction(tr("&Render AABB"), this);
     m_toggleDisplayBoundingBoxAction->setStatusTip(tr("Display the bounding box of the model | Toggle press B"));
+    connect(m_toggleDisplayBoundingBoxAction, SIGNAL(triggered(bool)), this, SLOT(toggleDisplayBoundingBox()));
 
     m_drawPointsAction = new QAction(tr("&Points"), this);
     m_drawPointsAction->setStatusTip(tr("Render the model in point mode | Press M to switch"));
@@ -89,9 +90,14 @@ void MainWindow::createActions()
     connect(m_drawFilledAction, SIGNAL(triggered(bool)), this, SLOT(setDrawFilled()));
 
     connect(ui->transparencySlider, SIGNAL(valueChanged(int)), this, SLOT(updateAlpha(int)));
+    connect(ui->pointSizeSlider,SIGNAL(valueChanged(int)), this, SLOT(updatePointSize(int)));
 
     // Update infos in the right panel (vertices count...)
     updateInfos();
+
+    ui->pointSizeSlider->setMinimum(ui->openGLWidget->pointSizeMin());
+    ui->pointSizeSlider->setMaximum(ui->openGLWidget->pointSizeMax());
+    ui->pointSizeSlider->setValue(ui->openGLWidget->pointSize());
 }
 
 void MainWindow::openFile()
@@ -147,6 +153,18 @@ void MainWindow::updateAlpha(int alpha)
     ui->alphaValue->setText(QString::number(alpha));
     float alpha_val = alpha / 255.0;
     ui->openGLWidget->scene()->shaderProgram()->setUniformValue("alpha_val", alpha_val);
+    ui->openGLWidget->updateGL();
+}
+
+void MainWindow::updatePointSize(int)
+{
+    ui->openGLWidget->pointSize(ui->pointSizeSlider->value());
+    ui->openGLWidget->updateGL();
+}
+
+void MainWindow::toggleDisplayBoundingBox()
+{
+    ui->openGLWidget->scene()->toggleDisplayBoundingBox();
     ui->openGLWidget->updateGL();
 }
 
