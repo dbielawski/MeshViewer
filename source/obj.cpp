@@ -39,7 +39,7 @@ void obj::loadFromFile(const QString &fileName)
         {
             QStringList list = line.split(' ');
 
-            if (list.at(0) == 'v')  // Vertices
+            if (list.at(0) == QString('v'))  // Vertices
             {
                 list.removeAt(0); // Remove the 'v' character
 
@@ -53,7 +53,7 @@ void obj::loadFromFile(const QString &fileName)
 
                 m_vertices.append(v);
             }
-            else if (list.at(0) == 'f') // Face indices
+            else if (list.at(0) == QString('f')) // Face indices
             {
                 list.removeAt(0); // Remove the 'f' character
 

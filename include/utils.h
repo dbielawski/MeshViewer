@@ -22,9 +22,16 @@ struct FaceIndex
     unsigned int v0, v1, v2;
 
     FaceIndex(unsigned int x_ = 1, unsigned int y_ = 2, unsigned int z_ = 3):
-        v0(x_), v1(y_), v2(z_)
-    {
-    }
+	v0(x_), v1(y_), v2(z_)
+    {}
+};
+
+struct EdgeIndex
+{
+	uint v0, v1;
+	EdgeIndex(uint v0 = 0, uint v1 = 0):
+	v0(v0), v1(v1)
+	{}
 };
 
 struct Color4f
@@ -49,6 +56,17 @@ struct Color4f
         b += c.b;
         return *this;
     }
+
+	inline bool operator == (const Color4f& c) const {
+		return ((this->r - c.r) < 0.001 &&
+				(this->b - c.b) < 0.001 &&
+				(this->g - c.g) < 0.001 &&
+				(this->a - c.a) < 0.001);
+	}
+
+	inline bool operator != (const Color4f& c) const {
+		return !(*this == c);
+	}
 };
 
 inline Color4f operator +(const Color4f& l, const Color4f& r)
@@ -222,6 +240,11 @@ inline Point3f operator +(const Point3f& l, const Vector3f& r)
 inline Point3f operator +(const Vector3f& l, const Point3f& r)
 {
     return Point3f(l.x + r.x, l.y + r.y, l.z + r.z);
+}
+
+inline Point3f operator /(const Point3f& p, float div)
+{
+	return Point3f(p.x / div, p.y / div, p.z / div);
 }
 
 inline Vector3f operator -(const Point3f& l, const Point3f& r)

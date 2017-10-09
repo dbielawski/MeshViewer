@@ -24,6 +24,7 @@ public:
 private slots:
     void openFile();
     void clearScene();
+	void computeNormals();
 
 	void updateAlpha(int);
     void updatePointSize(int);
@@ -33,6 +34,8 @@ private slots:
 	void setDrawPoint();
 	void setDrawLine();
 	void setDrawFilled();
+
+    void sceneBackgroundColor();
 
 private:
     void createMenus();

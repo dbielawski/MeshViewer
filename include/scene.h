@@ -26,7 +26,7 @@ public:
     void addMesh(Mesh& model);
     void addLight(const Light& light);
 
-    void setBackgroundColor(const Color4f& color)   { m_backgroundColor = color; }
+	void setBackgroundColor(const Color4f& color)   { m_backgroundColor = color; }
     Color4f backgroundColor() const                 { return m_backgroundColor; }
 
     Camera* camera() const                          { return m_camera; }
@@ -34,7 +34,8 @@ public:
 
     unsigned int verticesCount() const;
     unsigned int trianglesCount() const;
-    unsigned int facesCount() const;
+	unsigned int facesCount() const;
+    unsigned int edgesCount() const;
 
 private:
     QVector<const Mesh*>    m_meshList;

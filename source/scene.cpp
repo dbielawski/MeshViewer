@@ -100,8 +100,12 @@ void Scene::toggleDisplayBoundingBox()
 void Scene::addMesh(Mesh& mesh)
 {
     mesh.attachScene(this);
-
     m_meshList.append(&mesh);
+
+	Point3f center = mesh.boundingBox()->center();
+	m_camera->lookAt(Point3f(0.f, 0.f, 3.f),
+                     center,
+                     Vector3f(0.f, 1.f, 0.f));
 }
 
 void Scene::addLight(const Light& light)
@@ -137,4 +141,14 @@ unsigned int Scene::facesCount() const
         totalFacesCount += m->facesCount();
 
     return totalFacesCount;
+}
+
+unsigned int Scene::edgesCount() const
+{
+    unsigned int totalEdgesCount = 0;
+
+    for (const Mesh* m : m_meshList)
+        totalEdgesCount += m->edgesCount();
+
+    return totalEdgesCount;
 }

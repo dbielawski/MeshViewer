@@ -43,6 +43,12 @@ GLWidget::~GLWidget()
     delete m_scene;
 }
 
+void GLWidget::changeSceneColor(const Color4f& c) {
+	m_scene->setBackgroundColor(c);
+	glClearColor(c.r, c.g, c.b, 1.0f);
+	updateGL();
+}
+
 void GLWidget::initializeGL()
 {
     glClearColor(m_scene->backgroundColor().r,
@@ -56,18 +62,11 @@ void GLWidget::initializeGL()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
 
-    // TODO: remove
-    //Model3d* m = new obj(":/models/cube_tr.obj");
-    //Mesh* mesh = m->mesh();
-    //
-
     m_scene->init();
 
-    // TODO: remove
-    //m_scene->addMesh(*mesh);
+	// TODO; Remove
     //DirectionalLight* dl = new DirectionalLight(Color4f(1, 0, 0), Vector3f(0, 0, 1));
     //m_scene->addLight(*dl);
-    // remove
 }
 
 void GLWidget::resizeGL(int w, int h)
@@ -235,4 +234,3 @@ void GLWidget::pointSize(float size)
 {
     glPointSize(size);
 }
-

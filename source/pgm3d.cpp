@@ -7,6 +7,8 @@
 #include <QTextStream>
 #include <QMessageBox>
 
+#include <assert.h>
+
 #include "mesh.h"
 
 
@@ -19,10 +21,10 @@ pgm3d::pgm3d(): m_width(0), m_height(0), m_depth(0), m_data()
 
 pgm3d::pgm3d(const QString& s)
 {
-    pgm3d();
+	pgm3d();
 
-    if (s != "")
-        loadFromFile(s);
+	if (s != "")
+	loadFromFile(s);
 }
 
 pgm3d::~pgm3d()
@@ -32,191 +34,241 @@ pgm3d::~pgm3d()
 
 void pgm3d::loadFromFile(const QString& fileName)
 {
-    std::ifstream inputFile(fileName.toStdString());
+	std::ifstream inputFile(fileName.toStdString());
 
-    if(!inputFile.is_open())
-    {
-        QMessageBox::critical(0, "Error", QString("Couldn't open file " + fileName));
-        return;
-    }
+	if(!inputFile.is_open())
+	{
+		QMessageBox::critical(0, "Error", QString("Couldn't open file " + fileName));
+		return;
+	}
 
-    std::string data;
-    std::string format;
+	std::string data;
+	std::string format;
 
-    int headerCount(0);
-    unsigned int x = 0,y = 0, z = 0;
-    while(inputFile >> data && inputFile)
-    {
-        if(data[0] == '#')
-        {
-            inputFile.ignore(INT_MAX, '\n');
-        }
-        else
-        {
-            /* If we have already read the header, we store the raw data in m_data */
-            if(headerCount == HEADER_SIZE)
-            {
-                uint8_t value = (uint8_t)atoi(data.c_str());
-                m_data.push_back(value);
+	int headerCount(0);
+	uint x = 0,y = 0, z = 0;
+	while(inputFile >> data && inputFile)
+	{
+		if(data[0] == '#')
+		{
+			inputFile.ignore(INT_MAX, '\n');
+		}
+		else
+		{
+			/* If we have already read the header, we store the raw data in m_data */
+			if(headerCount == HEADER_SIZE)
+			{
+				uint8_t value = (uint8_t)atoi(data.c_str());
+				m_data.push_back(value);
 
-                if(value > m_maxGrayscaleValue) {
-                    QMessageBox::critical(0, "Error", "Bad gray value.");
-                    return;
-                }
-                Vertex v(Point3f(x, y, z), Color4f(value, 0.f, 0.f));
-                x++;
-                if(x == m_width) {
-                    x=0;
-                    y++;
-                }
-                if(y == m_height) {
-                    y = 0;
-                    z++;
-                }
-                m_dataVertex.append(v);
-            }
-            else
-            {
-                /* We need to read the HEADER_SIZE values for header informations
-                We assume that they're in the right order -> format width height depth grayscales */
-                headerCount++;
-                switch(headerCount)
-                {
-                case 1:
-                    format = data.c_str();
-                    if(format != "PGM3D") {
-                        QMessageBox::critical(0, "Error", "Bad file format : Bad header.");
-                        return;
-                    }
-                    break;
-                case 2:
-                    m_width = atoi(data.c_str());
-                    break;
-                case 3:
-                    m_height = atoi(data.c_str());
-                    break;
-                case 4:
-                    m_depth = atoi(data.c_str());
-                    break;
-                case 5:
-                    m_maxGrayscaleValue = (uint8_t)atoi(data.c_str());
-                    break;
-                default:
-                    break;
-                }
-            }
-        }
-    }
+				if(value > m_maxGrayscaleValue) {
+					QMessageBox::critical(0, "Error", "Bad gray value.");
+					return;
+				}
+				float vValue = value/float(m_maxGrayscaleValue);
+				Vertex v(Point3f(x, y, z), Color4f(vValue, vValue, vValue));
+				x++;
+				if(x == m_width) {
+					x=0;
+					y++;
+				}
+				if(y == m_height) {
+					y = 0;
+					z++;
+				}
+				m_dataVertex.append(v);
+			}
+			else
+			{
+				/* We need to read the HEADER_SIZE values for header informations
+				We assume that they're in the right order -> format width height depth grayscales */
+				headerCount++;
+				switch(headerCount)
+				{
+				case 1:
+					format = data.c_str();
+					if(format != "PGM3D") {
+						QMessageBox::critical(0, "Error", "Bad file format : Bad header.");
+						return;
+					}
+					break;
+				case 2:
+					m_width = atoi(data.c_str());
+					break;
+				case 3:
+					m_height = atoi(data.c_str());
+					break;
+				case 4:
+					m_depth = atoi(data.c_str());
+					break;
+				case 5:
+					m_maxGrayscaleValue = (uint8_t)atoi(data.c_str());
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
 
-    if( !(m_width * m_height * m_depth == (unsigned int) m_data.size()))
-    {
-        QMessageBox::critical(0, "Error", "Bad file fromat : Missing data.");
-        return;
-    }
+	if(!(m_width * m_height * m_depth == uint(m_data.size())))
+	{
+		QMessageBox::critical(0, "Error", "Bad file fromat : Missing data.");
+		return;
+	}
+}
+
+
+// TODO: Move this two functions in utils ?
+static void indexToCoord(uint index, uint width, uint height, uint depth, uint& x, uint& y, uint& z) {
+	assert(width != 0 && height != 0 && depth != 0);
+
+	x = (index % (width * height)) % width;
+	y = (index % (width * height)) / width;
+	z =  index / (width * height);
+}
+
+static int coordToIndex(uint width, uint height, uint depth, uint x, uint y, uint z) {
+	assert(width != 0 && height != 0 && depth != 0);
+	return x + y * width + z * height * width;
 }
 
 Mesh* pgm3d::mesh() const
 {
-    unsigned long long voxelCount = m_width * m_height * m_depth;
+	unsigned long long voxelCount = m_width * m_height * m_depth;
 
-    //          z
-    //         /
-    //        /___x
-    //        |
-    //        |
-    //        y
+	//          z
+	//         /
+	//        /___x
+	//        |
+	//        |
+	//        y
 
-    Mesh* mesh = new Mesh;
+	Mesh* mesh = new Mesh;
 
-    QVector<Vertex> vertices;
-    QVector<FaceIndex> faces;
-    // TODO: reserve pour l'optimisation
-    // vertices.reserve();
-    // faces.reserve();
+	QVector<Vertex> vertices;
+	QVector<EdgeIndex> edges;
+	QVector<FaceIndex> allFaces;
+	vertices.reserve(voxelCount * 8);
+	allFaces.reserve(voxelCount * 12); // For each voxel we build 12 faces (6 * 2 triangles)
+	edges.reserve(voxelCount * 12);
 
-    for (unsigned long long i = 0; i < voxelCount; ++i)
-    {
-        if (m_data[i] != 0) // if the voxel is not black
-        {
+	for (unsigned long long i = 0; i < voxelCount; ++i) {
+		Point3f pos = m_dataVertex[i].position;
+		Color4f color = m_dataVertex[i].color;
 
-            // Compute the centered position of the Voxel
-            Point3f offset = m_dataVertex[i].position;
-            Color4f color = m_dataVertex[i].color;
+		int index[8];
+		for (size_t i = 0; i < 8; i++) { index[i] = -1;	}
+		int cpt = 0;
+		for (float x = -0.5; x <= 0.5; x++) {
+			for (float y = -0.5; y <= 0.5; y++) {
+				for (float z = -0.5; z <= 0.5; z++) {
+					index[cpt++] = vertices.size();
+					Vertex v(Point3f(x+pos.x,y+pos.y,z+pos.z), color);
+					vertices.push_back(v);
+				}
+			}
+		}
 
-            /*
-              1--------5
-             /|       /|
-            0-+------4 |
-            | |      | |
-            | 3------+-7
-            |/       |/
-            2--------6
-            */
-            int index[8];
-            for (size_t i = 0; i < 8; i++)
-            {
-                index[i] = -1;
-            }
-            int cpt = 0;
-            for (float x = -0.5; x <= 0.5; x++)
-            {
-                for (float y = -0.5; y <= 0.5; y++)
-                {
-                    for (float z = -0.5; z <= 0.5; z++)
-                    {
-                        Vertex v(offset + Point3f(x,y,z), color);
-                        std::cerr << v.position.x << " " << v.position.y << " " << v.position.z << '\n';
+		/*1--------5
+		./|       /|
+		0-+------4 |
+		| |      | |
+		| 3------+-7
+		|/       |/
+		2--------6 */
+		uint offset = i * 8;
 
-                        for (int verticeIndex = 0; verticeIndex < vertices.size(); verticeIndex++)
-                        {
-                            if ((v.position.x == vertices[verticeIndex].position.x) &&
-                                    (v.position.y == vertices[verticeIndex].position.y) &&
-                                    (v.position.z == vertices[verticeIndex].position.z))
-                            {
-                                index[cpt] = verticeIndex;
-                                // TODO : que faire si la couleur est différente?
-                                break;
-                            }
-                        }
+		// Index of Vertices to build the Faces : IVF
+		int ivf[12][3] = {{0,1,3}, {0,2,3},  // left
+						{4,5,7}, {4,6,7},  // right
+						{0,1,5}, {0,4,5},  // top
+						{2,3,7}, {2,6,7},  // bot
+						{0,2,6}, {0,4,6},  // front
+						{1,3,7}, {1,5,7}}; // back
+		for (int i = 0; i < 12; i++) {
+			FaceIndex face(offset+ivf[i][0], offset+ivf[i][1], offset+ivf[i][2]);
+			allFaces.push_back(face);
+		}
 
-                        if (index[cpt] == -1) {
-                            index[cpt] = vertices.size();
-                            vertices.append(v);
-                        }
+		// Index of Vertices to build the Edges : IVE
+		int ive[18][2]= {{0,1}, {1,5}, {5,4}, {4,0}, {0,5}, {4,7},
+						{0,2}, {1,3}, {5,7}, {4,6}, {0,6}, {0,3},
+						{2,3}, {3,7}, {7,6}, {6,2}, {2,7}, {1,7}};
+		for(int i = 0; i < 18; i++) {
+			EdgeIndex edge(offset+ive[i][0], offset+ive[i][1]);
+			edges.push_back(edge);
+		}
+	}
 
-                        cpt++;
-                    }
-                }
-            }
-            std::cerr << '\n';
-            int index_vertice[12][3] = {{0,3,1}, {0,3,2},  // left
-                                        {0,5,1}, {0,5,4},  // up
-                                        {0,6,2}, {0,6,4},  // front
-                                        {7,1,3}, {7,1,5},  // back
-                                        {7,2,3}, {7,2,6},  // down
-                                        {7,4,5}, {7,4,6}}; // right
-            for (int i = 0; i < 12; i++) {
-                bool face_exist = false;
-                for (int faceIndex = 0; faceIndex < faces.size(); faceIndex++) {
-                    if (((unsigned)index_vertice[i][0] == faces[faceIndex].v0) &&
-                            ((unsigned)index_vertice[i][1] == faces[faceIndex].v1) &&
-                            ((unsigned)index_vertice[i][2] == faces[faceIndex].v2)) {
-                        face_exist = true;
-                        continue;
-                    }
-                }
+	QVector<FaceIndex> faces;
+	uint x = 0, y = 0, z = 0, index = 0;
+	bool left, right, top, bot, front, back;
 
-                if (!face_exist) {
-                    faces.append(FaceIndex(index_vertice[i][0],
-                                 index_vertice[i][1],
-                            index_vertice[i][2]));
-                }
-            }
-        }
-    }
+	for(uint i = 0 ; i < voxelCount ; i++) {
+		if(m_data[i] == 0) { continue; }
 
-    mesh->rawData(vertices, faces);
-    mesh->init();
+		indexToCoord(i, m_width, m_height, m_depth, x, y, z);
 
-    return mesh;
+		left  = (x == 0 ? true : false);
+		right = (x == m_width - 1 ? true : false);
+		top   = (y == 0 ? true : false);
+		bot   = (y == m_height - 1 ? true : false);
+		front = (z == 0 ? true : false);
+		back  = (z == m_depth - 1 ? true : false);
+
+		int offset = i * 8;
+
+		if(!left) {
+			index = coordToIndex(m_width, m_height, m_depth, x-1, y, z);
+			if(m_dataVertex[i].color != m_dataVertex[index].color) {
+				FaceIndex face1(offset, offset+1, offset+3); FaceIndex face2(offset, offset+2, offset+3);
+				faces.push_back(face1); faces.push_back(face2);
+			}
+		}
+
+		if(!right) {
+			index = coordToIndex(m_width, m_height, m_depth, x+1, y, z);
+			if(m_dataVertex[i].color != m_dataVertex[index].color) {
+				FaceIndex face1(offset+4, offset+5 , offset+7); FaceIndex face2(offset+4, offset+6, offset+7);
+				faces.push_back(face1); faces.push_back(face2);
+			}
+		}
+
+		if(!top) {
+			index = coordToIndex(m_width, m_height, m_depth, x, y-1, z);
+			if(m_dataVertex[i].color != m_dataVertex[index].color) {
+				FaceIndex face1(offset, offset+1, offset+5); FaceIndex face2(offset, offset+4, offset+5);
+				faces.push_back(face1); faces.push_back(face2);
+			}
+		}
+
+		if(!bot) {
+			index = coordToIndex(m_width, m_height, m_depth, x, y+1, z);
+			if(m_dataVertex[i].color != m_dataVertex[index].color) {
+				FaceIndex face1(offset + 2, offset + 3, offset + 7); FaceIndex face2(offset+2, offset+6, offset+7);
+				faces.push_back(face1); faces.push_back(face2);
+			}
+		}
+
+		if(!front) {
+			index = coordToIndex(m_width, m_height, m_depth, x, y, z-1);
+			if(m_dataVertex[i].color != m_dataVertex[index].color) {
+				FaceIndex face1(offset, offset+2, offset+6); FaceIndex face2(offset, offset+4, offset+6);
+				faces.push_back(face1); faces.push_back(face2);
+			}
+		}
+
+		if(!back) {
+			index = coordToIndex(m_width, m_height, m_depth, x, y, z+1);
+			if(m_dataVertex[i].color != m_dataVertex[index].color) {
+				FaceIndex face1(offset+1, offset+3, offset+7); FaceIndex face2(offset+1, offset+5, offset+7);
+				faces.push_back(face1); faces.push_back(face2);
+			}
+		}
+	}
+	mesh->rawData(vertices, faces, allFaces, edges);
+	mesh->init();
+
+	return mesh;
 }

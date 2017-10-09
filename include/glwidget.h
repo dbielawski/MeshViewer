@@ -30,6 +30,8 @@ public:
     float pointSize() const;
     void pointSize(float size);
 
+	void changeSceneColor(const Color4f&);
+
 protected:
     virtual void initializeGL() override;
     virtual void resizeGL(int w, int h) override;

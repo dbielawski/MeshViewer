@@ -95,6 +95,30 @@
            </widget>
           </item>
           <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_10">
+            <item>
+             <widget class="QLabel" name="ptSizeLabel">
+              <property name="text">
+               <string>size</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSlider" name="pointSizeSlider">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
            <widget class="QPushButton" name="linesModeButton">
             <property name="text">
              <string>LINES</string>
@@ -132,6 +156,13 @@
          </property>
          <property name="checkable">
           <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="sceneBackgroundColorButton">
+         <property name="text">
+          <string>Scene color</string>
          </property>
         </widget>
        </item>
@@ -198,23 +229,17 @@
          <item>
           <widget class="QLabel" name="facesCount">
            <property name="text">
-            <string>Faces</string>
+            <string>faces</string>
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="QSlider" name="pointSizeSlider">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
+		 <item>
+		  <widget class="QLabel" name="edgesCount">
+		   <property name="text">
+			<string>edges</string>
+		   </property>
+		  </widget>
+		 </item>
          <item>
           <spacer name="verticalSpacer_2">
            <property name="orientation">
@@ -241,7 +266,7 @@
      <x>0</x>
      <y>0</y>
      <width>887</width>
-     <height>20</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

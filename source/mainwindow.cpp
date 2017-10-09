@@ -8,6 +8,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
+#include <QColorDialog>
+
 #include "glwidget.h"
 /*  */
 #include "pgm3d.h"
@@ -25,6 +27,13 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+	connect(ui->pointsModeButton, SIGNAL(clicked()), this, SLOT(setDrawPoint()));
+	connect(ui->linesModeButton, SIGNAL(clicked()), this, SLOT(setDrawLine()));
+	connect(ui->fillModeButton, SIGNAL(clicked()), this, SLOT(setDrawFilled()));
+
+	connect(ui->clearSceneButton, SIGNAL(clicked()), this, SLOT(clearScene()));
+	connect(ui->computeNormalsButton, SIGNAL(clicked()), this, SLOT(computeNormals()));
+    connect(ui->sceneBackgroundColorButton, SIGNAL(clicked(bool)), this, SLOT(sceneBackgroundColor()));
     ui->alphaValue->setText(QString::number(ui->transparencySlider->value()));
 
     createActions(); // Create action before menu !
@@ -146,6 +155,7 @@ void MainWindow::openFile()
 void MainWindow::clearScene()
 {
     ui->openGLWidget->scene()->clear();
+	ui->openGLWidget->updateGL();
 }
 
 void MainWindow::updateAlpha(int alpha)
@@ -189,15 +199,34 @@ void MainWindow::setDrawFilled()
 void MainWindow::setDraw(unsigned int value)
 {
     ui->openGLWidget->setDrawMode(value);
+	ui->openGLWidget->updateGL();
 }
 
 void MainWindow::updateInfos() const
 {
     unsigned int verticesCount = ui->openGLWidget->scene()->verticesCount();
     unsigned int trianglesCount = ui->openGLWidget->scene()->trianglesCount();
-    unsigned int facesCount = ui->openGLWidget->scene()->facesCount();
+	unsigned int facesCount = ui->openGLWidget->scene()->facesCount();
+    unsigned int edgesCount = ui->openGLWidget->scene()->edgesCount();
 
     ui->verticesCount->setText(QString("Vertices: " + QString::number(verticesCount)));
     ui->trianglesCount->setText(QString("Triangles: " + QString::number(trianglesCount)));
-    ui->facesCount->setText(QString("Faces : " + QString::number(facesCount)));
+	ui->facesCount->setText(QString("Faces : " + QString::number(facesCount)));
+    ui->edgesCount->setText(QString("Edges : " + QString::number(edgesCount)));
+}
+
+
+void MainWindow::computeNormals() {
+	// TODO: implement
+	//ui->openGLWidget->scene()->computeNormals();
+	//ui->openGLWidget->updateGL();
+	QMessageBox::critical(0, "Error", "computeNormals() not implemented yet");
+}
+
+void MainWindow::sceneBackgroundColor()
+{
+    QColor c = QColorDialog::getColor();
+	Color4f color(c.red()/255.0, c.green()/255.0, c.blue()/255.0);
+	ui->openGLWidget->changeSceneColor(color);
+	ui->openGLWidget->updateGL();
 }

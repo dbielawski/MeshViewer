@@ -21,7 +21,8 @@ public:
     void init();
     void renderMesh() const;
     void renderBoundingBox() const;
-    void rawData(const QVector<Vertex>& vertices, const QVector<FaceIndex>& indices);
+	void rawData(const QVector<Vertex>& vertices, const QVector<FaceIndex>& indices);
+    void rawData(const QVector<Vertex>& vertices, const QVector<FaceIndex>& faces, const QVector<FaceIndex>& allFaces, const QVector<EdgeIndex>& edges);
 
     void computeNormals();
     void clear();
@@ -36,7 +37,8 @@ public:
 
     unsigned int verticesCount() const  { return m_vertices.size(); }
     unsigned int trianglesCount() const { return m_faces.size();    }
-    unsigned int facesCount() const     { return m_faces.size();    }
+	unsigned int facesCount() const     { return m_faces.size();    }
+    unsigned int edgesCount() const     { return m_edges.size();    }
 
 private:
     QGLFunctions*       m_functions;
@@ -45,7 +47,9 @@ private:
     uint                m_indexBufferId;
 
     QVector<Vertex>     m_vertices;
-    QVector<FaceIndex>  m_faces;
+    QVector<FaceIndex>  m_allFaces;
+	QVector<FaceIndex> 	m_faces;
+	QVector<EdgeIndex> 	m_edges;
 
     QMatrix4x4          m_transform;
 
@@ -58,4 +62,3 @@ private:
 };
 
 #endif // MESH_H
-
