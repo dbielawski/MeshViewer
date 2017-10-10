@@ -56,7 +56,7 @@ void Scene::render() const
     {
         const Light* l = m_lightList.at(i);
 
-        if (l != Q_NULLPTR)
+        if (l != Q_NULLPTR && m_simpleshadingProgram->bind())
         {
             Vector3f dir = l->direction();
             Color4f intensity = l->intensity(Point3f());
@@ -80,7 +80,7 @@ void Scene::render() const
 
 void Scene::removeLights()
 {
-    for(int i = m_lightList.size() - 1 ; i >= 0 ; i--)
+    for(int i = m_lightList.size() - 1; i >= 0; i--)
     {
         const Light* l = m_lightList.at(i);
         m_lightList.pop_back();
@@ -91,8 +91,7 @@ void Scene::removeLights()
 
 void Scene::removeModels()
 {
-
-    for(int i = m_meshList.size() - 1 ; i >= 0 ; i--)
+    for(int i = m_meshList.size() - 1; i >= 0; i--)
     {
         const Mesh* m = m_meshList.at(i);
         m_meshList.pop_back();

@@ -176,7 +176,7 @@ void MainWindow::onAlphaChanged(int alpha)
 {
     ui->alphaValue->setText(QString::number(alpha));
     float alpha_val = alpha / 255.0;
-    ui->openGLWidget->scene()->simpleShaderProgram()->setUniformValue("alpha_val", alpha_val);
+    ui->openGLWidget->scene()->simpleShadingProgram()->setUniformValue("alpha_val", alpha_val);
     ui->openGLWidget->updateGL();
 }
 

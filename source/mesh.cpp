@@ -60,6 +60,7 @@ void Mesh::renderMesh() const
         m_functions->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
         m_functions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
 
+        // TODO: factoriser
         m_scenePtr->simpleShadingProgram()->setUniformValue("mat_obj", m_transform);
         m_scenePtr->simpleShadingProgram()->setUniformValue("mat_view", m_scenePtr->camera()->viewMatrix());
         m_scenePtr->simpleShadingProgram()->setUniformValue("mat_proj", m_scenePtr->camera()->projectionMatrix());
@@ -92,8 +93,6 @@ void Mesh::renderMesh() const
         if (colorLoc >= 0)  m_functions->glDisableVertexAttribArray(colorLoc);
         if (normalLoc >= 0) m_functions->glDisableVertexAttribArray(normalLoc);
     }
-    else
-        Q_ASSERT(false);
 }
 
 void Mesh::renderBoundingBox() const

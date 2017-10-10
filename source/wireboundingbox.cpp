@@ -10,7 +10,7 @@ WireBoundingBox::WireBoundingBox()
 
 WireBoundingBox::WireBoundingBox(const AlignedBox3f& aabb)
 {
-
+    m_aabb = &aabb;
 }
 
 void WireBoundingBox::init()
@@ -26,29 +26,33 @@ void WireBoundingBox::init()
     m_functionsPtr->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Vector2i) * 12, &m_indices[0], GL_STATIC_DRAW);
 }
 
-void WireBoundingBox::render(const Scene& scene)
+void WireBoundingBox::render(const Scene& scene) const
 {
-    m_functionsPtr->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
-    m_functionsPtr->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
-
-    scene.simpleShaderProgram()->setUniformValue("mat_view", scene.camera()->viewMatrix());
-    scene.simpleShaderProgram()->setUniformValue("mat_proj", scene.camera()->projectionMatrix());
-
-    const int vertexLoc = scene.simpleShaderProgram()->attributeLocation("vtx_position");
-
-    // TODO: creer une variable membre color et ajouter au constructeur
-    float c[4] = {1.f, 0.f, 0.f, 1.f};
-    scene.simpleShaderProgram()->setAttributeArray("vtx_color", GL_FLOAT, &c[0], 4);
-
-    if (vertexLoc >= 0)
+    if (scene.simpleShaderProgram()->bind())
     {
-        m_functionsPtr->glVertexAttribPointer(vertexLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Point3f), (void*)0);
-        m_functionsPtr->glEnableVertexAttribArray(vertexLoc);
+        m_functionsPtr->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
+        m_functionsPtr->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
+
+        // TODO: factoriser
+        scene.simpleShaderProgram()->setUniformValue("mat_view", scene.camera()->viewMatrix());
+        scene.simpleShaderProgram()->setUniformValue("mat_proj", scene.camera()->projectionMatrix());
+
+        const int vertexLoc = scene.simpleShaderProgram()->attributeLocation("vtx_position");
+
+        // TODO: creer une variable membre color et ajouter au constructeur
+        float c[4] = {0.f, 1.f, 0.f, 1.f};
+        scene.simpleShaderProgram()->setAttributeArray("vtx_color", GL_FLOAT, &c[0], 4);
+
+        if (vertexLoc >= 0)
+        {
+            m_functionsPtr->glVertexAttribPointer(vertexLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Point3f), (void*)0);
+            m_functionsPtr->glEnableVertexAttribArray(vertexLoc);
+        }
+
+        glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, (void*)0);
+
+        if (vertexLoc >= 0) m_functionsPtr->glDisableVertexAttribArray(vertexLoc);
     }
-
-    glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, (void*)0);
-
-    if (vertexLoc >= 0) m_functionsPtr->glDisableVertexAttribArray(vertexLoc);
 }
 
 void WireBoundingBox::computeBox()
