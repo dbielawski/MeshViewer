@@ -31,12 +31,14 @@ void WireBoundingBox::render(const Scene& scene)
     m_functionsPtr->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
     m_functionsPtr->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
 
-    scene.shaderProgram()->setUniformValue("mat_view", scene.camera()->viewMatrix());
-    scene.shaderProgram()->setUniformValue("mat_proj", scene.camera()->projectionMatrix());
+    scene.simpleShaderProgram()->setUniformValue("mat_view", scene.camera()->viewMatrix());
+    scene.simpleShaderProgram()->setUniformValue("mat_proj", scene.camera()->projectionMatrix());
 
-    const int vertexLoc = scene.shaderProgram()->attributeLocation("vtx_position");
+    const int vertexLoc = scene.simpleShaderProgram()->attributeLocation("vtx_position");
+
+    // TODO: creer une variable membre color et ajouter au constructeur
     float c[4] = {1.f, 0.f, 0.f, 1.f};
-    scene.shaderProgram()->setAttributeArray("vtx_color", GL_FLOAT, &c[0], 4);
+    scene.simpleShaderProgram()->setAttributeArray("vtx_color", GL_FLOAT, &c[0], 4);
 
     if (vertexLoc >= 0)
     {

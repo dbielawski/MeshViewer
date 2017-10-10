@@ -6,10 +6,12 @@
 #include <QDebug>
 
 #include <iostream>
+#include <QDebug>
 
 
 Scene::Scene() :
-    m_shaderProgram(new QGLShaderProgram),
+    m_simpleShaderProgram(new QGLShaderProgram),
+    m_simpleshadingProgram(new QGLShaderProgram),
     m_camera(new Camera),
     m_backgroundColor(0.f, 0.f, 0.f)
 {
@@ -20,74 +22,83 @@ Scene::Scene() :
     m_camera->setPerspective(60.f, 0.001f, 1000.f);
 
     m_displayBoundingBox = false;
+
+    // Add some lights
+    const DirectionalLight* dl1 = new DirectionalLight(Color4f(1, 1, 1), Vector3f(0, 0, 1));
+    const DirectionalLight* dl2 = new DirectionalLight(Color4f(1, 1, 1), Vector3f(0, 0, -1));
+    const DirectionalLight* dl3 = new DirectionalLight(Color4f(1, 1, 1), Vector3f(1, 0, 0));
+    const DirectionalLight* dl4 = new DirectionalLight(Color4f(1, 1, 1), Vector3f(-1, 0, 0));
+
+    m_lightList.append(dl1);
+    m_lightList.append(dl2);
+    m_lightList.append(dl3);
+    m_lightList.append(dl4);
 }
 
 Scene::~Scene()
 {
-    clear();
+    removeModels();
+    removeLights();
     delete m_camera;
-    delete m_shaderProgram;
+    delete m_simpleShaderProgram;
+    delete m_simpleshadingProgram;
 }
 
 void Scene::init()
 {
-    if (!m_shaderProgram->addShaderFromSourceFile(QGLShader::Vertex, ":/shaders/simpleshader.vert"))
-    {
-        qDebug() << "Shaders cannot be Vertex";
-        exit(-1);
-    }
-
-    if (!m_shaderProgram->addShaderFromSourceFile(QGLShader::Fragment, ":/shaders/simpleshader.frag"))
-    {
-        qDebug() << "Fragment Shaders cannot be loader";
-        exit(-1);
-    }
-
-    if (!m_shaderProgram->link())
-    {
-        qDebug() << "Shaders cannot be linked";
-        exit(-1);
-    }
-
-    if (!m_shaderProgram->bind())
-    {
-        qDebug() << "Shaders cannot be binded";
-        exit(-1);
-    }
+    loadSahder(m_simpleShaderProgram, QString("simpleshader"));
+    loadSahder(m_simpleshadingProgram, QString("simpleshading"));
 }
 
 void Scene::render() const
 {
-    // For now we deal with only one light source
-    if (m_lightList.size() > 0 && m_lightList.at(0))
+    for (int i = 0; i < m_lightList.size(); ++i)
     {
-        Vector3f dir = m_lightList[0]->direction();
-        Color4f intensity = m_lightList[0]->intensity(Point3f());
-        m_shaderProgram->setUniformValue("light_dir", QVector3D(dir.x, dir.y, dir.z));
-        m_shaderProgram->setUniformValue("light_intensity", QColor(intensity.r, intensity.g, intensity.b));
+        const Light* l = m_lightList.at(i);
+
+        if (l != Q_NULLPTR)
+        {
+            Vector3f dir = l->direction();
+            Color4f intensity = l->intensity(Point3f());
+
+            m_simpleshadingProgram->setUniformValue("lights[i].direction", QVector3D(dir.x, dir.y, dir.z));
+            m_simpleshadingProgram->setUniformValue("lights[i].intensity", QColor(intensity.r, intensity.g, intensity.b));
+        }
     }
 
     for (const Mesh* m : m_meshList)
     {
-        m->renderMesh();
-        if (m_displayBoundingBox)
-            m->renderBoundingBox();
+        if (m != Q_NULLPTR)
+        {
+            m->renderMesh();
+
+            if (m_displayBoundingBox)
+                m->renderBoundingBox();
+        }
     }
 }
 
-void Scene::clear()
+void Scene::removeLights()
 {
-	for(int i = 0 ; i < m_lightList.size(); i++) {
-		const Light* l = m_lightList.at(i);
-		m_lightList.pop_front();
-		delete l;
-	}
+    for(int i = m_lightList.size() - 1 ; i >= 0 ; i--)
+    {
+        const Light* l = m_lightList.at(i);
+        m_lightList.pop_back();
+        delete l;
+        l = Q_NULLPTR;
+    }
+}
 
-	for(int i = 0 ; i < m_meshList.size(); i++) {
-		const Mesh* m = m_meshList.at(i);
-		m_meshList.pop_front();
-		delete m;
-	}
+void Scene::removeModels()
+{
+
+    for(int i = m_meshList.size() - 1 ; i >= 0 ; i--)
+    {
+        const Mesh* m = m_meshList.at(i);
+        m_meshList.pop_back();
+        delete m;
+        m = Q_NULLPTR;
+    }
 
     this->render();
 }
@@ -102,10 +113,10 @@ void Scene::addMesh(Mesh& mesh)
     mesh.attachScene(this);
     m_meshList.append(&mesh);
 
-	Point3f center = mesh.boundingBox()->center();
-	m_camera->lookAt(Point3f(0.f, 0.f, 3.f),
-                     center,
-                     Vector3f(0.f, 1.f, 0.f));
+    //	Point3f center = mesh.boundingBox()->center();
+    //	m_camera->lookAt(Point3f(0.f, 0.f, 3.f),
+    //                     center,
+    //                     Vector3f(0.f, 1.f, 0.f));
 }
 
 void Scene::addLight(const Light& light)
@@ -113,7 +124,7 @@ void Scene::addLight(const Light& light)
     m_lightList.append(&light);
 }
 
-unsigned int Scene::verticesCount() const
+unsigned int Scene::vertexCount() const
 {
     unsigned int totalVerticesCount = 0;
 
@@ -123,7 +134,7 @@ unsigned int Scene::verticesCount() const
     return totalVerticesCount;
 }
 
-unsigned int Scene::trianglesCount() const
+unsigned int Scene::triangleCount() const
 {
     unsigned int totalTrianglesCount = 0;
 
@@ -133,7 +144,7 @@ unsigned int Scene::trianglesCount() const
     return totalTrianglesCount;
 }
 
-unsigned int Scene::facesCount() const
+unsigned int Scene::faceCount() const
 {
     unsigned int totalFacesCount = 0;
 
@@ -143,7 +154,7 @@ unsigned int Scene::facesCount() const
     return totalFacesCount;
 }
 
-unsigned int Scene::edgesCount() const
+unsigned int Scene::edgeCount() const
 {
     unsigned int totalEdgesCount = 0;
 
@@ -151,4 +162,31 @@ unsigned int Scene::edgesCount() const
         totalEdgesCount += m->edgesCount();
 
     return totalEdgesCount;
+}
+
+void Scene::loadSahder(QGLShaderProgram* program, const QString& fileName)
+{
+    if (!program->addShaderFromSourceFile(QGLShader::Vertex, ":/shaders/" + fileName + ".vert"))
+    {
+        qDebug() << "Shaders cannot be Vertex" << fileName;
+        exit(-1);
+    }
+
+    if (!program->addShaderFromSourceFile(QGLShader::Fragment, ":/shaders/" + fileName + ".frag"))
+    {
+        qDebug() << "Fragment Shaders cannot be loader" << fileName;
+        exit(-1);
+    }
+
+    if (!program->link())
+    {
+        qDebug() << "Shaders cannot be linked" << fileName;
+        exit(-1);
+    }
+
+    if (!program->bind())
+    {
+        qDebug() << "Shaders cannot be binded" << fileName;
+        exit(-1);
+    }
 }

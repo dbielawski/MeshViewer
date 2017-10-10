@@ -27,13 +27,13 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-	connect(ui->pointsModeButton, SIGNAL(clicked()), this, SLOT(setDrawPoint()));
-	connect(ui->linesModeButton, SIGNAL(clicked()), this, SLOT(setDrawLine()));
-	connect(ui->fillModeButton, SIGNAL(clicked()), this, SLOT(setDrawFilled()));
+    connect(ui->pointsModeButton, SIGNAL(clicked()), this, SLOT(onDrawPoint()));
+    connect(ui->linesModeButton, SIGNAL(clicked()), this, SLOT(onDrawLine()));
+    connect(ui->fillModeButton, SIGNAL(clicked()), this, SLOT(onDrawFilled()));
 
-	connect(ui->clearSceneButton, SIGNAL(clicked()), this, SLOT(clearScene()));
-	connect(ui->computeNormalsButton, SIGNAL(clicked()), this, SLOT(computeNormals()));
-    connect(ui->sceneBackgroundColorButton, SIGNAL(clicked(bool)), this, SLOT(sceneBackgroundColor()));
+    connect(ui->clearSceneButton, SIGNAL(clicked()), this, SLOT(onClearScene()));
+    connect(ui->computeNormalsButton, SIGNAL(clicked()), this, SLOT(onComputeNormals()));
+    connect(ui->sceneBackgroundColorButton, SIGNAL(clicked(bool)), this, SLOT(onBackgroundColorScene()));
     ui->alphaValue->setText(QString::number(ui->transparencySlider->value()));
 
     createActions(); // Create action before menu !
@@ -49,6 +49,7 @@ void MainWindow::createMenus()
 {
     m_fileMenu = menuBar()->addMenu(tr("&File"));
     m_fileMenu->addAction(m_openAction);
+    m_fileMenu->addAction(m_saveAsObjAction);
     m_fileMenu->addAction(m_clearSceneAction);
     m_fileMenu->addAction(m_quitAction);
 
@@ -66,16 +67,17 @@ void MainWindow::createActions()
     m_openAction = new QAction(tr("&Open"), this);
     m_openAction->setShortcuts(QKeySequence::Open);
     m_openAction->setStatusTip(tr("Open an existing file"));
-    connect(m_openAction, SIGNAL(triggered(bool)), this, SLOT(openFile()));
+    connect(m_openAction, SIGNAL(triggered(bool)), this, SLOT(onOpenFile()));
 
     m_saveAsObjAction = new QAction(tr("&Save as Obj"), this);
     m_saveAsObjAction->setShortcut(QKeySequence(tr("Ctrl+S")));
     m_saveAsObjAction->setStatusTip(tr("Save the model as OBJ file"));
+    connect(m_saveAsObjAction, SIGNAL(triggered(bool)), this, SLOT(onSaveAsObj()));
 
     m_clearSceneAction = new QAction(tr("&Clear scene"), this);
     m_clearSceneAction->setShortcut(QKeySequence(tr("Ctrl+W")));
     m_clearSceneAction->setStatusTip(tr("Clear the scene"));
-    connect(m_clearSceneAction, SIGNAL(triggered(bool)), this, SLOT(clearScene()));
+    connect(m_clearSceneAction, SIGNAL(triggered(bool)), this, SLOT(onClearScene()));
 
     m_quitAction = new QAction(tr("&Quit"), this);
     m_quitAction->setShortcut(QKeySequence(tr("Ctrl+Q")));
@@ -84,32 +86,33 @@ void MainWindow::createActions()
 
     m_toggleDisplayBoundingBoxAction = new QAction(tr("&Render AABB"), this);
     m_toggleDisplayBoundingBoxAction->setStatusTip(tr("Display the bounding box of the model | Toggle press B"));
-    connect(m_toggleDisplayBoundingBoxAction, SIGNAL(triggered(bool)), this, SLOT(toggleDisplayBoundingBox()));
+    connect(m_toggleDisplayBoundingBoxAction, SIGNAL(triggered(bool)), this, SLOT(onToggleDisplayBoundingBox()));
 
     m_drawPointsAction = new QAction(tr("&Points"), this);
     m_drawPointsAction->setStatusTip(tr("Render the model in point mode | Press M to switch"));
-    connect(m_drawPointsAction, SIGNAL(triggered(bool)), this, SLOT(setDrawPoint()));
+    connect(m_drawPointsAction, SIGNAL(triggered(bool)), this, SLOT(onDrawPoint()));
 
     m_drawLinesAction = new QAction(tr("&Lines"), this);
     m_drawLinesAction->setStatusTip(tr("Render the model in line mode | Press M to switch"));
-    connect(m_drawLinesAction, SIGNAL(triggered(bool)), this, SLOT(setDrawLine()));
+    connect(m_drawLinesAction, SIGNAL(triggered(bool)), this, SLOT(onDrawLine()));
 
     m_drawFilledAction = new QAction(tr("&Filled"), this);
     m_drawFilledAction->setStatusTip(tr("Render the model with faces | Press M to switch"));
-    connect(m_drawFilledAction, SIGNAL(triggered(bool)), this, SLOT(setDrawFilled()));
+    connect(m_drawFilledAction, SIGNAL(triggered(bool)), this, SLOT(onDrawFilled()));
 
-    connect(ui->transparencySlider, SIGNAL(valueChanged(int)), this, SLOT(updateAlpha(int)));
-    connect(ui->pointSizeSlider,SIGNAL(valueChanged(int)), this, SLOT(updatePointSize(int)));
+    connect(ui->transparencySlider, SIGNAL(valueChanged(int)), this, SLOT(onAlphaChanged(int)));
+    connect(ui->pointSizeSlider,SIGNAL(valueChanged(int)), this, SLOT(onPointSizeChanged(int)));
 
-    // Update infos in the right panel (vertices count...)
+    // Update infos in the right panel (vertices/faces count...)
     updateInfos();
 
     ui->pointSizeSlider->setMinimum(ui->openGLWidget->pointSizeMin());
     ui->pointSizeSlider->setMaximum(ui->openGLWidget->pointSizeMax());
     ui->pointSizeSlider->setValue(ui->openGLWidget->pointSize());
+    ui->pointSizeValue->setText(QString::number(ui->openGLWidget->pointSize()));
 }
 
-void MainWindow::openFile()
+void MainWindow::onOpenFile()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"),
                                                     "../models/",
@@ -121,7 +124,7 @@ void MainWindow::openFile()
     QFileInfo fi(fileName);
     QString ext = fi.suffix();
 
-    Model3d* model = nullptr;
+    Model3d* model = Q_NULLPTR;
     if(ext.toStdString() == "pgm3d") {
         model = new pgm3d(fileName);
     }
@@ -152,45 +155,57 @@ void MainWindow::openFile()
     updateInfos();
 }
 
-void MainWindow::clearScene()
+void MainWindow::onSaveAsObj()
 {
-    ui->openGLWidget->scene()->clear();
-	ui->openGLWidget->updateGL();
+    // TODO: implement
+    QMessageBox::critical(0, "Error", "saveAsObj() not implemented yet");
 }
 
-void MainWindow::updateAlpha(int alpha)
+void MainWindow::onClearScene()
+{
+    ui->openGLWidget->scene()->removeModels();
+    updateInfos();
+
+    if (ui->openGLWidget->scene()->meshCount() == 0)
+        m_displayMenu->setEnabled(false);
+
+    ui->openGLWidget->updateGL();
+}
+
+void MainWindow::onAlphaChanged(int alpha)
 {
     ui->alphaValue->setText(QString::number(alpha));
     float alpha_val = alpha / 255.0;
-    ui->openGLWidget->scene()->shaderProgram()->setUniformValue("alpha_val", alpha_val);
+    ui->openGLWidget->scene()->simpleShaderProgram()->setUniformValue("alpha_val", alpha_val);
     ui->openGLWidget->updateGL();
 }
 
-void MainWindow::updatePointSize(int)
+void MainWindow::onPointSizeChanged(int)
 {
     ui->openGLWidget->pointSize(ui->pointSizeSlider->value());
+    ui->pointSizeValue->setText(QString::number(ui->pointSizeSlider->value()));
     ui->openGLWidget->updateGL();
 }
 
-void MainWindow::toggleDisplayBoundingBox()
+void MainWindow::onToggleDisplayBoundingBox()
 {
     ui->openGLWidget->scene()->toggleDisplayBoundingBox();
     ui->openGLWidget->updateGL();
 }
 
-void MainWindow::setDrawPoint()
+void MainWindow::onDrawPoint()
 {
     // TODO : Replace with enum value
     setDraw(0);
 }
 
-void MainWindow::setDrawLine()
+void MainWindow::onDrawLine()
 {
     // TODO : Replace with enum value
     setDraw(1);
 }
 
-void MainWindow::setDrawFilled()
+void MainWindow::onDrawFilled()
 {
     // TODO : Replace with enum value
     setDraw(2);
@@ -199,34 +214,40 @@ void MainWindow::setDrawFilled()
 void MainWindow::setDraw(unsigned int value)
 {
     ui->openGLWidget->setDrawMode(value);
-	ui->openGLWidget->updateGL();
+    ui->openGLWidget->updateGL();
 }
 
 void MainWindow::updateInfos() const
 {
-    unsigned int verticesCount = ui->openGLWidget->scene()->verticesCount();
-    unsigned int trianglesCount = ui->openGLWidget->scene()->trianglesCount();
-	unsigned int facesCount = ui->openGLWidget->scene()->facesCount();
-    unsigned int edgesCount = ui->openGLWidget->scene()->edgesCount();
+    unsigned int verticesCount = ui->openGLWidget->scene()->vertexCount();
+    unsigned int trianglesCount = ui->openGLWidget->scene()->triangleCount();
+    unsigned int facesCount = ui->openGLWidget->scene()->faceCount();
+    unsigned int edgesCount = ui->openGLWidget->scene()->edgeCount();
+    unsigned int meshCount = ui->openGLWidget->scene()->meshCount();
+    unsigned int lightCount = ui->openGLWidget->scene()->lightCount();
 
     ui->verticesCount->setText(QString("Vertices: " + QString::number(verticesCount)));
     ui->trianglesCount->setText(QString("Triangles: " + QString::number(trianglesCount)));
-	ui->facesCount->setText(QString("Faces : " + QString::number(facesCount)));
-    ui->edgesCount->setText(QString("Edges : " + QString::number(edgesCount)));
+    ui->facesCount->setText(QString("Faces: " + QString::number(facesCount)));
+    ui->edgesCount->setText(QString("Edges: " + QString::number(edgesCount)));
+    ui->modelCount->setText(QString("Model: " + QString::number(meshCount)));
+    ui->lightCount->setText(QString("Light: " + QString::number(lightCount)));
+
+    ui->pointSizeMax->setText(QString::number(ui->openGLWidget->pointSizeMax()));
 }
 
 
-void MainWindow::computeNormals() {
-	// TODO: implement
-	//ui->openGLWidget->scene()->computeNormals();
-	//ui->openGLWidget->updateGL();
-	QMessageBox::critical(0, "Error", "computeNormals() not implemented yet");
+void MainWindow::onComputeNormals() {
+    // TODO: implement
+    //ui->openGLWidget->scene()->computeNormals();
+    //ui->openGLWidget->updateGL();
+    QMessageBox::critical(0, "Error", "computeNormals() not implemented yet");
 }
 
-void MainWindow::sceneBackgroundColor()
+void MainWindow::onBackgroundColorScene()
 {
     QColor c = QColorDialog::getColor();
-	Color4f color(c.red()/255.0, c.green()/255.0, c.blue()/255.0);
-	ui->openGLWidget->changeSceneColor(color);
-	ui->openGLWidget->updateGL();
+    Color4f color(c.red()/255.0, c.green()/255.0, c.blue()/255.0);
+    ui->openGLWidget->changeSceneColor(color);
+    ui->openGLWidget->updateGL();
 }

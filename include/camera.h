@@ -14,6 +14,7 @@ public:
     void setSize(int w, int h);
     void setPerspective(float fovY, float near, float far);
     void setViewport(unsigned int oX, unsigned int oY, unsigned int width, unsigned int height);
+    void setTarget(const Point3f& point);
 
     void lookAt(const Point3f& position, const Point3f& target, const Vector3f& up);
 

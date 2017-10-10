@@ -5,5 +5,7 @@
         <file>models/cube.obj</file>
         <file>models/shepplogan.pgm3d</file>
         <file>models/cube_tr.obj</file>
+        <file>shaders/simpleshading.frag</file>
+        <file>shaders/simpleshading.vert</file>
     </qresource>
 </RCC>

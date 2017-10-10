@@ -19,7 +19,8 @@ public:
 
     void init();
     void render() const;
-    void clear();
+    void removeLights();
+    void removeModels();
 
     void toggleDisplayBoundingBox();
 
@@ -30,18 +31,27 @@ public:
     Color4f backgroundColor() const                 { return m_backgroundColor; }
 
     Camera* camera() const                          { return m_camera; }
-    QGLShaderProgram* shaderProgram() const         { return m_shaderProgram; }
+    QGLShaderProgram* simpleShaderProgram() const   { return m_simpleShaderProgram;  }
+    QGLShaderProgram* simpleShadingProgram() const  { return m_simpleshadingProgram; }
 
-    unsigned int verticesCount() const;
-    unsigned int trianglesCount() const;
-	unsigned int facesCount() const;
-    unsigned int edgesCount() const;
+    unsigned int vertexCount() const;
+    unsigned int triangleCount() const;
+    unsigned int faceCount() const;
+    unsigned int edgeCount() const;
+    unsigned int lightCount() const { return m_lightList.size();    }
+    unsigned int meshCount() const  { return m_meshList.size();     }
 
 private:
+    void loadSahder(QGLShaderProgram* program, const QString& fileName);
+
     QVector<const Mesh*>    m_meshList;
     QVector<const Light*>   m_lightList;
 
-    QGLShaderProgram*       m_shaderProgram;
+    // Used to draw AABB, octree..
+    QGLShaderProgram*       m_simpleShaderProgram;
+
+    // Used to draw models with effects
+    QGLShaderProgram*       m_simpleshadingProgram;
 
     Camera*                 m_camera;
     Color4f                 m_backgroundColor;

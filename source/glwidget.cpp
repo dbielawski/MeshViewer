@@ -63,10 +63,6 @@ void GLWidget::initializeGL()
     glEnable(GL_BLEND);
 
     m_scene->init();
-
-	// TODO; Remove
-    //DirectionalLight* dl = new DirectionalLight(Color4f(1, 0, 0), Vector3f(0, 0, 1));
-    //m_scene->addLight(*dl);
 }
 
 void GLWidget::resizeGL(int w, int h)
@@ -108,7 +104,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
             m_dy = 0;
 
         // WARNING: magic numbers/ mouse sensitivity...
-        m_scene->camera()->rotateAroundTarget(m_dx * 2, Vector3f(0.f, 1.f, 0.f));
+//        m_scene->camera()->rotateAroundTarget(m_dx * 2, Vector3f(0.f, 1.f, 0.f));
         m_scene->camera()->rotateAroundTarget(m_dy * 2, Vector3f(1.f, 0.f, 0.f));
     }
 

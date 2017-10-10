@@ -19,13 +19,14 @@ int main(int argc, char *argv[])
     return a.exec();
 }
 
-// FIXEME: rotation de la camera sur l'axe des Y
-// WARNING: comment afficher mode lignes ??? oO
+// FIXEME: comprendre pourquoi il y a du Gimbal lock avec les quaternions
 
 // TODO: deux shaders (un pour le model, lautre pour les AABB, Octree..)
+// TOOD: comprendre pourquoi 'uniform' les lights ne fonctionne pas
 // TODO: exporter les fichiers en OBJ
 // TODO: gerer le centrage du model avec la cemera
+// TODO: ajouter halfEdge
+
+// TODO: threads pour chargement des models (surtout long PGM3D)
 // TODO: implementer Octree
 // TODO: afficher octree
-// TODO: ajouter halfEdge
-// TODO: threads pour chargement des models (surtout long PGM3D)

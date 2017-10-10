@@ -22,20 +22,21 @@ public:
     ~MainWindow();
 
 private slots:
-    void openFile();
-    void clearScene();
-	void computeNormals();
+    void onOpenFile();
+    void onSaveAsObj();
+    void onClearScene();
+    void onComputeNormals();
 
-	void updateAlpha(int);
-    void updatePointSize(int);
+    void onAlphaChanged(int);
+    void onPointSizeChanged(int);
 
-    void toggleDisplayBoundingBox();
+    void onToggleDisplayBoundingBox();
 
-	void setDrawPoint();
-	void setDrawLine();
-	void setDrawFilled();
+    void onDrawPoint();
+    void onDrawLine();
+    void onDrawFilled();
 
-    void sceneBackgroundColor();
+    void onBackgroundColorScene();
 
 private:
     void createMenus();

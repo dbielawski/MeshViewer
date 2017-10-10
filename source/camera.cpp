@@ -37,6 +37,11 @@ void Camera::setViewport(unsigned int oX, unsigned int oY, unsigned int width, u
     updateProjection();
 }
 
+void Camera::setTarget(const Point3f& target)
+{
+    m_target = target;
+}
+
 void Camera::lookAt(const Point3f& position, const Point3f& target, const Vector3f& up)
 {
     m_position = position;
@@ -66,19 +71,27 @@ QMatrix4x4 Camera::projectionMatrix()
 
 void Camera::rotateAroundTarget(float angle, Vector3f axis)
 {
-    Vector3f dirToCenter = m_target - m_position;
+//    Vector3f dirToCenter = m_target - m_position;
 
-    QMatrix4x4 tmp;
-    tmp.setToIdentity();
+//    QMatrix4x4 tmp;
+//    tmp.setToIdentity();
 
-    tmp.translate(m_position.x , m_position.y, m_position.z);
-    tmp.translate(QVector3D(dirToCenter.x, dirToCenter.y, dirToCenter.z));
-    tmp.rotate(-angle, QVector3D(axis.x, axis.y, axis.z));
-    tmp.translate(QVector3D(-dirToCenter.x, -dirToCenter.y, -dirToCenter.z));
+//    tmp.translate(m_position.x , m_position.y, m_position.z);
+//    tmp.translate(QVector3D(dirToCenter.x, dirToCenter.y, dirToCenter.z));
+//    tmp.rotate(-angle, axis.x, axis.y, axis.z);
+//    tmp.translate(QVector3D(-dirToCenter.x, -dirToCenter.y, -dirToCenter.z));
 
-    m_position.x = tmp.column(3).x();
-    m_position.y = tmp.column(3).y();
-    m_position.z = tmp.column(3).z();
+    QQuaternion p(0, m_position.x, m_position.y, m_position.z);
+    QQuaternion r = QQuaternion::fromAxisAndAngle(axis.x, axis.y, axis.z, angle);
+    QQuaternion pp = r * (p * r.conjugate());
+
+//    m_position.x = tmp.column(3).x();
+//    m_position.y = tmp.column(3).y();
+//    m_position.z = tmp.column(3).z();
+
+    m_position.x = pp.toVector4D().x();
+    m_position.y = pp.toVector4D().y();
+    m_position.z = pp.toVector4D().z();
 }
 
 void Camera::rotate(float angle, Vector3f axis)

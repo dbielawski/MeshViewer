@@ -3,6 +3,7 @@
 #include <QGLFunctions>
 #include <QGLShaderProgram>
 
+
 Mesh::Mesh() :
     m_octree(Q_NULLPTR),
     m_scenePtr(Q_NULLPTR),
@@ -30,11 +31,13 @@ void Mesh::init()
 {
     //computeNormals();
 
-    m_functions->glGenBuffers(1, &m_vertexBufferId);
+    if (!m_functions->glIsBuffer(m_vertexBufferId))
+        m_functions->glGenBuffers(1, &m_vertexBufferId);
     m_functions->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
     m_functions->glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m_vertices.size(), &m_vertices[0], GL_STATIC_DRAW);
 
-    m_functions->glGenBuffers(1, &m_indexBufferId);
+    if (!m_functions->glIsBuffer(m_indexBufferId))
+        m_functions->glGenBuffers(1, &m_indexBufferId);
     m_functions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
     m_functions->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(FaceIndex) * m_faces.size(), &m_faces[0], GL_STATIC_DRAW);
 
@@ -43,8 +46,8 @@ void Mesh::init()
     m_wireBoundingBox->setAlignedBox(*m_boundingBox);
     m_wireBoundingBox->init();
 
-    // Point3f center = m_boundingBox->center();
-	// m_transform.translate(center.x, center.y, center.z);
+//    Point3f center = m_boundingBox->center();
+//    m_transform.translate(center.x, center.y, center.z);
 
     // buildOctree();
 }
@@ -52,18 +55,18 @@ void Mesh::init()
 void Mesh::renderMesh() const
 {
     if (m_scenePtr != Q_NULLPTR
-            && m_scenePtr->shaderProgram()->bind())
+            && m_scenePtr->simpleShadingProgram()->bind())
     {
         m_functions->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
         m_functions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
 
-        m_scenePtr->shaderProgram()->setUniformValue("mat_obj", m_transform);
-        m_scenePtr->shaderProgram()->setUniformValue("mat_view", m_scenePtr->camera()->viewMatrix());
-        m_scenePtr->shaderProgram()->setUniformValue("mat_proj", m_scenePtr->camera()->projectionMatrix());
+        m_scenePtr->simpleShadingProgram()->setUniformValue("mat_obj", m_transform);
+        m_scenePtr->simpleShadingProgram()->setUniformValue("mat_view", m_scenePtr->camera()->viewMatrix());
+        m_scenePtr->simpleShadingProgram()->setUniformValue("mat_proj", m_scenePtr->camera()->projectionMatrix());
 
-        const int vertexLoc = m_scenePtr->shaderProgram()->attributeLocation("vtx_position");
-        const int colorLoc  = m_scenePtr->shaderProgram()->attributeLocation("vtx_color");
-        const int normalLoc = m_scenePtr->shaderProgram()->attributeLocation("vtx_normal");
+        const int vertexLoc = m_scenePtr->simpleShadingProgram()->attributeLocation("vtx_position");
+        const int colorLoc  = m_scenePtr->simpleShadingProgram()->attributeLocation("vtx_color");
+        const int normalLoc = m_scenePtr->simpleShadingProgram()->attributeLocation("vtx_normal");
 
         if (vertexLoc >= 0)
         {
@@ -89,6 +92,8 @@ void Mesh::renderMesh() const
         if (colorLoc >= 0)  m_functions->glDisableVertexAttribArray(colorLoc);
         if (normalLoc >= 0) m_functions->glDisableVertexAttribArray(normalLoc);
     }
+    else
+        Q_ASSERT(false);
 }
 
 void Mesh::renderBoundingBox() const
