@@ -29,7 +29,7 @@ Mesh::~Mesh()
 
 void Mesh::init()
 {
-    //computeNormals();
+    computeNormals();
 
     if (!m_functions->glIsBuffer(m_vertexBufferId))
         m_functions->glGenBuffers(1, &m_vertexBufferId);

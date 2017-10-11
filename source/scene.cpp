@@ -61,8 +61,17 @@ void Scene::render() const
             Vector3f dir = l->direction();
             Color4f intensity = l->intensity(Point3f());
 
-            m_simpleshadingProgram->setUniformValue("lights[i].direction", QVector3D(dir.x, dir.y, dir.z));
-            m_simpleshadingProgram->setUniformValue("lights[i].intensity", QColor(intensity.r, intensity.g, intensity.b));
+            QString color = "lights[";
+            color += QString::number(i);
+            color += "].intensity";
+
+            QString direction;
+            direction = "lights[";
+            direction += QString::number(i);
+            direction +="].direction";
+
+            m_simpleshadingProgram->setUniformValue(direction.toStdString().c_str(), dir.x, dir.y, dir.z);
+            m_simpleshadingProgram->setUniformValue(color.toStdString().c_str(), intensity.r, intensity.g, intensity.b);
         }
     }
 

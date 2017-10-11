@@ -82,7 +82,7 @@ void Camera::rotateAroundTarget(float angle, Vector3f axis)
 //    tmp.translate(QVector3D(-dirToCenter.x, -dirToCenter.y, -dirToCenter.z));
 
     QQuaternion p(0, m_position.x, m_position.y, m_position.z);
-    QQuaternion r = QQuaternion::fromAxisAndAngle(axis.x, axis.y, axis.z, angle);
+    QQuaternion r = QQuaternion::fromAxisAndAngle(axis.x, axis.y, axis.z, -angle);
     QQuaternion pp = r * (p * r.conjugate());
 
 //    m_position.x = tmp.column(3).x();
