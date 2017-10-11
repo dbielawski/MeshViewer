@@ -223,14 +223,12 @@ void MainWindow::updateInfos() const
     unsigned int verticesCount = ui->openGLWidget->scene()->vertexCount();
     unsigned int trianglesCount = ui->openGLWidget->scene()->triangleCount();
     unsigned int facesCount = ui->openGLWidget->scene()->faceCount();
-    unsigned int edgesCount = ui->openGLWidget->scene()->edgeCount();
     unsigned int meshCount = ui->openGLWidget->scene()->meshCount();
     unsigned int lightCount = ui->openGLWidget->scene()->lightCount();
 
     ui->verticesCount->setText(QString("Vertices: " + QString::number(verticesCount)));
     ui->trianglesCount->setText(QString("Triangles: " + QString::number(trianglesCount)));
     ui->facesCount->setText(QString("Faces: " + QString::number(facesCount)));
-    ui->edgesCount->setText(QString("Edges: " + QString::number(edgesCount)));
     ui->modelCount->setText(QString("Model: " + QString::number(meshCount)));
     ui->lightCount->setText(QString("Light: " + QString::number(lightCount)));
 

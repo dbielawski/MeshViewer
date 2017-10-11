@@ -245,13 +245,6 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="edgesCount">
-           <property name="text">
-            <string>edges</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QLabel" name="modelCount">
            <property name="text">
             <string>model</string>

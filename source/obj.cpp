@@ -203,7 +203,7 @@ void obj::writeFile(const QString &fileName, const Mesh& mesh) const
 Mesh *obj::mesh() const
 {
     Mesh* mesh = new Mesh;
-    mesh->rawData(m_vertices, m_faces);
+    mesh->simplifyData(m_vertices, m_faces);
     mesh->init();
 
     return mesh;
