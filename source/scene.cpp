@@ -44,6 +44,13 @@ Scene::~Scene()
     delete m_simpleshadingProgram;
 }
 
+// TODO : Remove it's for test purposes
+void Scene::saveMesh(const QString& fileName) {
+	for(const Mesh* m : m_meshList) {
+		m->saveAsObj(fileName);
+	}
+}
+
 void Scene::init()
 {
     loadSahder(m_simpleShaderProgram, QString("simpleshader"));

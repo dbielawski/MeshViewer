@@ -41,6 +41,8 @@ public:
     unsigned int lightCount() const { return m_lightList.size();    }
     unsigned int meshCount() const  { return m_meshList.size();     }
 
+	void saveMesh(const QString& fileName);
+
 private:
     void loadSahder(QGLShaderProgram* program, const QString& fileName);
 

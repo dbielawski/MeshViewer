@@ -14,6 +14,7 @@ struct Point3i;
 struct Point3f;
 struct Vertex;
 struct FaceIndex;
+struct EdgeIndex;
 }
 
 

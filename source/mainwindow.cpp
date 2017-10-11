@@ -158,7 +158,8 @@ void MainWindow::onOpenFile()
 void MainWindow::onSaveAsObj()
 {
     // TODO: implement
-    QMessageBox::critical(0, "Error", "saveAsObj() not implemented yet");
+    //QMessageBox::critical(0, "Error", "saveAsObj() not implemented yet");
+	ui->openGLWidget->scene()->saveMesh("test.obj");
 }
 
 void MainWindow::onClearScene()

@@ -69,7 +69,7 @@ void pgm3d::loadFromFile(const QString& fileName)
 				Vertex v(Point3f(x, y, z), Color4f(vValue, vValue, vValue));
 				x++;
 				if(x == m_width) {
-					x=0;
+					x = 0;
 					y++;
 				}
 				if(y == m_height) {

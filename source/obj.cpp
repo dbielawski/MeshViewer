@@ -184,17 +184,17 @@ void obj::writeFile(const QString &fileName, const Mesh& mesh) const
     // Write Normal
     for (int i = 0; i < m_vertices.size(); ++i)
     {
-        QString line = "v ";
-        line += QString::number(m_vertices.at(i).position.x) + " "
-                + QString::number(m_vertices.at(i).position.y) + " "
-                + QString::number(m_vertices.at(i).position.z);
+        QString line = "vn ";
+        line += QString::number(m_vertices.at(i).normal.x) + " "
+                + QString::number(m_vertices.at(i).normal.y) + " "
+                + QString::number(m_vertices.at(i).normal.z);
         out << line;
     }
 
     // Write Face
-    for (int i = 0; i < m_vertices.size(); ++i)
+    for (int i = 0; i < m_faces.size(); ++i)
     {
-
+		
     }
 
     file.close();
