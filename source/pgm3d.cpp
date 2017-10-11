@@ -289,7 +289,7 @@ Mesh* pgm3d::mesh() const
 	}
 
 	mesh->rawData(allVertices, allEdges, allFaces);
-    mesh->simplifyData(vertices, faces);
+    mesh->displayableData(vertices, faces);
 	mesh->init();
 
 	return mesh;

@@ -27,7 +27,7 @@ public:
     void renderBoundingBox() const;
 
 	void rawData(const QVector<Vertex>& vertices,  const QVector<EdgeIndex>& edges, const QVector<FaceIndex>& faces);
-    void simplifyData(const QVector<Vertex>& simplifyVertices, const QVector<FaceIndex>& simplifyFaces);
+    void displayableData(const QVector<Vertex>& vertices, const QVector<FaceIndex>& faces);
 
     void computeNormals();
     void clear();
@@ -48,57 +48,7 @@ public:
     unsigned int edgesCount() const     { return m_allEdges.size();    }
 
 
-	void saveAsObj(const QString& fileName) const
-	{
-		QFile file(fileName);
-		if (!file.open(QIODevice::WriteOnly))
-		{
-			QMessageBox::critical(0, "Error while writing file", file.errorString());
-			return;
-		}
-
-		QTextStream out(&file);
-
-		// Write Vertex
-		for (int i = 0; i < m_vertices.size(); ++i)
-		{
-			QString line = "v ";
-			line += QString::number(m_vertices.at(i).position.x) + " "
-			+ QString::number(m_vertices.at(i).position.y) + " "
-			+ QString::number(m_vertices.at(i).position.z)
-			+ '\n';
-			out << line;
-		}
-
-		// Write Normal
-		for (int i = 0; i < m_vertices.size(); ++i)
-		{
-			QString line = "vn ";
-			line += QString::number(m_vertices.at(i).normal.x) + " "
-			+ QString::number(m_vertices.at(i).normal.y) + " "
-			+ QString::number(m_vertices.at(i).normal.z)
-			+ '\n';
-			out << line;
-		}
-
-		// Write Face (as quads)
-		for (int i = 0; i < m_faces.size(); i++)
-		{
-			unsigned int v0, v1, v2;
-			v0 = m_faces.at(i).v0+1;
-			v1 = m_faces.at(i).v1+1;
-			v2 = m_faces.at(i).v2+1;
-
-			QString line ="f ";
-			line += QString::number(v0) + " "
-			+ QString::number(v1) + " "
-			+ QString::number(v2) + " "
-			+ '\n';
-			out << line;
-		}
-
-		file.close();
-	}
+	void saveAsObj(const QString& filename) const;
 
 
 private:

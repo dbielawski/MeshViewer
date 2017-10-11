@@ -112,7 +112,7 @@ void Mesh::rawData(const QVector<Vertex>& allVertices, const QVector<EdgeIndex>&
     m_allFaces = allFaces;
 }
 
-void Mesh::simplifyData(const QVector<Vertex>& vertices, const QVector<FaceIndex>& faces)
+void Mesh::displayableData(const QVector<Vertex>& vertices, const QVector<FaceIndex>& faces)
 {
     m_vertices = vertices;
     m_faces = faces;
@@ -125,7 +125,7 @@ void Mesh::computeNormals()
         m_vertices.value(i).normal = Vector3f(0.f, 0.f, 0.f);
 
     // Compute normals
-    for (int i = 0; i < m_vertices.size(); ++i)
+    for (int i = 0; i < m_faces.size(); i++)
     {
         const FaceIndex face = m_faces.at(i);
 
@@ -133,12 +133,12 @@ void Mesh::computeNormals()
         const Point3f v1 = m_vertices.at(face.v1).position;
         const Point3f v2 = m_vertices.at(face.v2).position;
 
-        const Vector3f normal = (v1 - v0).cross(v2 - v0);
+		const Vector3f normal = (v1 - v0).cross(v2 - v0);
 
         m_vertices[face.v0].normal += normal;
         m_vertices[face.v1].normal += normal;
         m_vertices[face.v2].normal += normal;
-    }
+	}
 
     // Normalize all normals
     for (int i = 0; i < m_vertices.size(); ++i)
@@ -156,4 +156,56 @@ void Mesh::computeBoundingBox()
 void Mesh::buildOctree()
 {
     // TODO: implementer
+}
+
+void Mesh::saveAsObj(const QString& fileName) const
+{
+	QFile file(fileName);
+	if (!file.open(QIODevice::WriteOnly))
+	{
+		QMessageBox::critical(0, "Error while writing file", file.errorString());
+		return;
+	}
+
+	QTextStream out(&file);
+
+	// Write Vertex
+	for (int i = 0; i < m_vertices.size(); ++i)
+	{
+		QString line = "v ";
+		line += QString::number(m_vertices.at(i).position.x) + " "
+		+ QString::number(m_vertices.at(i).position.y) + " "
+		+ QString::number(m_vertices.at(i).position.z)
+		+ '\n';
+		out << line;
+	}
+
+	// Write Normal
+	for (int i = 0; i < m_vertices.size(); ++i)
+	{
+		QString line = "vn ";
+		line += QString::number(m_vertices.at(i).normal.x) + " "
+		+ QString::number(m_vertices.at(i).normal.y) + " "
+		+ QString::number(m_vertices.at(i).normal.z)
+		+ '\n';
+		out << line;
+	}
+
+	// Write Face (as quads)
+	for (int i = 0; i < m_faces.size(); i++)
+	{
+		unsigned int v0, v1, v2;
+		v0 = m_faces.at(i).v0+1;
+		v1 = m_faces.at(i).v1+1;
+		v2 = m_faces.at(i).v2+1;
+
+		QString line ="f ";
+		line += QString::number(v0) + " "
+		+ QString::number(v1) + " "
+		+ QString::number(v2) + " "
+		+ '\n';
+		out << line;
+	}
+
+	file.close();
 }

@@ -159,6 +159,7 @@ void obj::loadFromFile(const QString &fileName)
     }
 }
 
+// TODO : Remove
 void obj::writeFile(const QString &fileName, const Mesh& mesh) const
 {
 
@@ -194,7 +195,7 @@ void obj::writeFile(const QString &fileName, const Mesh& mesh) const
     // Write Face
     for (int i = 0; i < m_faces.size(); ++i)
     {
-		
+
     }
 
     file.close();
@@ -203,7 +204,7 @@ void obj::writeFile(const QString &fileName, const Mesh& mesh) const
 Mesh *obj::mesh() const
 {
     Mesh* mesh = new Mesh;
-    mesh->simplifyData(m_vertices, m_faces);
+    mesh->displayableData(m_vertices, m_faces);
     mesh->init();
 
     return mesh;
