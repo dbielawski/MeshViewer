@@ -202,24 +202,14 @@ Mesh* pgm3d::mesh() const
 	QVector<FaceIndex> faces;
 	QVector<Vertex> vertices;
 
-	uint x = 0, y = 0, z = 0, index = 0;
+	uint x = 0, y = 0, z = 0, index = 0, offset;
 	bool left, right, top, bot, front, back;
+	bool newVertex;
 
 	for(uint i = 0 ; i < voxelCount ; i++) {
 		if(m_data[i] == 0) { continue; }
-
-		int offset = vertices.size();
-
-		Point3f pos = m_dataVertex[i].position;
-		Color4f color = m_dataVertex[i].color;
-		for (float dx = -0.5; dx <= 0.5; dx++) {
-			for (float dy = -0.5; dy <= 0.5; dy++) {
-				for (float dz = -0.5; dz <= 0.5; dz++) {
-					Vertex v(Point3f(dx+pos.x,dy+pos.y,dz+pos.z), color);
-					vertices.push_back(v);
-				}
-			}
-		}
+		newVertex = false;
+		offset = vertices.size();
 
 		indexToCoord(i, m_width, m_height, m_depth, x, y, z);
 
@@ -235,6 +225,7 @@ Mesh* pgm3d::mesh() const
 			if(m_dataVertex[i].color != m_dataVertex[index].color) {
 				FaceIndex face1(offset, offset+1, offset+3); FaceIndex face2(offset, offset+2, offset+3);
 				faces.push_back(face1); faces.push_back(face2);
+				newVertex = true;
 			}
 		}
 
@@ -243,6 +234,7 @@ Mesh* pgm3d::mesh() const
 			if(m_dataVertex[i].color != m_dataVertex[index].color) {
 				FaceIndex face1(offset+4, offset+5 , offset+7); FaceIndex face2(offset+4, offset+6, offset+7);
 				faces.push_back(face1); faces.push_back(face2);
+				newVertex = true;
 			}
 		}
 
@@ -251,6 +243,7 @@ Mesh* pgm3d::mesh() const
 			if(m_dataVertex[i].color != m_dataVertex[index].color) {
 				FaceIndex face1(offset, offset+1, offset+5); FaceIndex face2(offset, offset+4, offset+5);
 				faces.push_back(face1); faces.push_back(face2);
+				newVertex = true;
 			}
 		}
 
@@ -259,6 +252,7 @@ Mesh* pgm3d::mesh() const
 			if(m_dataVertex[i].color != m_dataVertex[index].color) {
 				FaceIndex face1(offset + 2, offset + 3, offset + 7); FaceIndex face2(offset+2, offset+6, offset+7);
 				faces.push_back(face1); faces.push_back(face2);
+				newVertex = true;
 			}
 		}
 
@@ -267,6 +261,7 @@ Mesh* pgm3d::mesh() const
 			if(m_dataVertex[i].color != m_dataVertex[index].color) {
 				FaceIndex face1(offset, offset+2, offset+6); FaceIndex face2(offset, offset+4, offset+6);
 				faces.push_back(face1); faces.push_back(face2);
+				newVertex = true;
 			}
 		}
 
@@ -275,6 +270,20 @@ Mesh* pgm3d::mesh() const
 			if(m_dataVertex[i].color != m_dataVertex[index].color) {
 				FaceIndex face1(offset+1, offset+3, offset+7); FaceIndex face2(offset+1, offset+5, offset+7);
 				faces.push_back(face1); faces.push_back(face2);
+				newVertex = true;
+			}
+		}
+
+		if (newVertex) {
+			Point3f pos = m_dataVertex[i].position;
+			Color4f color = m_dataVertex[i].color;
+			for (float dx = -0.5; dx <= 0.5; dx++) {
+				for (float dy = -0.5; dy <= 0.5; dy++) {
+					for (float dz = -0.5; dz <= 0.5; dz++) {
+						Vertex v(Point3f(dx+pos.x,dy+pos.y,dz+pos.z), color);
+						vertices.push_back(v);
+					}
+				}
 			}
 		}
 	}
