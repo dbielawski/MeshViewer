@@ -31,13 +31,15 @@ void Mesh::init()
 {
     //computeNormals();
 
-    if (!m_functions->glIsBuffer(m_vertexBufferId))
+    if (!m_functions->glIsBuffer(m_vertexBufferId)) {
         m_functions->glGenBuffers(1, &m_vertexBufferId);
+    }
     m_functions->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
     m_functions->glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m_vertices.size(), &m_vertices[0], GL_STATIC_DRAW);
 
-    if (!m_functions->glIsBuffer(m_indexBufferId))
+    if (!m_functions->glIsBuffer(m_indexBufferId)) {
         m_functions->glGenBuffers(1, &m_indexBufferId);
+    }
     m_functions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
     m_functions->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(FaceIndex) * m_faces.size(), &m_faces[0], GL_STATIC_DRAW);
 
@@ -100,20 +102,20 @@ void Mesh::renderBoundingBox() const
     m_wireBoundingBox->render(*m_scenePtr);
 }
 
-void Mesh::rawData(const QVector<Vertex>& vertices, const QVector<FaceIndex>& faces)
+
+
+
+void Mesh::rawData(const QVector<Vertex>& allVertices, const QVector<EdgeIndex>& allEdges, const QVector<FaceIndex>& allFaces)
+{
+    m_allVertices = allVertices;
+    m_allEdges = allEdges;
+    m_allFaces = allFaces;
+}
+
+void Mesh::simplifyData(const QVector<Vertex>& vertices, const QVector<FaceIndex>& faces)
 {
     m_vertices = vertices;
     m_faces = faces;
-}
-
-void Mesh::rawData(const QVector<Vertex>& vertices,
-			const QVector<FaceIndex>& faces,
-			const QVector<FaceIndex>& allFaces,
-			const QVector<EdgeIndex>& edges)
-{
-	rawData(vertices, faces);
-	m_allFaces = allFaces;
-	m_edges = edges;
 }
 
 void Mesh::computeNormals()
