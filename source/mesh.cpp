@@ -62,14 +62,14 @@ void Mesh::renderMesh() const
         m_functions->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
         m_functions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
 
-        // TODO: factoriser
-        m_scenePtr->simpleShadingProgram()->setUniformValue("mat_obj", m_transform);
-        m_scenePtr->simpleShadingProgram()->setUniformValue("mat_view", m_scenePtr->camera()->viewMatrix());
-        m_scenePtr->simpleShadingProgram()->setUniformValue("mat_proj", m_scenePtr->camera()->projectionMatrix());
+        QGLShaderProgram* program = m_scenePtr->simpleShadingProgram();
+        program->setUniformValue("mat_obj", m_transform);
+        program->setUniformValue("mat_view", m_scenePtr->camera()->viewMatrix());
+        program->setUniformValue("mat_proj", m_scenePtr->camera()->projectionMatrix());
 
-        const int vertexLoc = m_scenePtr->simpleShadingProgram()->attributeLocation("vtx_position");
-        const int colorLoc  = m_scenePtr->simpleShadingProgram()->attributeLocation("vtx_color");
-        const int normalLoc = m_scenePtr->simpleShadingProgram()->attributeLocation("vtx_normal");
+        const int vertexLoc = program->attributeLocation("vtx_position");
+        const int colorLoc  = program->attributeLocation("vtx_color");
+        const int normalLoc = program->attributeLocation("vtx_normal");
 
         if (vertexLoc >= 0)
         {

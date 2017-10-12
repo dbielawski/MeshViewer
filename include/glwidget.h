@@ -18,6 +18,15 @@ class GLWidget : public QGLWidget
     Q_OBJECT
 
 public:
+    enum EDisplayMode
+    {
+        POINT = 0,
+        LINE,
+        FILL,
+        DisplayModeCount
+    };
+
+
     GLWidget(QWidget *parent = 0);
     ~GLWidget();
 
@@ -49,14 +58,6 @@ private:
     Scene*              m_scene;
 
     GLfloat m_pointSize;
-
-    enum EDisplayMode
-    {
-        POINT = 0,
-        LINE,
-        FILL,
-        DisplayModeCount
-    };
 
     GLuint m_displayModeValues[EDisplayMode::DisplayModeCount] = {
         GL_POINT, GL_LINE, GL_FILL

@@ -18,11 +18,3 @@ int main(int argc, char *argv[])
 
     return a.exec();
 }
-
-// TODO: exporter les fichiers en OBJ
-// TODO: gerer le centrage du model avec la cemera
-// TODO: ajouter halfEdge
-
-// TODO: threads pour chargement des models (surtout long PGM3D)
-// TODO: implementer Octree
-// TODO: afficher octree

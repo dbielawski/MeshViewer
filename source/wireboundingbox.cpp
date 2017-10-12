@@ -33,16 +33,16 @@ void WireBoundingBox::render(const Scene& scene, const QMatrix4x4& transform) co
         m_functionsPtr->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
         m_functionsPtr->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
 
-        // TODO: factoriser
-        scene.simpleShaderProgram()->setUniformValue("mat_obj", transform);
-        scene.simpleShaderProgram()->setUniformValue("mat_view", scene.camera()->viewMatrix());
-        scene.simpleShaderProgram()->setUniformValue("mat_proj", scene.camera()->projectionMatrix());
+        QGLShaderProgram* program = scene.simpleShaderProgram();
+        program->setUniformValue("mat_obj", transform);
+        program->setUniformValue("mat_view", scene.camera()->viewMatrix());
+        program->setUniformValue("mat_proj", scene.camera()->projectionMatrix());
 
-        const int vertexLoc = scene.simpleShaderProgram()->attributeLocation("vtx_position");
+        const int vertexLoc = program->attributeLocation("vtx_position");
 
         // TODO: creer une variable membre color et ajouter au constructeur
         float c[4] = {0.f, 1.f, 0.f, 1.f};
-        scene.simpleShaderProgram()->setAttributeArray("vtx_color", GL_FLOAT, &c[0], 4);
+        program->setAttributeArray("vtx_color", GL_FLOAT, &c[0], 4);
 
         if (vertexLoc >= 0)
         {

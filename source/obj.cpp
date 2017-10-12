@@ -100,7 +100,7 @@ void obj::loadFromFile(const QString &fileName)
                         QStringList elementArray = firstElement.split('/');
 
                         QString vertexIndex = elementArray.at(0);
-                        //QString textCoord = elementArray.at(1);       // We don't use textCoords
+                        //QString textCoord = elementArray.at(1);       // We don't use textCoords for now
                         QString normalIndex = elementArray.at(2);
 
                         face[i] = vertexIndex.toInt();
@@ -114,7 +114,11 @@ void obj::loadFromFile(const QString &fileName)
                     }
                     else if (listSize == 4)
                     {
-                        // TODO: faire
+                        m_faces.append(FaceIndex(face[0] - 1, face[1] - 1, face[2] - 1));
+                        m_faces.append(FaceIndex(face[2] - 1, face[3] - 1, face[0] - 1));
+
+                        normalIndices.append(Vector3i(faceNormals[0] - 1, faceNormals[1] - 1, faceNormals[2] - 1));
+                        normalIndices.append(Vector3i(faceNormals[2] - 1, faceNormals[3] - 1, faceNormals[0] - 1));
                     }
                 }
                 else
@@ -153,7 +157,7 @@ void obj::loadFromFile(const QString &fileName)
     }
     else
     {
-        // classical format
+        // classic format
         for (int i = 0; i < normals.size(); ++i)
             m_vertices.value(i).normal = normals.at(i);
     }

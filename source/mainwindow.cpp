@@ -9,6 +9,8 @@
 #include <QLabel>
 
 #include <QColorDialog>
+#include <QMessageBox>
+
 
 #include "glwidget.h"
 /*  */
@@ -16,10 +18,7 @@
 #include "obj.h"
 /*  */
 
-#include <QMessageBox>
 
-#include <QtConcurrent/QtConcurrent>
-#include <QFuture>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -143,11 +142,6 @@ void MainWindow::onOpenFile()
 
     Mesh* mesh = model->mesh();
 
-    // WARNING: test
-    //    QFuture<Mesh*> future = QtConcurrent::run(model, &Model3d::mesh);
-    //    Mesh* mesh = future.result();
-    // WARNING: test
-
     ui->openGLWidget->scene()->addMesh(*mesh);
     ui->openGLWidget->updateGL();
 
@@ -197,20 +191,17 @@ void MainWindow::onToggleDisplayBoundingBox()
 
 void MainWindow::onDrawPoint()
 {
-    // TODO : Replace with enum value
-    setDraw(0);
+    setDraw(GLWidget::EDisplayMode::POINT);
 }
 
 void MainWindow::onDrawLine()
 {
-    // TODO : Replace with enum value
-    setDraw(1);
+    setDraw(GLWidget::EDisplayMode::LINE);
 }
 
 void MainWindow::onDrawFilled()
 {
-    // TODO : Replace with enum value
-    setDraw(2);
+    setDraw(GLWidget::EDisplayMode::FILL);
 }
 
 void MainWindow::setDraw(unsigned int value)
