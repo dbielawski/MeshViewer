@@ -14,7 +14,7 @@ uniform mat4 mat_proj;
 
 void main(void)
 {
-    gl_Position = mat_proj * mat_view * vec4(vtx_position, 1.f);
+    gl_Position = mat_proj * mat_view * mat_obj * vec4(vtx_position, 1.f);
 
     normal = vtx_normal;
 

@@ -48,8 +48,8 @@ void Mesh::init()
     m_wireBoundingBox->setAlignedBox(*m_boundingBox);
     m_wireBoundingBox->init();
 
-//    Point3f center = m_boundingBox->center();
-//    m_transform.translate(center.x, center.y, center.z);
+    Point3f center = m_boundingBox->center();
+    m_transform.translate(-center.x, -center.y, -center.z);
 
     // buildOctree();
 }
@@ -99,11 +99,8 @@ void Mesh::renderMesh() const
 
 void Mesh::renderBoundingBox() const
 {
-    m_wireBoundingBox->render(*m_scenePtr);
+    m_wireBoundingBox->render(*m_scenePtr, m_transform);
 }
-
-
-
 
 void Mesh::rawData(const QVector<Vertex>& allVertices, const QVector<EdgeIndex>& allEdges, const QVector<FaceIndex>& allFaces)
 {

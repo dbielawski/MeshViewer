@@ -26,7 +26,7 @@ void WireBoundingBox::init()
     m_functionsPtr->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Vector2i) * 12, &m_indices[0], GL_STATIC_DRAW);
 }
 
-void WireBoundingBox::render(const Scene& scene) const
+void WireBoundingBox::render(const Scene& scene, const QMatrix4x4& transform) const
 {
     if (scene.simpleShaderProgram()->bind())
     {
@@ -34,6 +34,7 @@ void WireBoundingBox::render(const Scene& scene) const
         m_functionsPtr->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
 
         // TODO: factoriser
+        scene.simpleShaderProgram()->setUniformValue("mat_obj", transform);
         scene.simpleShaderProgram()->setUniformValue("mat_view", scene.camera()->viewMatrix());
         scene.simpleShaderProgram()->setUniformValue("mat_proj", scene.camera()->projectionMatrix());
 

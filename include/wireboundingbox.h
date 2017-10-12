@@ -15,7 +15,7 @@ public:
     WireBoundingBox(const AlignedBox3f& aabb);
 
     void init();
-    void render(const Scene& scene) const;
+    void render(const Scene& scene, const QMatrix4x4& transform) const;
 
     void setAlignedBox(const AlignedBox3f& aabb)    { m_aabb = &aabb; }
     void setFunctions(QGLFunctions& f)              { m_functionsPtr = &f; }

@@ -245,6 +245,9 @@ inline Point3f operator +(const Vector3f& l, const Point3f& r)
 
 inline Point3f operator /(const Point3f& p, float div)
 {
+    if (div == 0.f)
+        return p;
+
 	return Point3f(p.x / div, p.y / div, p.z / div);
 }
 

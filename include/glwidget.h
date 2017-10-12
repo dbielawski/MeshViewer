@@ -50,7 +50,6 @@ private:
 
     GLfloat m_pointSize;
 
-    // TODO: ameliorer ? ^^
     enum EDisplayMode
     {
         POINT = 0,

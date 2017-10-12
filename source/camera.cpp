@@ -73,7 +73,7 @@ void Camera::rotateAroundTarget(float angle, Vector3f axis)
 {
 //    Vector3f dirToCenter = m_target - m_position;
 
-//    QMatrix4x4 tmp;
+    QMatrix4x4 tmp;
 //    tmp.setToIdentity();
 
 //    tmp.translate(m_position.x , m_position.y, m_position.z);

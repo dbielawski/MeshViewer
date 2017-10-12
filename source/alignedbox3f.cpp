@@ -1,9 +1,9 @@
 #include "alignedbox3f.h"
 #include <QtMath>
 
-AlignedBox3f::AlignedBox3f() : m_min(Point3f(0, 0, 0)), m_max(Point3f(0, 0, 0))
+AlignedBox3f::AlignedBox3f()
 {
-
+    reset();
 }
 
 AlignedBox3f::AlignedBox3f(const Point3f& min, const Point3f& max) :
@@ -31,8 +31,11 @@ bool AlignedBox3f::contain(const Point3f& p) const
 
 void AlignedBox3f::reset()
 {
-    m_min = Point3f();
-    m_max = Point3f();
+    float maxValue = std::numeric_limits<float>::max();
+    float minValue = std::numeric_limits<float>::min();
+
+    m_min = Point3f(maxValue, maxValue, maxValue);
+    m_max = Point3f(minValue, minValue, minValue);
 }
 
 Vector3f AlignedBox3f::size() const
@@ -43,5 +46,6 @@ Vector3f AlignedBox3f::size() const
 
 Point3f AlignedBox3f::center() const
 {
-    return Point3f(m_max.x - m_min.x, m_max.y - m_min.y, m_max.z - m_min.z) / 2;
+    Vector3f s = size();
+    return Point3f(m_min + s / 2);
 }
