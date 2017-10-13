@@ -22,7 +22,7 @@ public:
     Mesh();
     ~Mesh();
 
-    void init();
+    void init(const bool& hasNormals);
     void renderMesh() const;
     void renderBoundingBox() const;
 

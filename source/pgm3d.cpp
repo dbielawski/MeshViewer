@@ -135,6 +135,13 @@ static int coordToIndex(uint width, uint height, uint depth, uint x, uint y, uin
 
 Mesh* pgm3d::mesh() const
 {
+    int ivf[12][3] = {{3,2,0}, {3,0,1},  // left ccw
+                      {6,7,5}, {6,5,4},  // right ccw
+                      {6,2,3}, {6,3,7},  // top ccw
+                      {0,4,5}, {0,5,1},  // bot ccw
+                      {7,3,1}, {7,1,5},  // front ccw
+                      {2,6,4}, {2,4,0}}; // back ccw
+
 	unsigned long long voxelCount = m_width * m_height * m_depth;
 
 	//          z
@@ -161,28 +168,22 @@ Mesh* pgm3d::mesh() const
 		for (float x = -0.5; x <= 0.5; x++) {
 			for (float y = -0.5; y <= 0.5; y++) {
 				for (float z = -0.5; z <= 0.5; z++) {
-					Vertex v(Point3f(x+pos.x,y+pos.y,z+pos.z), color);
+                    Vertex v(Point3f(x+pos.x,y+pos.y,z+pos.z), color);
 					allVertices.push_back(v);
 				}
 			}
 		}
 
-		/*1--------5
+        /*2--------6
 		./|       /|
-		0-+------4 |
+        3-+------7 |
 		| |      | |
-		| 3------+-7
+        | 0------+-4
 		|/       |/
-		2--------6 */
+        1--------5 */
+
 		uint offset = i * 8;
 
-		// Index of Vertices to build the Faces : IVF
-		int ivf[12][3] = {{0,1,3}, {0,2,3},  // left
-						  {4,5,7}, {4,6,7},  // right
-						  {0,1,5}, {0,4,5},  // top
-						  {2,3,7}, {2,6,7},  // bot
-						  {0,2,6}, {0,4,6},  // front
-						  {1,3,7}, {1,5,7}}; // back
 		for (int i = 0; i < 12; i++) {
 			FaceIndex face(offset+ivf[i][0], offset+ivf[i][1], offset+ivf[i][2]);
 			allFaces.push_back(face);
@@ -198,7 +199,7 @@ Mesh* pgm3d::mesh() const
 		}
 	}
 
-	// Create simplify data
+    // Create simplified data
 	QVector<FaceIndex> faces;
 	QVector<Vertex> vertices;
 
@@ -206,7 +207,7 @@ Mesh* pgm3d::mesh() const
 	bool left, right, top, bot, front, back;
 	bool newVertex;
 
-	for(uint i = 0 ; i < voxelCount ; i++) {
+    for(uint i = 0 ; i < voxelCount ; i++) {
 		if(m_data[i] == 0) { continue; }
 		newVertex = false;
 		offset = vertices.size();
@@ -215,66 +216,61 @@ Mesh* pgm3d::mesh() const
 
 		left  = (x == 0 ? true : false);
 		right = (x == m_width - 1 ? true : false);
-		top   = (y == 0 ? true : false);
-		bot   = (y == m_height - 1 ? true : false);
-		front = (z == 0 ? true : false);
-		back  = (z == m_depth - 1 ? true : false);
+        bot   = (y == 0 ? true : false);
+        top   = (y == m_height - 1 ? true : false);
+        back  = (z == 0 ? true : false);
+        front = (z == m_depth - 1 ? true : false);
 
-		if(!left) {
-			index = coordToIndex(m_width, m_height, m_depth, x-1, y, z);
-			if(m_dataVertex[i].color != m_dataVertex[index].color) {
-				FaceIndex face1(offset, offset+1, offset+3); FaceIndex face2(offset, offset+2, offset+3);
-				faces.push_back(face1); faces.push_back(face2);
-				newVertex = true;
-			}
-		}
+        index = coordToIndex(m_width, m_height, m_depth, x-1, y, z);
+        if(left || m_data[i] != m_data[index]) {
+            FaceIndex face1(offset + ivf[0][0], offset+ ivf[0][1], offset+ivf[0][2]);
+            FaceIndex face2(offset+ivf[1][0], offset+ivf[1][1], offset+ivf[1][2]);
+            faces.push_back(face1); faces.push_back(face2);
+            newVertex = true;
+        }
 
-		if(!right) {
-			index = coordToIndex(m_width, m_height, m_depth, x+1, y, z);
-			if(m_dataVertex[i].color != m_dataVertex[index].color) {
-				FaceIndex face1(offset+4, offset+5 , offset+7); FaceIndex face2(offset+4, offset+6, offset+7);
-				faces.push_back(face1); faces.push_back(face2);
-				newVertex = true;
-			}
-		}
+        index = coordToIndex(m_width, m_height, m_depth, x+1, y, z);
+        if(right || m_dataVertex[i].color != m_dataVertex[index].color) {
+            FaceIndex face1(offset + ivf[2][0], offset+ ivf[2][1], offset+ivf[2][2]);
+            FaceIndex face2(offset+ivf[3][0], offset+ivf[3][1], offset+ivf[3][2]);
+            faces.push_back(face1); faces.push_back(face2);
+            newVertex = true;
+        }
 
-		if(!top) {
-			index = coordToIndex(m_width, m_height, m_depth, x, y-1, z);
-			if(m_dataVertex[i].color != m_dataVertex[index].color) {
-				FaceIndex face1(offset, offset+1, offset+5); FaceIndex face2(offset, offset+4, offset+5);
-				faces.push_back(face1); faces.push_back(face2);
-				newVertex = true;
-			}
-		}
 
-		if(!bot) {
-			index = coordToIndex(m_width, m_height, m_depth, x, y+1, z);
-			if(m_dataVertex[i].color != m_dataVertex[index].color) {
-				FaceIndex face1(offset + 2, offset + 3, offset + 7); FaceIndex face2(offset+2, offset+6, offset+7);
-				faces.push_back(face1); faces.push_back(face2);
-				newVertex = true;
-			}
-		}
+        index = coordToIndex(m_width, m_height, m_depth, x, y+1, z);
+        if(top || m_dataVertex[i].color != m_dataVertex[index].color) {
+            FaceIndex face1(offset + ivf[4][0], offset + ivf[4][1], offset + ivf[4][2]);
+            FaceIndex face2(offset + ivf[5][0], offset + ivf[5][1], offset + ivf[5][2]);
+            faces.push_back(face1); faces.push_back(face2);
+            newVertex = true;
+        }
 
-		if(!front) {
-			index = coordToIndex(m_width, m_height, m_depth, x, y, z-1);
-			if(m_dataVertex[i].color != m_dataVertex[index].color) {
-				FaceIndex face1(offset, offset+2, offset+6); FaceIndex face2(offset, offset+4, offset+6);
-				faces.push_back(face1); faces.push_back(face2);
-				newVertex = true;
-			}
-		}
+        index = coordToIndex(m_width, m_height, m_depth, x, y-1, z);
+        if(bot || m_dataVertex[i].color != m_dataVertex[index].color) {
+            FaceIndex face1(offset + ivf[6][0], offset+ ivf[6][1], offset + ivf[6][2]);
+            FaceIndex face2(offset+ivf[7][0], offset+ivf[7][1], offset + ivf[7][2]);
+            faces.push_back(face1); faces.push_back(face2);
+            newVertex = true;
+        }
 
-		if(!back) {
-			index = coordToIndex(m_width, m_height, m_depth, x, y, z+1);
-			if(m_dataVertex[i].color != m_dataVertex[index].color) {
-				FaceIndex face1(offset+1, offset+3, offset+7); FaceIndex face2(offset+1, offset+5, offset+7);
-				faces.push_back(face1); faces.push_back(face2);
-				newVertex = true;
-			}
-		}
+        index = coordToIndex(m_width, m_height, m_depth, x, y, z+1);
+        if(front || m_dataVertex[i].color != m_dataVertex[index].color) {
+            FaceIndex face1(offset + ivf[8][0], offset+ ivf[8][1], offset+ivf[8][2]);
+            FaceIndex face2(offset+ivf[9][0], offset+ivf[9][1], offset+ivf[9][2]);
+            faces.push_back(face1); faces.push_back(face2);
+            newVertex = true;
+        }
 
-		if (newVertex) {
+        index = coordToIndex(m_width, m_height, m_depth, x, y, z-1);
+        if(back || m_dataVertex[i].color != m_dataVertex[index].color) {
+            FaceIndex face1(offset + ivf[10][0], offset+ ivf[10][1], offset+ivf[10][2]);
+            FaceIndex face2(offset+ivf[11][0], offset+ivf[11][1], offset+ivf[11][2]);
+            faces.push_back(face1); faces.push_back(face2);
+            newVertex = true;
+        }
+
+        if (newVertex) {
 			Point3f pos = m_dataVertex[i].position;
 			Color4f color = m_dataVertex[i].color;
 			for (float dx = -0.5; dx <= 0.5; dx++) {
@@ -285,12 +281,12 @@ Mesh* pgm3d::mesh() const
 					}
 				}
 			}
-		}
+        }
 	}
 
 	mesh->rawData(allVertices, allEdges, allFaces);
     mesh->displayableData(vertices, faces);
-	mesh->init();
+    mesh->init(false);
 
 	return mesh;
 }

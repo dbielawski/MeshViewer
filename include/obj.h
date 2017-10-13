@@ -13,8 +13,6 @@ public:
 
     virtual void loadFromFile(const QString& fileName) override;
 
-    void writeFile(const QString& fileName, const Mesh& mesh) const;
-
     virtual Mesh* mesh() const override;
 
     QVector<Vertex> vertices() const;
@@ -23,6 +21,7 @@ public:
 private:
     QVector<Vertex>     m_vertices;
     QVector<FaceIndex>  m_faces;
+    bool m_hasNormals = false;
 };
 
 #endif // OBJ_H

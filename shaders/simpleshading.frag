@@ -38,5 +38,5 @@ void main(void)
         c += shade(normal, lights[i].direction, color.rgb, lights[i].intensity);
     }
 
-    out_color = vec4(c, alpha_val);
+    out_color = vec4(normal, alpha_val);
 }

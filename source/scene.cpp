@@ -44,10 +44,10 @@ Scene::~Scene()
     delete m_simpleshadingProgram;
 }
 
-// TODO : Remove it's for test purposes
-void Scene::saveMesh(const QString& fileName) {
-	for(const Mesh* m : m_meshList) {
-		m->saveAsObj(fileName);
+void Scene::saveMesh(const QStringList& fileNames) {
+    int i = 0;
+    for(const Mesh* m : m_meshList) {
+        m->saveAsObj(fileNames.at(i++));
 	}
 }
 

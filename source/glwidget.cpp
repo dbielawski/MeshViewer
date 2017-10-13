@@ -62,6 +62,10 @@ void GLWidget::initializeGL()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
 
+    glEnable(GL_CULL_FACE);
+    //TODO: Fix : In obj, we build faces anti-clockwise but in pgm3d we build them clockwise (I think)
+    glFrontFace(GL_CW);
+
     m_scene->init();
 }
 
@@ -105,7 +109,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
         // WARNING: magic numbers/ mouse sensitivity...
         m_scene->camera()->rotateAroundTarget(m_dx * 2, Vector3f(0.f, 1.f, 0.f));
-        //m_scene->camera()->rotateAroundTarget(m_dy * 2, Vector3f(1.f, 0.f, 0.f));
+        m_scene->camera()->rotateAroundTarget(m_dy * 2, Vector3f(1.f, 0.f, 0.f));
     }
 
     m_previousMousePosition = event->pos();

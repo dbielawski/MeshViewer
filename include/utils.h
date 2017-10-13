@@ -59,10 +59,10 @@ struct Color4f
     }
 
 	inline bool operator == (const Color4f& c) const {
-		return ((this->r - c.r) < 0.001 &&
-				(this->b - c.b) < 0.001 &&
-				(this->g - c.g) < 0.001 &&
-				(this->a - c.a) < 0.001);
+        return (abs(this->r - c.r) < 0.001 &&
+                abs(this->b - c.b) < 0.001 &&
+                abs(this->g - c.g) < 0.001 &&
+                abs(this->a - c.a) < 0.001);
 	}
 
 	inline bool operator != (const Color4f& c) const {
@@ -132,14 +132,17 @@ struct Vector3f
     inline void normalise()
     {
         float n = norm();
-        x /= n;
-        y /= n;
-        z /= n;
+        x = (n == 0 ? 0 : x/n);
+        y = (n == 0 ? 0 : y/n);
+        z = (n == 0 ? 0 : z/n);
     }
 
     inline Vector3f normalised() const
     {
         float n = norm();
+        if(n == 0) {
+            return Vector3f(0, 0, 0);
+        }
         return Vector3f(x / n, y / n, z / n);
     }
 

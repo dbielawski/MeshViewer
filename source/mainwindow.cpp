@@ -151,9 +151,15 @@ void MainWindow::onOpenFile()
 
 void MainWindow::onSaveAsObj()
 {
-    // TODO: implement
-    //QMessageBox::critical(0, "Error", "saveAsObj() not implemented yet");
-	ui->openGLWidget->scene()->saveMesh("test.obj");
+    QStringList fileNames;
+    for(int i = 0 ; i < ui->openGLWidget->scene()->meshCount() ; i++) {
+
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Save file")
+                                                    , tr("../models/")
+                                                    , tr("OBJ Files (*.obj)"));
+        fileNames.append(fileName);
+    }
+    ui->openGLWidget->scene()->saveMesh(fileNames);
 }
 
 void MainWindow::onClearScene()

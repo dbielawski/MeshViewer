@@ -27,9 +27,17 @@ Mesh::~Mesh()
     delete m_octree;
 }
 
-void Mesh::init()
+void Mesh::init(const bool& hasNormals)
 {
-    computeNormals();
+    // If the mesh has already the normals, dont don't compute them.
+    if(!hasNormals) {
+        std::cout << "No normals found" << std::endl;
+        computeNormals();
+    } else {
+        for(int i = 0 ; i < m_vertices.size() ; i++) {
+            std::cout << m_vertices.at(i).normal.x << ";" << m_vertices.at(i).normal.y << ";" << m_vertices.at(i).normal.z << std::endl;
+        }
+    }
 
     if (!m_functions->glIsBuffer(m_vertexBufferId)) {
         m_functions->glGenBuffers(1, &m_vertexBufferId);
@@ -54,6 +62,7 @@ void Mesh::init()
     // buildOctree();
 }
 
+#include <QVector3D>
 void Mesh::renderMesh() const
 {
     if (m_scenePtr != Q_NULLPTR
@@ -115,6 +124,8 @@ void Mesh::displayableData(const QVector<Vertex>& vertices, const QVector<FaceIn
     m_faces = faces;
 }
 
+#include <iostream>
+
 void Mesh::computeNormals()
 {
     // Set all normals to 0
@@ -122,24 +133,31 @@ void Mesh::computeNormals()
         m_vertices.value(i).normal = Vector3f(0.f, 0.f, 0.f);
 
     // Compute normals
-    for (int i = 0; i < m_faces.size(); i++)
+    for (int i = 0; i < m_faces.size(); i+=2)
     {
         const FaceIndex face = m_faces.at(i);
+        const FaceIndex face2 = m_faces.at(i+1);
 
         const Point3f v0 = m_vertices.at(face.v0).position;
         const Point3f v1 = m_vertices.at(face.v1).position;
         const Point3f v2 = m_vertices.at(face.v2).position;
 
-		const Vector3f normal = (v1 - v0).cross(v2 - v0);
+        const Vector3f normal = (v1 - v0).cross(v2 - v0);
 
         m_vertices[face.v0].normal += normal;
         m_vertices[face.v1].normal += normal;
         m_vertices[face.v2].normal += normal;
+
+        // The reversed face should have the same normal.
+        m_vertices[face2.v0].normal += normal;
+        m_vertices[face2.v1].normal += normal;
+        m_vertices[face2.v2].normal += normal;
 	}
 
     // Normalize all normals
-    for (int i = 0; i < m_vertices.size(); ++i)
+    for (int i = 0; i < m_vertices.size(); ++i) {
         m_vertices[i].normal.normalise();
+    }
 }
 
 void Mesh::computeBoundingBox()
@@ -177,7 +195,8 @@ void Mesh::saveAsObj(const QString& fileName) const
 		out << line;
 	}
 
-	// Write Normal
+
+    // Write Normal
 	for (int i = 0; i < m_vertices.size(); ++i)
 	{
 		QString line = "vn ";
@@ -188,19 +207,29 @@ void Mesh::saveAsObj(const QString& fileName) const
 		out << line;
 	}
 
-	// Write Face (as quads)
+
+    // Write Faces
 	for (int i = 0; i < m_faces.size(); i++)
 	{
-		unsigned int v0, v1, v2;
+        unsigned int v0, v1, v2, vn0, vn1, vn2;
 		v0 = m_faces.at(i).v0+1;
 		v1 = m_faces.at(i).v1+1;
 		v2 = m_faces.at(i).v2+1;
 
+        vn0 = v0;
+        vn1 = v1;
+        vn2 = v2;
+
+        // TODO: Debug the normal writing in the obj
 		QString line ="f ";
-		line += QString::number(v0) + " "
-		+ QString::number(v1) + " "
-		+ QString::number(v2) + " "
-		+ '\n';
+        /*line += QString::number(v0) + "//" + QString::number(vn0) + " "
+        + QString::number(v1) + "//" + QString::number(vn1) + " "
+        + QString::number(v2) + "//" + QString::number(vn2) + " "
+        + '\n';*/
+        line += QString::number(v0) + " "
+                + QString::number(v1) + " "
+                + QString::number(v2)
+                + '\n';
 		out << line;
 	}
 

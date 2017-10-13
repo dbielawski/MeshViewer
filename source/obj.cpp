@@ -39,7 +39,7 @@ void obj::loadFromFile(const QString &fileName)
         {
             QStringList list = line.split(' ');
 
-            if (list.at(0) == QString('v'))  // Vertices
+            if (list.at(0) == "v")  // Vertices
             {
                 list.removeAt(0); // Remove the 'v' character
 
@@ -53,7 +53,19 @@ void obj::loadFromFile(const QString &fileName)
 
                 m_vertices.append(v);
             }
-            else if (list.at(0) == QString('f')) // Face indices
+
+            else if (list.at(0) == "vn") // Normals
+            {
+                list.removeAt(0); // Remove 'vn' characters
+
+                QString n0 = list.at(0);
+                QString n1 = list.at(1);
+                QString n2 = list.at(2);
+                Vector3f normal(n0.toFloat(), n1.toFloat(), n2.toFloat());
+                normals.append(normal);
+            }
+
+            else if (list.at(0) == "f") // Face indices
             {
                 list.removeAt(0); // Remove the 'f' character
 
@@ -64,7 +76,7 @@ void obj::loadFromFile(const QString &fileName)
                 //We want to know if he has this format => (f 5/1/1 1/2/1 4/3/1)
                 bool hasVertTexNor = (firstElementArray.size() == 3);
 
-                // It's this format => (f 1 2 3 4)
+                // It's this format => (f 1 2 3)
                 if (listSize == 3 && !hasVertTexNor)
                 {
                     QString v0 = list.at(0);
@@ -73,7 +85,7 @@ void obj::loadFromFile(const QString &fileName)
 
                     m_faces.append(FaceIndex(v0.toInt() - 1, v1.toInt() - 1, v2.toInt() - 1));
                 }
-                // It's this format => (f 2 4 1)
+                // It's this format => (f 1 2 3 4)
                 else if (listSize == 4 && !hasVertTexNor)
                 {
                     QString v0 = list.at(0);
@@ -90,9 +102,10 @@ void obj::loadFromFile(const QString &fileName)
                 // It's this format => (f 5/1/1 1/2/1 4/3/1)
                 else if (hasVertTexNor)
                 {
-                    int listSize = list.size();
-                    int face[listSize];
-                    int faceNormals[listSize];
+                    m_hasNormals = true;
+                    //int listSize = list.size();
+                    int vertices[listSize];
+                    int verticesNormals[listSize];
 
                     for (int i = 0; i < listSize; ++i)
                     {
@@ -103,22 +116,22 @@ void obj::loadFromFile(const QString &fileName)
                         //QString textCoord = elementArray.at(1);       // We don't use textCoords for now
                         QString normalIndex = elementArray.at(2);
 
-                        face[i] = vertexIndex.toInt();
-                        faceNormals[i] = normalIndex.toInt();
+                        vertices[i] = vertexIndex.toInt();
+                        verticesNormals[i] = normalIndex.toInt();
                     }
 
                     if (listSize == 3)
                     {
-                        m_faces.append(FaceIndex(face[0] - 1, face[1] - 1, face[2] - 1));
-                        normalIndices.append(Vector3i(faceNormals[0] - 1, faceNormals[1] - 1, faceNormals[2] - 1));
+                        m_faces.append(FaceIndex(vertices[0] - 1, vertices[1] - 1, vertices[2] - 1));
+                        normalIndices.append(Vector3i(verticesNormals[0] - 1, verticesNormals[1] - 1, verticesNormals[2] - 1));
                     }
                     else if (listSize == 4)
                     {
-                        m_faces.append(FaceIndex(face[0] - 1, face[1] - 1, face[2] - 1));
-                        m_faces.append(FaceIndex(face[2] - 1, face[3] - 1, face[0] - 1));
+                        m_faces.append(FaceIndex(vertices[0] - 1, vertices[1] - 1, vertices[2] - 1));
+                        m_faces.append(FaceIndex(vertices[2] - 1, vertices[3] - 1, vertices[0] - 1));
 
-                        normalIndices.append(Vector3i(faceNormals[0] - 1, faceNormals[1] - 1, faceNormals[2] - 1));
-                        normalIndices.append(Vector3i(faceNormals[2] - 1, faceNormals[3] - 1, faceNormals[0] - 1));
+                        normalIndices.append(Vector3i(verticesNormals[0] - 1, verticesNormals[1] - 1, verticesNormals[2] - 1));
+                        normalIndices.append(Vector3i(verticesNormals[2] - 1, verticesNormals[3] - 1, verticesNormals[0] - 1));
                     }
                 }
                 else
@@ -126,17 +139,6 @@ void obj::loadFromFile(const QString &fileName)
                     QMessageBox::critical(0, "Error", "OBJ file format not supported");
                     return;
                 }
-            }
-            else if (list.at(0) == "vn") // Normals
-            {
-                list.removeAt(0); // Remove 'vn' characters
-
-                QString n0 = list.at(0);
-                QString n1 = list.at(1);
-                QString n2 = list.at(2);
-
-                Vector3f normal(n0.toFloat(), n1.toFloat(), n2.toFloat());
-                normals.append(normal);
             }
         }
 
@@ -146,6 +148,8 @@ void obj::loadFromFile(const QString &fileName)
 
     // set normals
     // vertex/textCoord/normals format
+
+    // TODO : Fix this, normals tab is filled with normals but normalIndices isn't working
     if (!normalIndices.isEmpty())
     {
         for (int i = 0; i < m_faces.size(); ++i)
@@ -163,53 +167,13 @@ void obj::loadFromFile(const QString &fileName)
     }
 }
 
-// TODO : Remove
-void obj::writeFile(const QString &fileName, const Mesh& mesh) const
-{
-
-    QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly))
-    {
-        QMessageBox::critical(0, "Error while writing file", file.errorString());
-        return;
-    }
-
-    QTextStream out(&file);
-
-    // Write Vertex
-    for (int i = 0; i < m_vertices.size(); ++i)
-    {
-        QString line = "v ";
-        line += QString::number(m_vertices.at(i).position.x) + " "
-                + QString::number(m_vertices.at(i).position.y) + " "
-                + QString::number(m_vertices.at(i).position.z);
-        out << line;
-    }
-
-    // Write Normal
-    for (int i = 0; i < m_vertices.size(); ++i)
-    {
-        QString line = "vn ";
-        line += QString::number(m_vertices.at(i).normal.x) + " "
-                + QString::number(m_vertices.at(i).normal.y) + " "
-                + QString::number(m_vertices.at(i).normal.z);
-        out << line;
-    }
-
-    // Write Face
-    for (int i = 0; i < m_faces.size(); ++i)
-    {
-
-    }
-
-    file.close();
-}
-
 Mesh *obj::mesh() const
 {
     Mesh* mesh = new Mesh;
     mesh->displayableData(m_vertices, m_faces);
-    mesh->init();
+    // If the obj has normals, we should use them and not compute them
+    // WARNING: They are all set to 0 -> Problem with the obj loader
+    mesh->init(m_hasNormals);
 
     return mesh;
 }
