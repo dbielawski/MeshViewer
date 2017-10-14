@@ -1,9 +1,14 @@
 # MeshViewer
 
-MeshViewer is an Educational project made by four students following an Acquisition, Reconstruction
+MeshViewer is an educational project made by four students following an Acquisition, Reconstruction
 and Visualization module.
-The program allows 3D visualization of OBJ and PGM3D files, rotation around objects,
-selection of drawing mode, transparency.
+The program contains the following features:
+* 3D visualization of OBJ and PGM3D files
+* 3D movements around the objects
+* Different drawing mode
+* Bounding box visualization
+* Opacity managment
+* Exporting as an OBJ file
 
 # Getting Started
 
