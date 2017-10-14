@@ -59,6 +59,9 @@ void Mesh::init(const bool& hasNormals)
     m_transform.translate(-center.x, -center.y, -center.z);
 
     // buildOctree();
+
+    // TODO: Maybe we should move this call ?
+    toHalfedge();
 }
 
 void Mesh::renderMesh() const
@@ -227,4 +230,28 @@ void Mesh::saveAsObj(const QString& fileName) const
 	}
 
 	file.close();
+}
+
+// TODO : Rename ?
+void Mesh::toHalfedge() {
+    m_halfEdge.clear();
+    QVector<surface_mesh::Surface_mesh::Vertex> vertices;
+    for(int i = 0 ; i < m_vertices.size(); i++) {
+        const Vertex& v = m_vertices[i];
+        surface_mesh::Surface_mesh::Vertex v_he = m_halfEdge.add_vertex(surface_mesh::Point(v.position.x, v.position.y, v.position.z));
+        vertices.push_back(v_he);
+    }
+
+    for(int i = 0 ; i < m_faces.size(); i++) {
+        surface_mesh::Surface_mesh::Vertex v0, v1, v2;
+        const FaceIndex& f = m_faces.at(i);
+        v0 = vertices.at(f.v0);
+        v1 = vertices.at(f.v1);
+        v2 = vertices.at(f.v2);
+        m_halfEdge.add_triangle(v0, v1, v2);
+    }
+
+    // TODO: Remove
+    // DEBUG LINE : You can view the generated model with Blender or at http://masc.cs.gmu.edu/wiki/ObjViewer
+    m_halfEdge.write("test.off");
 }

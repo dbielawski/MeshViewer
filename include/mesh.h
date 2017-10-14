@@ -41,6 +41,7 @@ public:
     void attachScene(Scene* scene)      { m_scenePtr = scene; }
 
 	surface_mesh::Surface_mesh& halfEdgeMesh() { return m_halfEdge; }
+    void toHalfedge();
 
     unsigned int verticesCount() const  { return m_vertices.size(); }
     unsigned int trianglesCount() const { return m_faces.size();    }
