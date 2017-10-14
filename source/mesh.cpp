@@ -29,9 +29,8 @@ Mesh::~Mesh()
 
 void Mesh::init(const bool& hasNormals)
 {
-    // If the mesh has already the normals, dont don't compute them.
+    // If the mesh already has its normals, don't compute them.
     if(!hasNormals) {
-        std::cout << "No normals found" << std::endl;
         computeNormals();
     } else {
         for(int i = 0 ; i < m_vertices.size() ; i++) {
@@ -62,7 +61,6 @@ void Mesh::init(const bool& hasNormals)
     // buildOctree();
 }
 
-#include <QVector3D>
 void Mesh::renderMesh() const
 {
     if (m_scenePtr != Q_NULLPTR
@@ -124,8 +122,6 @@ void Mesh::displayableData(const QVector<Vertex>& vertices, const QVector<FaceIn
     m_faces = faces;
 }
 
-#include <iostream>
-
 void Mesh::computeNormals()
 {
     // Set all normals to 0
@@ -152,7 +148,7 @@ void Mesh::computeNormals()
         m_vertices[face2.v0].normal += normal;
         m_vertices[face2.v1].normal += normal;
         m_vertices[face2.v2].normal += normal;
-	}
+    }
 
     // Normalize all normals
     for (int i = 0; i < m_vertices.size(); ++i) {
@@ -211,25 +207,22 @@ void Mesh::saveAsObj(const QString& fileName) const
     // Write Faces
 	for (int i = 0; i < m_faces.size(); i++)
 	{
-        unsigned int v0, v1, v2, vn0, vn1, vn2;
+        	unsigned int v0, v1, v2, vn0, vn1, vn2;
 		v0 = m_faces.at(i).v0+1;
 		v1 = m_faces.at(i).v1+1;
 		v2 = m_faces.at(i).v2+1;
 
-        vn0 = v0;
-        vn1 = v1;
-        vn2 = v2;
-
-        // TODO: Debug the normal writing in the obj
+        	// TODO: Debug the normal writing in the obj
 		QString line ="f ";
-        /*line += QString::number(v0) + "//" + QString::number(vn0) + " "
-        + QString::number(v1) + "//" + QString::number(vn1) + " "
-        + QString::number(v2) + "//" + QString::number(vn2) + " "
-        + '\n';*/
-        line += QString::number(v0) + " "
-                + QString::number(v1) + " "
-                + QString::number(v2)
-                + '\n';
+		// Vertice and Normal of this vertice are in the same order so we can use vertice index as normal index.
+        	/*line += QString::number(v0) + "//" + QString::number(v0) + " "
+        	+ QString::number(v1) + "//" + QString::number(v1) + " "
+        	+ QString::number(v2) + "//" + QString::number(v2) + " "
+        	+ '\n';*/
+        	line += QString::number(v0) + " "
+                	+ QString::number(v1) + " "
+                	+ QString::number(v2)
+                	+ '\n';
 		out << line;
 	}
 
