@@ -40,7 +40,6 @@ void WireBoundingBox::render(const Scene& scene, const QMatrix4x4& transform) co
 
         const int vertexLoc = program->attributeLocation("vtx_position");
 
-        // TODO: creer une variable membre color et ajouter au constructeur
         float c[4] = {0.f, 1.f, 0.f, 1.f};
         program->setAttributeArray("vtx_color", GL_FLOAT, &c[0], 4);
 

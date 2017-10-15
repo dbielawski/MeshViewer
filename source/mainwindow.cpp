@@ -11,13 +11,9 @@
 #include <QColorDialog>
 #include <QMessageBox>
 
-
 #include "glwidget.h"
-/*  */
 #include "pgm3d.h"
 #include "obj.h"
-/*  */
-
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -31,7 +27,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->fillModeButton, SIGNAL(clicked()), this, SLOT(onDrawFilled()));
 
     connect(ui->clearSceneButton, SIGNAL(clicked()), this, SLOT(onClearScene()));
-    connect(ui->computeNormalsButton, SIGNAL(clicked()), this, SLOT(onComputeNormals()));
     connect(ui->sceneBackgroundColorButton, SIGNAL(clicked(bool)), this, SLOT(onBackgroundColorScene()));
     ui->alphaValue->setText(QString::number(ui->transparencySlider->value()));
 
@@ -231,14 +226,6 @@ void MainWindow::updateInfos() const
     ui->lightCount->setText(QString("Light: " + QString::number(lightCount)));
 
     ui->pointSizeMax->setText(QString::number(ui->openGLWidget->pointSizeMax()));
-}
-
-
-void MainWindow::onComputeNormals() {
-    // TODO: implement
-    //ui->openGLWidget->scene()->computeNormals();
-    //ui->openGLWidget->updateGL();
-    QMessageBox::critical(0, "Error", "computeNormals() not implemented yet");
 }
 
 void MainWindow::onBackgroundColorScene()

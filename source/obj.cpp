@@ -102,7 +102,6 @@ void obj::loadFromFile(const QString &fileName)
                 // It's this format => (f 5/1/1 1/2/1 4/3/1)
                 else if (hasVertTexNor)
                 {
-                    m_hasNormals = true;
                     //int listSize = list.size();
                     int vertices[listSize];
                     int verticesNormals[listSize];
@@ -171,9 +170,7 @@ Mesh *obj::mesh() const
 {
     Mesh* mesh = new Mesh;
     mesh->displayableData(m_vertices, m_faces);
-    // If the obj has normals, we should use them and not compute them
-    // WARNING: They are all set to 0 -> Problem with the obj loader
-    mesh->init(m_hasNormals);
+    mesh->init();
 
     return mesh;
 }

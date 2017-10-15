@@ -27,16 +27,9 @@ Mesh::~Mesh()
     delete m_octree;
 }
 
-void Mesh::init(const bool& hasNormals)
+void Mesh::init()
 {
-    // If the mesh already has its normals, don't compute them.
-    if(!hasNormals) {
-        computeNormals();
-    } else {
-        for(int i = 0 ; i < m_vertices.size() ; i++) {
-            std::cout << m_vertices.at(i).normal.x << ";" << m_vertices.at(i).normal.y << ";" << m_vertices.at(i).normal.z << std::endl;
-        }
-    }
+    computeNormals();
 
     if (!m_functions->glIsBuffer(m_vertexBufferId)) {
         m_functions->glGenBuffers(1, &m_vertexBufferId);

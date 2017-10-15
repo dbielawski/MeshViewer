@@ -25,7 +25,6 @@ private slots:
     void onOpenFile();
     void onSaveAsObj();
     void onClearScene();
-    void onComputeNormals();
 
     void onAlphaChanged(int);
     void onPointSizeChanged(int);

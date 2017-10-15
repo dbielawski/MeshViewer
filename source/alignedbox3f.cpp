@@ -1,4 +1,5 @@
 #include "alignedbox3f.h"
+
 #include <QtMath>
 
 AlignedBox3f::AlignedBox3f()

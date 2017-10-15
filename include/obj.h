@@ -21,7 +21,6 @@ public:
 private:
     QVector<Vertex>     m_vertices;
     QVector<FaceIndex>  m_faces;
-    bool m_hasNormals = false;
 };
 
 #endif // OBJ_H

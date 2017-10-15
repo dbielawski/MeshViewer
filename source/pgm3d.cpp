@@ -7,8 +7,6 @@
 #include <QTextStream>
 #include <QMessageBox>
 
-#include <assert.h>
-
 #include "mesh.h"
 
 
@@ -286,7 +284,7 @@ Mesh* pgm3d::mesh() const
 
 	mesh->rawData(allVertices, allEdges, allFaces);
     mesh->displayableData(vertices, faces);
-    mesh->init(false);
+    mesh->init();
 
 	return mesh;
 }

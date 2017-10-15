@@ -154,13 +154,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="computeNormalsButton">
-         <property name="text">
-          <string>Compute normals</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="clearSceneButton">
          <property name="text">
           <string>Clear scene</string>

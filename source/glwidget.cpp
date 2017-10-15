@@ -1,18 +1,16 @@
 #include "glwidget.h"
 
-#include "scene.h"
+#include <QGLShader>
+#include <QKeyEvent>
+#include <QMouseEvent>
 
+#include "scene.h"
 #include "pgm3d.h"
 #include "obj.h"
 #include "mesh.h"
 #include "camera.h"
-
-#include <QGLShader>
-#include <iostream>
-#include <QKeyEvent>
-#include <QMouseEvent>
-
 #include "light.h"
+
 
 GLWidget::GLWidget(QWidget *parent) :
     QGLWidget(parent),
@@ -63,8 +61,6 @@ void GLWidget::initializeGL()
     glEnable(GL_BLEND);
 
     glEnable(GL_CULL_FACE);
-    //TODO: Fix : In obj, we build faces anti-clockwise but in pgm3d we build them clockwise (I think)
-    glFrontFace(GL_CW);
 
     m_scene->init();
 }
@@ -120,8 +116,6 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
-    //    std::cout << "mousePressEvent" << std::endl;
-
     switch (event->button())
     {
     case Qt::LeftButton:
