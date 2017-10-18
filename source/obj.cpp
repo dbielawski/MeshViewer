@@ -67,9 +67,17 @@ void obj::loadFromFile(const QString &fileName)
 
             else if (list.at(0) == "f") // Face indices
             {
+                /*
+                if(list.at(list.size()-1) == "\r" || list.at(list.size()-1) == " " || list.at(list.size()-1) == "\n" || list.at(list.size()-1) == "\t")
+                {
+                    list.removeAt(list.size()-1);
+                }
+                */
+
                 list.removeAt(0); // Remove the 'f' character
 
                 uint listSize = list.size();
+
                 QString firstElement = list.at(0);
                 QStringList firstElementArray = firstElement.split('/');
 
@@ -79,19 +87,23 @@ void obj::loadFromFile(const QString &fileName)
                 // It's this format => (f 1 2 3)
                 if (listSize == 3 && !hasVertTexNor)
                 {
-                    QString v0 = list.at(0);
-                    QString v1 = list.at(1);
-                    QString v2 = list.at(2);
+                    std::cout << "3 !hasVertexNorm" << std::endl;
+                    QString v0 = list.at(0).split('/').at(0);
+                    QString v1 = list.at(1).split('/').at(0);
+                    QString v2 = list.at(2).split('/').at(0);
+
+                    std::cout << v0.toStdString() << "," << v1.toStdString() << "," << v2.toStdString() << std::endl;
 
                     m_faces.append(FaceIndex(v0.toInt() - 1, v1.toInt() - 1, v2.toInt() - 1));
                 }
                 // It's this format => (f 1 2 3 4)
                 else if (listSize == 4 && !hasVertTexNor)
                 {
-                    QString v0 = list.at(0);
-                    QString v1 = list.at(1);
-                    QString v2 = list.at(2);
-                    QString v3 = list.at(3);
+                    std::cout << "4 !hasVertexNorm" << std::endl;
+                    QString v0 = list.at(0).split('/').at(0);
+                    QString v1 = list.at(1).split('/').at(0);
+                    QString v2 = list.at(2).split('/').at(0);
+                    QString v3 = list.at(3).split('/').at(0);
 
                     FaceIndex i1(v0.toInt() - 1, v1.toInt() - 1, v2.toInt() - 1);
                     FaceIndex i2(v2.toInt() - 1, v3.toInt() - 1, v0.toInt() - 1);
@@ -102,7 +114,6 @@ void obj::loadFromFile(const QString &fileName)
                 // It's this format => (f 5/1/1 1/2/1 4/3/1)
                 else if (hasVertTexNor)
                 {
-                    //int listSize = list.size();
                     int vertices[listSize];
                     int verticesNormals[listSize];
 
@@ -121,11 +132,15 @@ void obj::loadFromFile(const QString &fileName)
 
                     if (listSize == 3)
                     {
+                        std::cout << "3 hasVertexNorm" << std::endl;
+
+                        std::cout << vertices[0] << " " << vertices[1] << " " << vertices[2] << std::endl;
                         m_faces.append(FaceIndex(vertices[0] - 1, vertices[1] - 1, vertices[2] - 1));
                         normalIndices.append(Vector3i(verticesNormals[0] - 1, verticesNormals[1] - 1, verticesNormals[2] - 1));
                     }
                     else if (listSize == 4)
                     {
+                        std::cout << "4 hasVertexNorm" << std::endl;
                         m_faces.append(FaceIndex(vertices[0] - 1, vertices[1] - 1, vertices[2] - 1));
                         m_faces.append(FaceIndex(vertices[2] - 1, vertices[3] - 1, vertices[0] - 1));
 

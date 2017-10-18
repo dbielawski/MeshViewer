@@ -54,7 +54,7 @@ void Mesh::init()
     // buildOctree();
 
     // TODO: Maybe we should move this call ?
-    toHalfedge();
+    //toHalfedge();
 }
 
 void Mesh::renderMesh() const
