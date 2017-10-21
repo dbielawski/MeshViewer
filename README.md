@@ -17,17 +17,13 @@ The program contains the following features:
 Qt 5.6 or higher
 OpenGL 3.3 or higher
 A fairly recent C++ compiler
+CGAL Polyhedron
 ```
 ## Installation
 ```
 mkdir build ; cd build
-qmake ../MeshViewer.pro
+cmake ..
 make -j
-```
-**Note**: If you have multiple Qt version installed you can tell qmake with which version it should
-compile, for example:
-```
-qmake -qt=qt5 ../MeshViewer.pro
 ```
 This will create a **MeshViewer** executable. Use the following command to run it:
 ```

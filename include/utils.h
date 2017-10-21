@@ -4,17 +4,17 @@
 #include <QVector>
 #include <math.h>
 
-namespace arm
-{
-struct Color3f;
-struct Vector2i;
-struct Vector3f;
-struct Vector3i;
-struct Point3i;
-struct Point3f;
-struct Vertex;
-struct FaceIndex;
-struct EdgeIndex;
+namespace arm {
+    struct Color3f;
+    struct Vector2i;
+    struct Vector2f;
+    struct Vector3f;
+    struct Vector3i;
+    struct Point3i;
+    struct Point3f;
+    struct Vertex;
+    struct FaceIndex;
+    struct EdgeIndex;
 }
 
 
@@ -92,6 +92,25 @@ struct Vector2i
         return *this;
     }
 };
+
+struct Vector2f
+{
+    float x, y;
+
+    Vector2f(float x_ = 0.f, float y_ = 0.f): x(x_), y(y_)
+    {}
+
+    Vector2f(const Vector2f& v) : x(v.x), y(v.y)
+    {}
+
+    inline Vector2f& operator = (const Vector2f& v)
+    {
+        x = v.x;
+        y = v.y;
+        return *this;
+    }
+};
+
 struct Vector3i
 {
     int x, y, z;
@@ -264,6 +283,7 @@ struct Vertex
     Point3f position;
     Color4f color;
     Vector3f normal;
+    Vector2f texcoord;
 
     Vertex() :
         position(Point3f(0.f, 0.f, 0.f)), color(Color4f(0.f, 0.f, 0.f))

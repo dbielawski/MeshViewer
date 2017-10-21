@@ -25,8 +25,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 INCLUDEPATH += include \
 			ext/eigen3 \
+			ext/tinyobjloader\
 			ext/
 
+CONFIG += c++11
 
 
 SOURCES +=  source/main.cpp\
@@ -55,6 +57,8 @@ HEADERS  += include/mainwindow.h \
     include/obj.h \
     include/alignedbox3f.h \
     include/wireboundingbox.h
+
+LIBS += -L$$OUT_PWD/../ext/tinyobjloader/build/ -ltinyobjloader
 
 FORMS    += mainwindow.ui
 
