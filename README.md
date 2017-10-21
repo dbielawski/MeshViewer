@@ -21,6 +21,10 @@ CGAL Polyhedron
 ```
 ## Installation
 ```
+sudo apt-get install libgcal-dev, libcgal-ipelets, libcgal-qt5-dev
+```
+
+```
 mkdir build ; cd build
 cmake ..
 make -j
