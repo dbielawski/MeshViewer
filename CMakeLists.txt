@@ -6,11 +6,15 @@ project(MeshViewer)
 # Tell CMake to compile with C++11
 set(CMAKE_CXX_STANDARD 11)
 
+# Activate optimisation when in release mode
+# Currently CMake automatically uses -o2 option in CXX flags
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -o3")
+
 # Tell CMake to run moc when needed.
 set(CMAKE_AUTOMOC ON)
 
 # Tell CMake to run uic when needed.
-set(CMAKE_AUTOUIC ON)
+#set(CMAKE_AUTOUIC ON)
 
 # Tell CMake to run rcc when needed
 set(CMAKE_AUTORCC ON)
@@ -30,9 +34,15 @@ include_directories(${Qt5OpenGL_INCLUDES})
 
 # Find OpenGL
 find_package(OpenGL REQUIRED)
+if(NOT OPENGL_FOUND)
+	message(FATAL_ERROR "OpenGL not found.")
+endif()
 
 # Find CGAL
 find_package(CGAL REQUIRED)
+if(NOT CGAL_FOUND)
+	message(FATAL_ERROR "CGAL not found. You should try to install libcgal-dev libcgal-qt5-dev and libcgal-ipelets")
+endif()
 include(${CGAL_USE_FILE})
 
 # Set include directories
@@ -48,6 +58,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/ext/tinyobjloader)
 set(RESOURCE resources.qrc)
 # Use Qt5 ui
 set(UI mainwindow.ui)
+qt5_wrap_ui(UIS_H ${UI})
 
 # Adding sources
 set(SOURCES
@@ -79,6 +90,6 @@ set(SOURCES
 	include/wireboundingbox.h)
 
 
-add_executable(${PROJECT_NAME} ${UI} ${RESOURCE} ${SOURCES} )
+add_executable(${PROJECT_NAME} ${UIS_H} ${RESOURCE} ${SOURCES} )
 target_link_libraries(${PROJECT_NAME} tinyobjloader ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES} ${OPENGL_LIBRARIES})
 
