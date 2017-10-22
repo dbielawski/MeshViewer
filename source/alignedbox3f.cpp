@@ -26,8 +26,8 @@ void AlignedBox3f::extend(const Point3f& p)
 
 bool AlignedBox3f::contain(const Point3f& p) const
 {
-    return (m_min.x >= p.x) && (m_min.y >= p.y) && (m_min.z >= p.z)
-            && (m_max.x <= p.x) && (m_max.y <= p.y) && (m_max.z <= p.z);
+    return (m_min.x <= p.x) && (m_min.y <= p.y) && (m_min.z <= p.z)
+           && (m_max.x >= p.x) && (m_max.y >= p.y) && (m_max.z >= p.z);
 }
 
 void AlignedBox3f::reset()

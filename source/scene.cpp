@@ -22,6 +22,7 @@ Scene::Scene() :
     m_camera->setPerspective(60.f, 0.001f, 1000.f);
 
     m_displayBoundingBox = false;
+    m_displayOctree = false;
 
     // Add some lights
     const DirectionalLight* dl1 = new DirectionalLight(Color4f(1, 1, 1), Vector3f(0, 0, 1));
@@ -90,6 +91,9 @@ void Scene::render() const
 
             if (m_displayBoundingBox)
                 m->renderBoundingBox();
+            if(m_displayOctree) {
+                m->renderOctree();
+            }
         }
     }
 }
@@ -121,6 +125,10 @@ void Scene::removeModels()
 void Scene::toggleDisplayBoundingBox()
 {
     m_displayBoundingBox = !m_displayBoundingBox;
+}
+
+void Scene::toggleDisplayOctree() {
+    m_displayOctree = !m_displayOctree;
 }
 
 void Scene::addMesh(Mesh& mesh)

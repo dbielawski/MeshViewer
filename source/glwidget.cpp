@@ -193,6 +193,10 @@ void GLWidget::keyPressEvent(QKeyEvent *event)
         m_scene->toggleDisplayBoundingBox();
         updateGL();
         break;
+    case Qt::Key_O:
+        m_scene->toggleDisplayOctree();
+        updateGL();
+        break;
     default:
         break;
     }

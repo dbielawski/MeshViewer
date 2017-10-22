@@ -8,6 +8,7 @@
 #include "camera.h"
 #include "scene.h"
 #include "wireboundingbox.h"
+#include "coctree.h"
 
 #include <surface_mesh/surface_mesh.h>
 #include <QMessageBox>
@@ -25,6 +26,7 @@ public:
     void init();
     void renderMesh() const;
     void renderBoundingBox() const;
+    void renderOctree() const;
 
 	void rawData(const QVector<Vertex>& vertices,  const QVector<EdgeIndex>& edges, const QVector<FaceIndex>& faces);
     void displayableData(const QVector<Vertex>& vertices, const QVector<FaceIndex>& faces);
@@ -35,7 +37,7 @@ public:
     void buildOctree();
 
     AlignedBox3f* boundingBox() const   { return m_boundingBox; }
-    Octree* octree() const              { return m_octree;      }
+    cOctree* octree() const              { return m_octree;      }
     QMatrix4x4 transform() const        { return m_transform;   }
 
     void attachScene(Scene* scene)      { m_scenePtr = scene; }
@@ -74,7 +76,7 @@ private:
     AlignedBox3f*       m_boundingBox;
     WireBoundingBox*    m_wireBoundingBox;
 
-    Octree*             m_octree;
+    cOctree*             m_octree;
 
     const Scene*        m_scenePtr;
 };

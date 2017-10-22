@@ -51,7 +51,7 @@ void Mesh::init()
     Point3f center = m_boundingBox->center();
     m_transform.translate(-center.x, -center.y, -center.z);
 
-    // buildOctree();
+    buildOctree();
 
     // TODO: Maybe we should move this call ?
     //toHalfedge();
@@ -103,6 +103,12 @@ void Mesh::renderMesh() const
 void Mesh::renderBoundingBox() const
 {
     m_wireBoundingBox->render(*m_scenePtr, m_transform);
+}
+
+
+void Mesh::renderOctree() const
+{
+    m_octree->render(*m_scenePtr, m_transform);
 }
 
 void Mesh::rawData(const QVector<Vertex>& allVertices, const QVector<EdgeIndex>& allEdges, const QVector<FaceIndex>& allFaces)
@@ -162,7 +168,9 @@ void Mesh::computeBoundingBox()
 
 void Mesh::buildOctree()
 {
-    // TODO: implementer
+    m_octree = new cOctree(m_vertices);
+    m_octree->setFunctions(*m_functions);
+    m_octree->build();
 }
 
 void Mesh::saveAsObj(const QString& fileName) const
@@ -243,8 +251,4 @@ void Mesh::toHalfedge() {
         v2 = vertices.at(f.v2);
         m_halfEdge.add_triangle(v0, v1, v2);
     }
-
-    // TODO: Remove
-    // DEBUG LINE : You can view the generated model with Blender or at http://masc.cs.gmu.edu/wiki/ObjViewer
-    m_halfEdge.write("test.off");
 }

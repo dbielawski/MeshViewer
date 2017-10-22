@@ -23,6 +23,7 @@ public:
     void removeModels();
 
     void toggleDisplayBoundingBox();
+    void toggleDisplayOctree();
 
     void addMesh(Mesh& model);
     void addLight(const Light& light);
@@ -59,6 +60,7 @@ private:
     Color4f                 m_backgroundColor;
 
     bool m_displayBoundingBox;
+    bool m_displayOctree;
 };
 
 #endif // SCENE_H
