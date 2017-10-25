@@ -51,7 +51,7 @@ void Mesh::init()
     Point3f center = m_boundingBox->center();
     m_transform.translate(-center.x, -center.y, -center.z);
 
-    buildOctree();
+    //buildOctree();
 
     // TODO: Maybe we should move this call ?
     //toHalfedge();

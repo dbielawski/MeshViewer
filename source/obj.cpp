@@ -7,6 +7,7 @@
 #include <tiny_obj_loader.h>
 
 #include "mesh.h"
+#include "polyhedron.h"
 
 
 obj::obj(const QString &fileName)
@@ -63,6 +64,24 @@ void obj::loadFromFile(const QString &fileName) {
         }
         currentShapeIndex += shapes[i].mesh.indices.size()/3;
         vertexIndexOffset += shapes[i].mesh.positions.size()/3;
+    }
+
+    /* Building the Polyhedron from vertices and faces */
+    Polyhedron P;
+    Polyhedron_builder<HalfedgeDS> builder(m_vertices, m_faces);
+    P.delegate( builder );
+
+    /* Predicat testing to check if the Polyhedron is build properly */
+    if(P.is_valid()) {
+        QMessageBox::critical(0, "Success", "The mesh is valid !");
+    } else {
+        QMessageBox::critical(0, "Error", "The mesh isn't' valid !");
+    }
+
+    if(P.is_closed()) {
+        QMessageBox::critical(0, "Closed", "The mesh is closed !");
+    } else {
+        QMessageBox::critical(0, "Open", "The mesh is open, need to process Hole Filling !");
     }
 }
 

@@ -89,7 +89,9 @@ set(SOURCES
 	include/obj.h
 	include/alignedbox3f.h
         include/wireboundingbox.h
-        include/coctree.h)
+        include/coctree.h
+        include/polyhedron.h
+)
 
 
 add_executable(${PROJECT_NAME} ${UIS_H} ${RESOURCE} ${SOURCES} )
