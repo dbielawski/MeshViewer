@@ -51,7 +51,7 @@ void Mesh::init()
     Point3f center = m_boundingBox->center();
     m_transform.translate(-center.x, -center.y, -center.z);
 
-    //buildOctree();
+    buildOctree();
 
     // TODO: Maybe we should move this call ?
     //toHalfedge();
@@ -108,7 +108,8 @@ void Mesh::renderBoundingBox() const
 
 void Mesh::renderOctree() const
 {
-    m_octree->render(*m_scenePtr, m_transform);
+   //m_wireBoundingBox->render(*m_scenePtr, m_transform);
+   m_octree->render(*m_scenePtr, m_transform);
 }
 
 void Mesh::rawData(const QVector<Vertex>& allVertices, const QVector<EdgeIndex>& allEdges, const QVector<FaceIndex>& allFaces)
