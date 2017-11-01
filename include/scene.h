@@ -41,11 +41,13 @@ public:
     unsigned int edgeCount() const;
     unsigned int lightCount() const { return m_lightList.size();    }
     unsigned int meshCount() const  { return m_meshList.size();     }
+    bool isValid() const;
+    bool isClosed() const;
 
     void saveMesh(const QStringList& fileNames);
 
 private:
-    void loadSahder(QGLShaderProgram* program, const QString& fileName);
+    void loadShader(QGLShaderProgram* program, const QString& fileName);
 
     QVector<const Mesh*>    m_meshList;
     QVector<const Light*>   m_lightList;

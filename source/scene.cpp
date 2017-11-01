@@ -8,6 +8,7 @@
 #include <iostream>
 #include <QDebug>
 
+#include <QMessageBox>
 
 Scene::Scene() :
     m_simpleShaderProgram(new QGLShaderProgram),
@@ -54,8 +55,8 @@ void Scene::saveMesh(const QStringList& fileNames) {
 
 void Scene::init()
 {
-    loadSahder(m_simpleShaderProgram, QString("simpleshader"));
-    loadSahder(m_simpleshadingProgram, QString("simpleshading"));
+    loadShader(m_simpleShaderProgram, QString("simpleshader"));
+    loadShader(m_simpleshadingProgram, QString("simpleshading"));
 }
 
 void Scene::render() const
@@ -128,6 +129,7 @@ void Scene::toggleDisplayBoundingBox()
 }
 
 void Scene::toggleDisplayOctree() {
+    QMessageBox::critical(0, "Display Octree", "This function has been disable.");
     m_displayOctree = !m_displayOctree;
 }
 
@@ -187,7 +189,27 @@ unsigned int Scene::edgeCount() const
     return totalEdgesCount;
 }
 
-void Scene::loadSahder(QGLShaderProgram* program, const QString& fileName)
+bool Scene::isValid() const
+{
+    for (const Mesh* m : m_meshList) {
+        if(!m->isValid()) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool Scene::isClosed() const
+{
+    for (const Mesh* m : m_meshList) {
+        if(!m->isClosed()) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void Scene::loadShader(QGLShaderProgram* program, const QString& fileName)
 {
     if (!program->addShaderFromSourceFile(QGLShader::Vertex, ":/shaders/" + fileName + ".vert"))
     {

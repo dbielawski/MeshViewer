@@ -219,11 +219,20 @@ void MainWindow::updateInfos() const
     unsigned int meshCount = ui->openGLWidget->scene()->meshCount();
     unsigned int lightCount = ui->openGLWidget->scene()->lightCount();
 
+    bool validity = ui->openGLWidget->scene()->isValid();
+    bool closed = ui->openGLWidget->scene()->isClosed();
+
     ui->verticesCount->setText(QString("Vertices: " + QString::number(verticesCount)));
     ui->trianglesCount->setText(QString("Triangles: " + QString::number(trianglesCount)));
     ui->facesCount->setText(QString("Faces: " + QString::number(facesCount)));
     ui->modelCount->setText(QString("Model: " + QString::number(meshCount)));
     ui->lightCount->setText(QString("Light: " + QString::number(lightCount)));
+
+    QString valid = validity ? "<span style=\"color: #27ae60;\">valid</span>" : "<span style=\"color: #c0392b;\">invalid</span>";
+    ui->topoValid->setText(QString("Validity: " + valid));
+
+    QString close = closed ? "<span style=\"color: #27ae60;\">closed<\span>" : "<span style=\"color: #c0392b;\">open</span>";
+    ui->topoClosed->setText(QString("Status: " + close));
 
     ui->pointSizeMax->setText(QString::number(ui->openGLWidget->pointSizeMax()));
 }

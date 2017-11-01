@@ -9,6 +9,7 @@
 #include "scene.h"
 #include "wireboundingbox.h"
 #include "coctree.h"
+#include "polyhedron.h"
 
 #include <surface_mesh/surface_mesh.h>
 #include <QMessageBox>
@@ -28,7 +29,7 @@ public:
     void renderBoundingBox() const;
     void renderOctree() const;
 
-	void rawData(const QVector<Vertex>& vertices,  const QVector<EdgeIndex>& edges, const QVector<FaceIndex>& faces);
+    void rawData(const QVector<Vertex>& vertices,  const QVector<EdgeIndex>& edges, const QVector<FaceIndex>& faces);
     void displayableData(const QVector<Vertex>& vertices, const QVector<FaceIndex>& faces);
 
     void computeNormals();
@@ -42,16 +43,18 @@ public:
 
     void attachScene(Scene* scene)      { m_scenePtr = scene; }
 
-	surface_mesh::Surface_mesh& halfEdgeMesh() { return m_halfEdge; }
+    surface_mesh::Surface_mesh& halfEdgeMesh() { return m_halfEdge; }
     void toHalfedge();
 
     unsigned int verticesCount() const  { return m_vertices.size(); }
     unsigned int trianglesCount() const { return m_faces.size();    }
-	unsigned int facesCount() const     { return m_faces.size();    }
+    unsigned int facesCount() const     { return m_faces.size();    }
     unsigned int edgesCount() const     { return m_allEdges.size();    }
+    bool isValid() const { return m_polyhedron.is_valid(); }
+    bool isClosed() const { return m_polyhedron.is_closed(); }
 
 
-	void saveAsObj(const QString& filename) const;
+    void saveAsObj(const QString& filename) const;
 
 
 private:
@@ -69,7 +72,7 @@ private:
     QVector<Vertex>     m_allVertices;
     QVector<FaceIndex>  m_allFaces;
 
-	surface_mesh::Surface_mesh m_halfEdge;
+    surface_mesh::Surface_mesh m_halfEdge;
 
     QMatrix4x4          m_transform;
 
@@ -79,6 +82,7 @@ private:
     cOctree*             m_octree;
 
     const Scene*        m_scenePtr;
+    Polyhedron          m_polyhedron;
 };
 
 #endif // MESH_H

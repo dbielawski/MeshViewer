@@ -217,6 +217,19 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_6">
          <item>
+          <widget class="QLabel" name="label">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Infos:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QLabel" name="verticesCount">
            <property name="text">
             <string>vertices</string>
@@ -252,6 +265,33 @@
           </widget>
          </item>
          <item>
+          <widget class="QLabel" name="label_2">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Topology:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="topoValid">
+           <property name="text">
+            <string>validity</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="topoClosed">
+           <property name="text">
+            <string>closed</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <spacer name="verticalSpacer_2">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -277,7 +317,7 @@
      <x>0</x>
      <y>0</y>
      <width>887</width>
-     <height>20</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
