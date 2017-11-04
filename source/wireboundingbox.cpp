@@ -3,14 +3,17 @@
 #include "scene.h"
 #include "camera.h"
 
-WireBoundingBox::WireBoundingBox()
-{
+#include <iostream>
 
+WireBoundingBox::WireBoundingBox(const Color4f &color)
+{
+    m_color = color;
 }
 
-WireBoundingBox::WireBoundingBox(const AlignedBox3f& aabb)
+WireBoundingBox::WireBoundingBox(const AlignedBox3f& aabb, const Color4f& color)
 {
     m_aabb = &aabb;
+    m_color = color;
 }
 
 void WireBoundingBox::init()
@@ -38,11 +41,10 @@ void WireBoundingBox::render(const Scene& scene, const QMatrix4x4& transform) co
         program->setUniformValue("mat_view", scene.camera()->viewMatrix());
         program->setUniformValue("mat_proj", scene.camera()->projectionMatrix());
 
+        QVector4D c(m_color.r, m_color.g, m_color.b, m_color.a);
+        program->setAttributeValue("vtx_color", c);
+
         const int vertexLoc = program->attributeLocation("vtx_position");
-
-        float c[4] = {0.f, 1.f, 0.f, 1.f};
-        program->setAttributeArray("vtx_color", GL_FLOAT, &c[0], 4);
-
         if (vertexLoc >= 0)
         {
             m_functionsPtr->glVertexAttribPointer(vertexLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Point3f), (void*)0);

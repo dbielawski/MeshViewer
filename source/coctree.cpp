@@ -113,7 +113,7 @@ void cOctree::render(const Scene &scene, const QMatrix4x4 &transform) const {
 
 void cOctree::renderNode(const Scene &scene, const QMatrix4x4 &transform, Node* currentNode) const {
     for(Node* child : currentNode->childs) {
-        WireBoundingBox* w = new WireBoundingBox(*child->aabb);
+        WireBoundingBox* w = new WireBoundingBox(*child->aabb, Color4f(0, 0, 1.f));
         w->setFunctions(*m_functions);
         w->init();
         w->render(scene, transform);

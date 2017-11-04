@@ -228,11 +228,11 @@ void MainWindow::updateInfos() const
     ui->modelCount->setText(QString("Model: " + QString::number(meshCount)));
     ui->lightCount->setText(QString("Light: " + QString::number(lightCount)));
 
-    QString valid = validity ? "<span style=\"color: #27ae60;\">valid</span>" : "<span style=\"color: #c0392b;\">invalid</span>";
+    QString valid = validity ? "<span style=\"color: #27ae60;\">true</span>" : "<span style=\"color: #c0392b;\">false</span>";
     ui->topoValid->setText(QString("Validity: " + valid));
 
-    QString close = closed ? "<span style=\"color: #27ae60;\">closed<\span>" : "<span style=\"color: #c0392b;\">open</span>";
-    ui->topoClosed->setText(QString("Status: " + close));
+    QString close = closed ? "<span style=\"color: #27ae60;\">true<\span>" : "<span style=\"color: #c0392b;\">false</span>";
+    ui->topoClosed->setText(QString("Closed: " + close));
 
     ui->pointSizeMax->setText(QString::number(ui->openGLWidget->pointSizeMax()));
 }
