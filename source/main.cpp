@@ -18,3 +18,11 @@ int main(int argc, char *argv[])
 
     return a.exec();
 }
+
+// TODO: comprendre pourquoi la transparence ne fonctionne plus !!!!!
+
+// TODO: faire des tests sur des OBJ bidons (vide, avec un seul point, indice de face..)
+// TODO: refaire le code pour les PGM3D (juste les indices des faces)
+// TODO: refaire le code pour les calculs des normales
+
+// TODO: NETTOYER LE CODE

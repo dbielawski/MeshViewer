@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 # Activate optimisation when in release mode
 # Currently CMake automatically uses -o2 option in CXX flags
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -o3")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -o3 -w")
 
 # Tell CMake to run moc when needed.
 set(CMAKE_AUTOMOC ON)
@@ -64,7 +64,6 @@ qt5_wrap_ui(UIS_H ${UI})
 set(SOURCES
  	source/main.cpp
     	source/mainwindow.cpp
-    	source/octree.cpp
     	source/mesh.cpp
     	source/pgm3d.cpp
     	source/glwidget.cpp
@@ -78,7 +77,6 @@ set(SOURCES
 
 	include/mainwindow.h
 	include/utils.h
-	include/octree.h
 	include/mesh.h
 	include/pgm3d.h
 	include/glwidget.h

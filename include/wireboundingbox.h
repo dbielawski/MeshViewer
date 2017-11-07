@@ -18,16 +18,16 @@ public:
     void init();
     void render(const Scene& scene, const QMatrix4x4& transform) const;
 
-    void setAlignedBox(const AlignedBox3f& aabb)    { m_aabb = &aabb; }
-    void setColor(const Color4f& color)             { m_color = color; }
-    void setFunctions(QGLFunctions& f)              { m_functionsPtr = &f; }
+    void setAlignedBox(const AlignedBox3f& aabb)    { m_aabb = &aabb;       }
+    void setColor(const Color4f& color)             { m_color = color;      }
+    void setFunctions(QGLFunctions& f)              { m_functionsPtr = &f;  }
 
 private:
     void computeBox();
 
-    QGLFunctions* m_functionsPtr;
+    QGLFunctions*       m_functionsPtr;
     const AlignedBox3f* m_aabb;
-    Color4f m_color;
+    Color4f             m_color;
 
     uint    m_vertexBufferId;
     uint    m_indexBufferId;

@@ -10,6 +10,7 @@
 #include "mesh.h"
 #include "camera.h"
 #include "light.h"
+#include <GL/gl.h>
 
 
 GLWidget::GLWidget(QWidget *parent) :
@@ -17,14 +18,13 @@ GLWidget::GLWidget(QWidget *parent) :
     m_scene(new Scene),
     m_displayModeIndex(EDisplayMode::FILL)
 {
-    QGLFormat glFormat;
-    glFormat.setVersion(3, 3);
-    //    glFormat.setProfile(QGLFormat::CoreProfile); // Requires >=Qt-4.8.0
-    glFormat.setSampleBuffers(true);
+    //QGLFormat glFormat;
+    //glFormat.setVersion(3, 3);
+    //glFormat.setProfile(QGLFormat::CompatibilityProfile); // Requires >=Qt-4.8.0
+    //glFormat.setSampleBuffers(true);
 
-    this->setFormat(glFormat);
+    //this->setFormat(glFormat);
     setFocusPolicy( Qt::StrongFocus );
-
 
     m_wheelButtonPressed = false;
     m_leftButtonPressed = false;
@@ -39,12 +39,6 @@ GLWidget::GLWidget(QWidget *parent) :
 GLWidget::~GLWidget()
 {
     delete m_scene;
-}
-
-void GLWidget::changeSceneColor(const Color4f& c) {
-	m_scene->setBackgroundColor(c);
-	glClearColor(c.r, c.g, c.b, 1.0f);
-	updateGL();
 }
 
 void GLWidget::initializeGL()
@@ -71,6 +65,14 @@ void GLWidget::resizeGL(int w, int h)
 
     m_scene->camera()->setSize(w, h);
     m_scene->camera()->setViewport(0, 0, w, h);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    m_scene->camera()->projectionMatrix();
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    m_scene->camera()->viewMatrix();
 }
 
 void GLWidget::paintGL()
@@ -79,7 +81,21 @@ void GLWidget::paintGL()
 
     glPolygonMode(GL_FRONT_AND_BACK, m_displayModeValues[m_displayModeIndex]);
 
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glMultMatrixf(m_scene->camera()->projectionMatrix().constData());
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glMultMatrixf(m_scene->camera()->viewMatrix().constData());
+
     m_scene->render();
+}
+
+void GLWidget::changeSceneColor(const Color4f& c) {
+    m_scene->setBackgroundColor(c);
+    glClearColor(c.r, c.g, c.b, 1.0f);
+    updateGL();
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent *event)

@@ -172,8 +172,10 @@ void MainWindow::onAlphaChanged(int alpha)
 {
     ui->alphaValue->setText(QString::number(alpha));
     float alpha_val = alpha / 255.0;
+    ui->openGLWidget->scene()->setTransparency(alpha_val);
     ui->openGLWidget->scene()->simpleShadingProgram()->bind();
     ui->openGLWidget->scene()->simpleShadingProgram()->setUniformValue("alpha_val", alpha_val);
+    ui->openGLWidget->scene()->simpleShadingProgram()->release();
     ui->openGLWidget->updateGL();
 }
 
@@ -226,7 +228,7 @@ void MainWindow::updateInfos() const
     ui->trianglesCount->setText(QString("Triangles: " + QString::number(trianglesCount)));
     ui->facesCount->setText(QString("Faces: " + QString::number(facesCount)));
     ui->modelCount->setText(QString("Model: " + QString::number(meshCount)));
-    ui->lightCount->setText(QString("Light: " + QString::number(lightCount)));
+    ui->lightCount->setText(QString("Lights: " + QString::number(lightCount)));
 
     QString valid = validity ? "<span style=\"color: #27ae60;\">true</span>" : "<span style=\"color: #c0392b;\">false</span>";
     ui->topoValid->setText(QString("Validity: " + valid));
