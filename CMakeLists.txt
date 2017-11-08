@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 # Activate optimisation when in release mode
 # Currently CMake automatically uses -o2 option in CXX flags
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -o3")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -o3 -w")
 
 # Tell CMake to run moc when needed.
 set(CMAKE_AUTOMOC ON)

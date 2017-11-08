@@ -2,6 +2,10 @@
 
 #include <QGLFunctions>
 #include <QGLShaderProgram>
+#include <map>
+#include <iostream>
+#include <CGAL/Vector_3.h>
+#include <CGAL/Origin.h>
 
 
 Mesh::Mesh() :
@@ -51,11 +55,12 @@ void Mesh::init()
     Point3f center = m_boundingBox->center();
     m_transform.translate(-center.x, -center.y, -center.z);
 
-    //buildOctree();
+    buildOctree();
 
     /* Building the Polyhedron from vertices and faces */
     Polyhedron_builder<HalfedgeDS>builder(m_vertices, m_faces);
     m_polyhedron.delegate(builder);
+    fillHoles();
 
     // TODO: Maybe we should move this call ?
     //toHalfedge();
@@ -255,5 +260,71 @@ void Mesh::toHalfedge() {
         v1 = vertices.at(f.v1);
         v2 = vertices.at(f.v2);
         m_halfEdge.add_triangle(v0, v1, v2);
+    }
+}
+
+
+/* ====================================== */
+
+typedef CGAL::Simple_cartesian<double>                  Kernel;
+typedef CGAL::Polyhedron_3<Kernel>                      Polyhedron;
+typedef Polyhedron::Halfedge_handle                     Halfedge_handle;
+typedef Polyhedron::Halfedge_iterator                   Halfedge_iterator;
+typedef Polyhedron::Vertex_iterator                     Vertex_iterator;
+typedef Polyhedron::Face_iterator                       Face_iterator;
+typedef Polyhedron::Halfedge_around_facet_circulator    Halfedge_facet_circulator;
+
+// http://cgal-discuss.949826.n4.nabble.com/Using-Polyhedron-fill-hole-td4657972.html
+
+void Mesh::fillHoles() {
+    // Fill hole in the polyhedron
+    for (Halfedge_iterator heit = m_polyhedron.halfedges_begin(); heit != m_polyhedron.halfedges_end(); heit++) {
+        if (heit->is_border()) { // If there is a hole
+            Kernel::Vector_3 vec(0.0, 0.0, 0.0);
+            size_t order = 0;
+            Halfedge_iterator heit2 = heit;
+            do {
+                vec = vec + (heit2->vertex()->point() - CGAL::ORIGIN);
+                order++;
+                heit2 = heit2->next();
+            } while (heit2 != heit);
+            CGAL_assertion(order >= 3);
+            Kernel::Point_3 center = CGAL::ORIGIN + (vec / static_cast<double>(order));
+
+            // Fill hole
+            m_polyhedron.fill_hole(heit);
+            Halfedge_handle new_center = m_polyhedron.create_center_vertex(heit);
+            new_center->vertex()->point() = center;
+        }
+    }
+
+    m_polyhedron.normalize_border(); // Normalize all the borders just to be sure
+
+    // Update m_vertices & m_faces with the new data from the filled polyhedron
+    m_vertices.clear();
+    unsigned int nb_vertices = 1;
+    std::map<const Polyhedron::Vertex *, unsigned int> mapping;
+    for(Vertex_iterator vit = m_polyhedron.vertices_begin(); vit != m_polyhedron.vertices_end(); vit++) {
+        m_vertices.push_back(Vertex(Point3f(vit->point().x(), vit->point().y(), vit->point().z()), Color4f(0.5, 0.5, 0.5)));
+        mapping[&*vit] = nb_vertices++;
+               // .insert(std::pair<Polyhedron::Vertex, unsigned int>(&*vit, nb_vertices++));
+    }
+
+    m_faces.clear();
+    int nb_faces = 0;
+    for(Face_iterator fit = m_polyhedron.facets_begin(); fit != m_polyhedron.facets_end(); fit++) {
+        Halfedge_facet_circulator hfc = fit->facet_begin();
+        CGAL_assertion(CGAL::circulator_size(hfc) >= 3);
+
+        int nb_vertices = 0;
+        QVector<unsigned int> face;
+        do {
+            face.append(mapping[&*(hfc->vertex())]);
+            hfc++;
+        } while (hfc != fit->facet_begin());
+
+        m_faces.append(face);
+
+        // Rotate around half edge and get all vertices to make the face
     }
 }

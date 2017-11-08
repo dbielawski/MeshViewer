@@ -129,7 +129,7 @@ void Scene::toggleDisplayBoundingBox()
 }
 
 void Scene::toggleDisplayOctree() {
-    QMessageBox::critical(0, "Display Octree", "This function has been disable.");
+    QMessageBox::critical(0, "Display Octree", "This function has been disabled.");
     m_displayOctree = !m_displayOctree;
 }
 
