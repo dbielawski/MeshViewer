@@ -54,6 +54,8 @@ void WireBoundingBox::render(const Scene& scene, const QMatrix4x4& transform) co
         glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, (void*)0);
 
         if (vertexLoc >= 0) m_functionsPtr->glDisableVertexAttribArray(vertexLoc);
+
+        scene.simpleShaderProgram()->release();
     }
 }
 

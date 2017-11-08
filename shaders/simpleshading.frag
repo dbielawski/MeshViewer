@@ -1,6 +1,6 @@
 #version 330 core
 
-#define MAX_LIGHTS 5
+#define MAX_LIGHTS_NB 6
 
 in vec4 color;
 in vec3 normal;
@@ -17,7 +17,7 @@ struct LightInfo
 
 uniform float alpha_val = 1.0;
 
-uniform LightInfo lights[4];
+uniform LightInfo lights[6];
 
 
 vec3 shade(vec3 n, vec3 light_dir, vec3 diffuse, vec3 lightIntensity)
@@ -33,7 +33,7 @@ void main(void)
 {
     vec3 c = vec3(0.f);
 
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 6; ++i)
     {
         c += shade(normal, lights[i].direction, color.rgb, lights[i].intensity);
     }

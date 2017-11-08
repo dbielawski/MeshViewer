@@ -17,15 +17,18 @@ namespace arm {
     struct EdgeIndex;
 }
 
+typedef QVector<unsigned int> FaceIndex;
 
-struct FaceIndex
-{
-    unsigned int v0, v1, v2;
+//struct FaceIndex
+//{
+////    unsigned int v0, v1, v2;
 
-    FaceIndex(unsigned int x_ = 1, unsigned int y_ = 2, unsigned int z_ = 3):
-	v0(x_), v1(y_), v2(z_)
-    {}
-};
+////    FaceIndex(unsigned int x_ = 1, unsigned int y_ = 2, unsigned int z_ = 3):
+////	v0(x_), v1(y_), v2(z_)
+////    {}
+
+//    QVector<unsigned int> index;
+//};
 
 struct EdgeIndex
 {
@@ -49,6 +52,11 @@ struct Color4f
     Color4f(const Color4f& c):
         r(c.r), g(c.g), b(c.b), a(c.a)
     {}
+
+    static Color4f gray()
+    {
+        return Color4f(.5, .5, .5, 1.f);
+    }
 
     inline Color4f& operator += (const Color4f& c)
     {

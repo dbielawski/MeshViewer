@@ -17,7 +17,8 @@ typedef CGAL::Polyhedron_3<Kernel>                      Polyhedron;
 // Used in the builder (obj.h)
 typedef Polyhedron::HalfedgeDS                          HalfedgeDS;
 
-template <class HDS> class Polyhedron_builder: public CGAL::Modifier_base<HDS> {
+template <class HDS>
+class Polyhedron_builder: public CGAL::Modifier_base<HDS> {
 
 public:
     typedef HDS Half_edge_data_structure;
@@ -43,9 +44,10 @@ void Polyhedron_builder<HDS>::operator()(HDS& hds) {
 
     for (FaceIndex face: m_faces) {
         B.begin_facet();
-        B.add_vertex_to_facet(face.v0);
-        B.add_vertex_to_facet(face.v1);
-        B.add_vertex_to_facet(face.v2);
+        for (int i = 0 ; i < face.size(); ++i)
+        {
+            B.add_vertex_to_facet(face.at(i));
+        }
         B.end_facet();
     }
 }

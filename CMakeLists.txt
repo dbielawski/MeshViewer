@@ -64,7 +64,6 @@ qt5_wrap_ui(UIS_H ${UI})
 set(SOURCES
  	source/main.cpp
     	source/mainwindow.cpp
-    	source/octree.cpp
     	source/mesh.cpp
     	source/pgm3d.cpp
     	source/glwidget.cpp
@@ -78,7 +77,6 @@ set(SOURCES
 
 	include/mainwindow.h
 	include/utils.h
-	include/octree.h
 	include/mesh.h
 	include/pgm3d.h
 	include/glwidget.h

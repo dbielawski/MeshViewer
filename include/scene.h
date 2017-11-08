@@ -35,6 +35,9 @@ public:
     QGLShaderProgram* simpleShaderProgram() const   { return m_simpleShaderProgram;  }
     QGLShaderProgram* simpleShadingProgram() const  { return m_simpleshadingProgram; }
 
+    void setTransparency(float t);
+    float transparency() const { return m_transparency; }
+
     unsigned int vertexCount() const;
     unsigned int triangleCount() const;
     unsigned int faceCount() const;
@@ -63,6 +66,8 @@ private:
 
     bool m_displayBoundingBox;
     bool m_displayOctree;
+
+    float m_transparency;
 };
 
 #endif // SCENE_H
