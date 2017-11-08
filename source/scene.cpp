@@ -62,6 +62,31 @@ void Scene::init()
     GLfloat diffuse[] = {1.0, 1.0, 1.0, 1.0};
     glLightfv(GL_LIGHT0, GL_POSITION, pos0);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+
+    glEnable(GL_LIGHT1);
+    GLfloat pos1[] = {10.0, 0.0, 0.0, 1.0};
+    glLightfv(GL_LIGHT1, GL_POSITION, pos1);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
+
+    glEnable(GL_LIGHT2);
+    GLfloat pos2[] = {0.0, 10.0, 0.0, 1.0};
+    glLightfv(GL_LIGHT2, GL_POSITION, pos2);
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, diffuse);
+
+    glEnable(GL_LIGHT3);
+    GLfloat pos3[] = {0.0, -10.0, 0.0, 1.0};
+    glLightfv(GL_LIGHT3, GL_POSITION, pos3);
+    glLightfv(GL_LIGHT3, GL_DIFFUSE, diffuse);
+
+    glEnable(GL_LIGHT4);
+    GLfloat pos4[] = {0.0, 0.0, 10.0, 1.0};
+    glLightfv(GL_LIGHT4, GL_POSITION, pos4);
+    glLightfv(GL_LIGHT4, GL_DIFFUSE, diffuse);
+
+    glEnable(GL_LIGHT5);
+    GLfloat pos5[] = {0.0, 0.0, -10.0, 1.0};
+    glLightfv(GL_LIGHT5, GL_POSITION, pos5);
+    glLightfv(GL_LIGHT5, GL_DIFFUSE, diffuse);
 }
 
 void Scene::render() const

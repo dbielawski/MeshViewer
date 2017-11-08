@@ -138,7 +138,6 @@ void Mesh::renderMesh() const
         {
             const Vertex &vertex = m_vertices.at(index);
 
-            qDebug() << vertex.color.r << vertex.color.g << vertex.color.b << m_scenePtr->transparency();
             glColor4f(vertex.color.r, vertex.color.g, vertex.color.b, m_scenePtr->transparency());
             glVertex3f(vertex.position.x, vertex.position.y, vertex.position.z);
         }
@@ -336,21 +335,17 @@ void Mesh::fillHoles() {
 
     // Update m_vertices & m_faces with the new data from the filled polyhedron
     m_vertices.clear();
-    unsigned int nb_vertices = 1;
+    unsigned int nb_vertices = 0;
     std::map<const Polyhedron::Vertex *, unsigned int> mapping;
     for(Vertex_iterator vit = m_polyhedron.vertices_begin(); vit != m_polyhedron.vertices_end(); vit++) {
         m_vertices.push_back(Vertex(Point3f(vit->point().x(), vit->point().y(), vit->point().z()), Color4f(0.5, 0.5, 0.5)));
         mapping[&*vit] = nb_vertices++;
-               // .insert(std::pair<Polyhedron::Vertex, unsigned int>(&*vit, nb_vertices++));
     }
 
     m_faces.clear();
-    int nb_faces = 0;
     for(Face_iterator fit = m_polyhedron.facets_begin(); fit != m_polyhedron.facets_end(); fit++) {
         Halfedge_facet_circulator hfc = fit->facet_begin();
-        CGAL_assertion(CGAL::circulator_size(hfc) >= 3);
 
-        int nb_vertices = 0;
         QVector<unsigned int> face;
         do {
             face.append(mapping[&*(hfc->vertex())]);
@@ -358,7 +353,5 @@ void Mesh::fillHoles() {
         } while (hfc != fit->facet_begin());
 
         m_faces.append(face);
-
-        // Rotate around half edge and get all vertices to make the face
     }
 }
