@@ -62,7 +62,7 @@ void Mesh::init()
     Point3f center = m_boundingBox->center();
     m_transform.translate(-center.x, -center.y, -center.z);
 
-    buildOctree();
+    //buildOctree();
 
     /* Building the Polyhedron from vertices and faces */
     Polyhedron_builder<HalfedgeDS>builder(m_vertices, m_faces);
