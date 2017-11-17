@@ -8,7 +8,7 @@
 #include "camera.h"
 #include "scene.h"
 #include "wireboundingbox.h"
-#include "coctree.h"
+#include "octree.h"
 #include "polyhedron.h"
 
 #include <surface_mesh/surface_mesh.h>
@@ -38,13 +38,12 @@ public:
     void buildOctree();
 
     AlignedBox3f* boundingBox() const   { return m_boundingBox; }
-    cOctree* octree() const              { return m_octree;      }
+    Octree* octree() const              { return m_octree;      }
     QMatrix4x4 transform() const        { return m_transform;   }
 
     void attachScene(Scene* scene)      { m_scenePtr = scene; }
 
     surface_mesh::Surface_mesh& halfEdgeMesh() { return m_halfEdge; }
-    void toHalfedge();
 
     unsigned int verticesCount() const  { return m_vertices.size(); }
     unsigned int trianglesCount() const { return m_faces.size();    }
@@ -79,7 +78,7 @@ private:
     AlignedBox3f*       m_boundingBox;
     WireBoundingBox*    m_wireBoundingBox;
 
-    cOctree*             m_octree;
+    Octree*             m_octree;
 
     const Scene*        m_scenePtr;
     Polyhedron          m_polyhedron;

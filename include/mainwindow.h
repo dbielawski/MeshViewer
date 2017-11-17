@@ -30,6 +30,9 @@ private slots:
     void onPointSizeChanged(int);
 
     void onToggleDisplayBoundingBox();
+	void onToggleDisplayOctree();
+	
+	void holeFillingAction();
 
     void onDrawPoint();
     void onDrawLine();
@@ -55,9 +58,13 @@ private:
 
     QMenu*      m_displayMenu;
     QAction*    m_toggleDisplayBoundingBoxAction;
+    QAction*    m_toggleDisplayOctreeAction;
     QAction*    m_drawPointsAction;
     QAction*    m_drawLinesAction;
     QAction*    m_drawFilledAction;
+	
+	QMenu* 		m_actionMenu;
+	QAction*	m_holeFillingAction;
 };
 
 #endif // MAINWINDOW_H

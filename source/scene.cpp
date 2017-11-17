@@ -160,8 +160,8 @@ void Scene::toggleDisplayBoundingBox()
     m_displayBoundingBox = !m_displayBoundingBox;
 }
 
-void Scene::toggleDisplayOctree() {
-    QMessageBox::critical(0, "Display Octree", "This function has been disabled.");
+void Scene::toggleDisplayOctree() 
+{
     m_displayOctree = !m_displayOctree;
 }
 

@@ -1,14 +1,16 @@
-#ifndef COCTREE_H
-#define COCTREE_H
+#ifndef OCTREE_H
+#define OCTREE_H
 
 #include "utils.h"
 #include "alignedbox3f.h"
 #include "scene.h"
+#include "wireboundingbox.h"
 
 #include <QVector>
 #include <QGLFunctions>
+#include <iostream>
 
-class cOctree
+class Octree
 {
 public:
 
@@ -21,12 +23,21 @@ public:
     struct Node {
         AlignedBox3f* aabb;
         Node* parent;
+		WireBoundingBox* box;
         QVector<Node*> childs;
         QVector<Vertex> objects;
         bool isEmpty() { return objects.size() == 0; }
+		~Node() {
+			delete aabb;
+			delete box;
+			for(Node* child : childs) {
+				delete child;
+			}
+		}
     };
 
-    cOctree(const QVector<Vertex>& vertices);
+    Octree(const QVector<Vertex>& vertices, uint m_minObj = 5);
+	~Octree() { delete m_octree; };
     void build();
     void buildNode(Node* parent);
 
@@ -41,6 +52,8 @@ private:
     // This is a list of all the nodes containted in the octree
     Node* m_octree;
 
+	uint m_minObj;
+	uint m_size;
     QGLFunctions* m_functions;
 };
 

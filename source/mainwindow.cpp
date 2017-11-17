@@ -49,11 +49,15 @@ void MainWindow::createMenus()
 
     m_displayMenu = menuBar()->addMenu(tr("&Display"));
     m_displayMenu->addAction(m_toggleDisplayBoundingBoxAction);
+	m_displayMenu->addAction(m_toggleDisplayOctreeAction);
     m_displayMenu->addSeparator();
     m_displayMenu->addAction(m_drawPointsAction);
     m_displayMenu->addAction(m_drawLinesAction);
     m_displayMenu->addAction(m_drawFilledAction);
     m_displayMenu->setEnabled(false);
+	
+	m_actionMenu = menuBar()->addMenu(tr("&Actions"));
+	m_actionMenu->addAction(m_holeFillingAction);
 }
 
 void MainWindow::createActions()
@@ -81,6 +85,10 @@ void MainWindow::createActions()
     m_toggleDisplayBoundingBoxAction = new QAction(tr("&Render AABB"), this);
     m_toggleDisplayBoundingBoxAction->setStatusTip(tr("Display the bounding box of the model | Toggle press B"));
     connect(m_toggleDisplayBoundingBoxAction, SIGNAL(triggered(bool)), this, SLOT(onToggleDisplayBoundingBox()));
+	
+    m_toggleDisplayOctreeAction = new QAction(tr("&Render Octree"), this);
+    m_toggleDisplayOctreeAction->setStatusTip(tr("Display the built octree of the model | Toggle press O"));
+    connect(m_toggleDisplayOctreeAction, SIGNAL(triggered(bool)), this, SLOT(onToggleDisplayOctree()));
 
     m_drawPointsAction = new QAction(tr("&Points"), this);
     m_drawPointsAction->setStatusTip(tr("Render the model in point mode | Press M to switch"));
@@ -96,6 +104,10 @@ void MainWindow::createActions()
 
     connect(ui->transparencySlider, SIGNAL(valueChanged(int)), this, SLOT(onAlphaChanged(int)));
     connect(ui->pointSizeSlider,SIGNAL(valueChanged(int)), this, SLOT(onPointSizeChanged(int)));
+	
+	m_holeFillingAction = new QAction(tr("&Fill Holes"), this);
+	m_holeFillingAction->setStatusTip(tr("Fill holes in the current model | Press H to process."));
+	connect(m_holeFillingAction, SIGNAL(triggered(bool)), this, SLOT(holeFillingAction()));
 
     // Update infos in the right panel (vertices/faces count...)
     updateInfos();
@@ -192,6 +204,12 @@ void MainWindow::onToggleDisplayBoundingBox()
     ui->openGLWidget->updateGL();
 }
 
+void MainWindow::onToggleDisplayOctree()
+{	
+	ui->openGLWidget->scene()->toggleDisplayOctree();
+	ui->openGLWidget->updateGL();
+}
+
 void MainWindow::onDrawPoint()
 {
     setDraw(GLWidget::EDisplayMode::POINT);
@@ -215,26 +233,31 @@ void MainWindow::setDraw(unsigned int value)
 
 void MainWindow::updateInfos() const
 {
+    unsigned int meshCount = ui->openGLWidget->scene()->meshCount();
     unsigned int verticesCount = ui->openGLWidget->scene()->vertexCount();
     unsigned int trianglesCount = ui->openGLWidget->scene()->triangleCount();
     unsigned int facesCount = ui->openGLWidget->scene()->faceCount();
-    unsigned int meshCount = ui->openGLWidget->scene()->meshCount();
     unsigned int lightCount = ui->openGLWidget->scene()->lightCount();
-
-    bool validity = ui->openGLWidget->scene()->isValid();
-    bool closed = ui->openGLWidget->scene()->isClosed();
-
+	
     ui->verticesCount->setText(QString("Vertices: " + QString::number(verticesCount)));
     ui->trianglesCount->setText(QString("Triangles: " + QString::number(trianglesCount)));
     ui->facesCount->setText(QString("Faces: " + QString::number(facesCount)));
     ui->modelCount->setText(QString("Model: " + QString::number(meshCount)));
     ui->lightCount->setText(QString("Lights: " + QString::number(lightCount)));
+	
+	if(meshCount != 0) {
+		bool validity = ui->openGLWidget->scene()->isValid();
+		bool closed = ui->openGLWidget->scene()->isClosed();
 
-    QString valid = validity ? "<span style=\"color: #27ae60;\">true</span>" : "<span style=\"color: #c0392b;\">false</span>";
-    ui->topoValid->setText(QString("Validity: " + valid));
+		QString valid = validity ? "<span style=\"color: #27ae60;\">true</span>" : "<span style=\"color: #c0392b;\">false</span>";
+		ui->topoValid->setText(QString("Validity: " + valid));
 
-    QString close = closed ? "<span style=\"color: #27ae60;\">true<\span>" : "<span style=\"color: #c0392b;\">false</span>";
-    ui->topoClosed->setText(QString("Closed: " + close));
+		QString close = closed ? "<span style=\"color: #27ae60;\">true<\span>" : "<span style=\"color: #c0392b;\">false</span>";
+		ui->topoClosed->setText(QString("Closed: " + close));
+	} else {
+		ui->topoValid->setText(QString("Validity: ???"));
+		ui->topoClosed->setText(QString("Closed: ???"));
+	}
 
     ui->pointSizeMax->setText(QString::number(ui->openGLWidget->pointSizeMax()));
 }
@@ -245,4 +268,13 @@ void MainWindow::onBackgroundColorScene()
     Color4f color(c.red()/255.0, c.green()/255.0, c.blue()/255.0);
     ui->openGLWidget->changeSceneColor(color);
     ui->openGLWidget->updateGL();
+}
+
+
+void MainWindow::holeFillingAction()
+{
+	//TODO: Of course, since EVERY-FUCKING-THING is const it is impossible to perform treatment
+	// on the mesh from the mainwindow ...
+	//ui->openGLWidget->scene()->fillHoles();
+	//ui->openGLWIdget->updateGL();
 }

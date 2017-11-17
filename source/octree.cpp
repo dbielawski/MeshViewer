@@ -1,14 +1,14 @@
-#include "coctree.h"
+#include "octree.h"
 
 #include "wireboundingbox.h"
 
 
 #include <iostream>
 
-cOctree::cOctree(const QVector<Vertex>& vertices) : m_vertices(vertices){
+Octree::Octree(const QVector<Vertex>& vertices, uint minObj) : m_vertices(vertices), m_minObj(minObj) {
 }
 
-void cOctree::build() {
+void Octree::build() {
     // Creating first node which is the big one with everyone inside
     AlignedBox3f* aabb = new AlignedBox3f();
     for(const Vertex v : m_vertices) {
@@ -19,17 +19,30 @@ void cOctree::build() {
     mainNode->parent = NULL;
     mainNode->aabb = aabb;
     mainNode->objects = m_vertices;
+	mainNode->box = new WireBoundingBox(*mainNode->aabb);
+	mainNode->box->setFunctions(*m_functions);
+	mainNode->box->init();
 
     m_octree = mainNode;
-    buildNode(mainNode);
+	
+	m_size++;
+    
+	buildNode(mainNode);
+	
+	std::cout << "Finished Octree buildind. " << std::endl << "Octree size: " << m_size << std::endl; 
 }
 
-void::cOctree::buildNode(Node* parent) {
-    // If we have no more objects we can stop the recursion
+void::Octree::buildNode(Node* parent) {
     QVector<Vertex> objects = parent->objects;
-    if(objects.size() <= 5) {
+	// If the boxes are too small we stop the recursion
+    if(objects.size() <= m_minObj || 
+		(parent->aabb->size().x <= 0.00001 
+		&& parent->aabb->size().y <= 0.00001 
+		&& parent->aabb->size().z <= 0.00001)) {
         return;
     }
+	
+	m_size++;
 
     AlignedBox3f* aabb = parent->aabb;
 
@@ -39,7 +52,7 @@ void::cOctree::buildNode(Node* parent) {
     //Vector3f halfV = aabb.size() / 2;
     //Point3f half = Point3f(halfV.x, halfV.y, halfV.z);
 
-    /* Boxes had be written considering the following axis
+    /* Boxes has been written considering the following axis
      *
      *    | y
      *    |
@@ -49,29 +62,22 @@ void::cOctree::buildNode(Node* parent) {
      *
     */
 
-    // TODO: Try to wrap this in for a loop ? Maybe impossible using min and max pos that's why I rewritten the expression using half vector
-    AlignedBox3f* aabb_nodes[8];
+	AlignedBox3f* aabb_nodes[8];
     // Front Top left
-    //aabb_nodes[0] = AlignedBox3f(Point3f(center.x - half.x, center.y, center.z + half.z), Point3f(center.x, center.y + half.y, center.z));
     aabb_nodes[0] = new AlignedBox3f(Point3f(min.x, center.y, min.z), Point3f(center.x, max.y, center.z));
     // Front Top Right
-    //aabb_nodes[1] = AlignedBox3f(Point3f(center.x, center.y, center.z + half.z), Point3f(center.x + half.x, center.y + half.y, center.z));
     aabb_nodes[1] = new AlignedBox3f(Point3f(center.x, center.y, min.z), Point3f(max.x, max.y, center.z));
     // Front Bot Left
     aabb_nodes[2] = new AlignedBox3f(min, center);
     // Front Bot Right
-    //aabb_nodes[3] = AlignedBox3f(Point3f(center.x, center.y - half.y, center.z - half.z), Point3f(center.x + half.x, center.y, center.z));
     aabb_nodes[3] = new AlignedBox3f(Point3f(center.y, min.y, min.z), Point3f(max.x, center.y, center.z));
     // Back Top Left
-    //aabb_nodes[4] = AlignedBox3f(Point3f(center.x - half.x, center.y, center.z), Point3f(center.x, center.y + half.y, center.z - half.z));
     aabb_nodes[4] = new AlignedBox3f(Point3f(min.x, center.y, center.z), Point3f(center.x, max.y, max.z));
     // Back Top Right
     aabb_nodes[5] = new AlignedBox3f(center, max);
     // Back Bot Left
-    //aabb_nodes[6] = AlignedBox3f(Point3f(center.x - half.x, center.y - half.y, center.z), Point3f(center.x, center.y, center.z - half.z));
     aabb_nodes[6] = new AlignedBox3f(Point3f(min.x, min.y, center.z), Point3f(center.x, center.y, max.z));
     // Back Bot Right
-    //aabb_nodes[7] = AlignedBox3f(Point3f(center.x, center.y - half.y, center.z), Point3f(center.x + half.x, center.y, center.y + half.z));
     aabb_nodes[7] = new AlignedBox3f(Point3f(center.x, min.y, center.z), Point3f(max.x, center.y, max.z));
 
     QVector<Vertex> objs[8];
@@ -95,29 +101,23 @@ void::cOctree::buildNode(Node* parent) {
             n->aabb = aabb_nodes[i];
             n->objects = objs[i];
             n->parent = parent;
+			n->box = new WireBoundingBox(*n->aabb, Color4f(0.f, 0.f, 1.f));
+			n->box->setFunctions(*m_functions);
+			n->box->init();
             parent->childs.push_back(n);
-
             buildNode(n);
         }
     }
 }
 
-void cOctree::render(const Scene &scene, const QMatrix4x4 &transform) const {
-    WireBoundingBox* w = new WireBoundingBox(*m_octree->aabb);
-    w->setFunctions(*m_functions);
-    w->init();
-    w->render(scene, transform);
-
+void Octree::render(const Scene &scene, const QMatrix4x4 &transform) const {
+    m_octree->box->render(scene, transform);
     renderNode(scene, transform, m_octree);
 }
 
-void cOctree::renderNode(const Scene &scene, const QMatrix4x4 &transform, Node* currentNode) const {
-    // TODO: clean new dans une boucle !!
-    for(Node* child : currentNode->childs) {
-        WireBoundingBox* w = new WireBoundingBox(*child->aabb, Color4f(0, 0, 1.f));
-        w->setFunctions(*m_functions);
-        w->init();
-        w->render(scene, transform);
+void Octree::renderNode(const Scene &scene, const QMatrix4x4 &transform, Node* currentNode) const {
+    for(Node* child : currentNode->childs) {;
+		child->box->render(scene, transform);
         renderNode(scene, transform, child);
     }
 }

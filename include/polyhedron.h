@@ -13,8 +13,6 @@
 typedef CGAL::Simple_cartesian<double>                  Kernel;
 typedef Kernel::Point_3                                 Point_3;
 typedef CGAL::Polyhedron_3<Kernel>                      Polyhedron;
-
-// Used in the builder (obj.h)
 typedef Polyhedron::HalfedgeDS                          HalfedgeDS;
 
 template <class HDS>

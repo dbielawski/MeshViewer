@@ -62,15 +62,15 @@ void Mesh::init()
     Point3f center = m_boundingBox->center();
     m_transform.translate(-center.x, -center.y, -center.z);
 
-    //buildOctree();
+    buildOctree();
 
-    /* Building the Polyhedron from vertices and faces */
+    // Building the Polyhedron from vertices and faces
     Polyhedron_builder<HalfedgeDS>builder(m_vertices, m_faces);
     m_polyhedron.delegate(builder);
-    fillHoles();
-
-    // TODO: Maybe we should move this call ?
-    //toHalfedge();
+    
+	// Filling holes 
+	// TODO: Put this as an action to showcase the feature
+	fillHoles();
 }
 
 void Mesh::renderMesh() const
@@ -173,7 +173,7 @@ void Mesh::displayableData(const QVector<Vertex>& vertices, const QVector<FaceIn
 
 void Mesh::computeNormals()
 {
-    //TODO: fixe this
+    //TODO: fix this
 
     // Set all normals to 0
     //    for (int i = 0; i < m_vertices.size(); ++i)
@@ -218,7 +218,7 @@ void Mesh::computeBoundingBox()
 
 void Mesh::buildOctree()
 {
-    m_octree = new cOctree(m_vertices);
+    m_octree = new Octree(m_vertices, m_vertices.size()/1000);
     m_octree->setFunctions(*m_functions);
     m_octree->build();
 }
@@ -276,41 +276,14 @@ void Mesh::saveAsObj(const QString& fileName) const
     file.close();
 }
 
-// TODO : Rename ?
-void Mesh::toHalfedge() {
-    //    m_halfEdge.clear();
-    //    QVector<surface_mesh::Surface_mesh::Vertex> vertices;
-    //    for(int i = 0 ; i < m_vertices.size(); i++) {
-    //        const Vertex& v = m_vertices[i];
-    //        surface_mesh::Surface_mesh::Vertex v_he = m_halfEdge.add_vertex(surface_mesh::Point(v.position.x, v.position.y, v.position.z));
-    //        vertices.push_back(v_he);
-    //    }
-
-    //    for(int i = 0 ; i < m_faces.size(); i++) {
-    //        surface_mesh::Surface_mesh::Vertex v0, v1, v2;
-    //        const FaceIndex& f = m_faces.at(i);
-    //        v0 = vertices.at(f.v0);
-    //        v1 = vertices.at(f.v1);
-    //        v2 = vertices.at(f.v2);
-    //        m_halfEdge.add_triangle(v0, v1, v2);
-    //    }
-}
-
-
-/* ====================================== */
-
-typedef CGAL::Simple_cartesian<double>                  Kernel;
-typedef CGAL::Polyhedron_3<Kernel>                      Polyhedron;
 typedef Polyhedron::Halfedge_handle                     Halfedge_handle;
 typedef Polyhedron::Halfedge_iterator                   Halfedge_iterator;
 typedef Polyhedron::Vertex_iterator                     Vertex_iterator;
 typedef Polyhedron::Face_iterator                       Face_iterator;
 typedef Polyhedron::Halfedge_around_facet_circulator    Halfedge_facet_circulator;
 
-// http://cgal-discuss.949826.n4.nabble.com/Using-Polyhedron-fill-hole-td4657972.html
-
-void Mesh::fillHoles() {
-    // Fill hole in the polyhedron
+void Mesh::fillHoles() 
+{
     for (Halfedge_iterator heit = m_polyhedron.halfedges_begin(); heit != m_polyhedron.halfedges_end(); heit++) {
         if (heit->is_border()) { // If there is a hole
             Kernel::Vector_3 vec(0.0, 0.0, 0.0);

@@ -1,25 +1,10 @@
 #include "obj.h"
+#include "mesh.h"
 
 #include <QFile>
 #include <QTextStream>
 #include <QMessageBox>
-
-#include <tiny_obj_loader.h>
-
 #include <fstream>
-#include "mesh.h"
-#include "polyhedron.h"
-
-
-#include "CGAL/Simple_cartesian.h"
-#include "CGAL/Polyhedron_items_3.h"
-#include "CGAL/HalfedgeDS_list.h"
-#include "CGAL/Polyhedron_3.h"
-
-#include "CGAL/Polyhedron_incremental_builder_3.h"
-#include "CGAL/Modifier_base.h"
-#include "CGAL/exceptions.h"
-
 
 obj::obj(const QString &fileName)
 {

@@ -73,7 +73,7 @@ set(SOURCES
     	source/obj.cpp 
     	source/alignedbox3f.cpp 
     	source/wireboundingbox.cpp
-        source/coctree.cpp
+        source/octree.cpp
 
 	include/mainwindow.h
 	include/utils.h
@@ -86,9 +86,9 @@ set(SOURCES
 	include/light.h
 	include/obj.h
 	include/alignedbox3f.h
-        include/wireboundingbox.h
-        include/coctree.h
-        include/polyhedron.h
+    include/wireboundingbox.h
+	include/octree.h
+    include/polyhedron.h
 )
 
 
