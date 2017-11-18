@@ -55,9 +55,9 @@ QMatrix4x4 Camera::viewMatrix()
 {
     m_viewMatrix.setToIdentity();
 
-    m_viewMatrix.lookAt(QVector3D(m_position.x, m_position.y, m_position.z),
-                        QVector3D(m_target.x, m_target.y, m_target.z),
-                        QVector3D(m_up.x, m_up.y, m_up.z));
+    m_viewMatrix.lookAt(QVector3D(m_position.x(), m_position.y(), m_position.z()),
+                        QVector3D(m_target.x(), m_target.y(), m_target.z()),
+                        QVector3D(m_up.x(), m_up.y(), m_up.z()));
     return m_viewMatrix;
 }
 
@@ -71,13 +71,13 @@ QMatrix4x4 Camera::projectionMatrix()
 
 void Camera::rotateAroundTarget(float angle, Vector3f axis)
 {
-    QQuaternion p(0, m_position.x, m_position.y, m_position.z);
-    QQuaternion r = QQuaternion::fromAxisAndAngle(axis.x, axis.y, axis.z, -angle);
+    QQuaternion p(0, m_position.x(), m_position.y(), m_position.z());
+    QQuaternion r = QQuaternion::fromAxisAndAngle(axis.x(), axis.y(), axis.z(), -angle);
     QQuaternion pp = r * (p * r.conjugate());
 
-    m_position.x = pp.toVector4D().x();
-    m_position.y = pp.toVector4D().y();
-    m_position.z = pp.toVector4D().z();
+    m_position.x() = pp.toVector4D().x();
+    m_position.y() = pp.toVector4D().y();
+    m_position.z() = pp.toVector4D().z();
 }
 
 void Camera::zoom(float z)

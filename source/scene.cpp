@@ -109,7 +109,7 @@ void Scene::render() const
             direction += QString::number(i);
             direction +="].direction";
 
-            m_simpleshadingProgram->setUniformValue(direction.toStdString().c_str(), dir.x, dir.y, dir.z);
+            m_simpleshadingProgram->setUniformValue(direction.toStdString().c_str(), dir.x(), dir.y(), dir.z());
             m_simpleshadingProgram->setUniformValue(color.toStdString().c_str(), intensity.r, intensity.g, intensity.b);
 
             m_simpleshadingProgram->release();
@@ -160,7 +160,7 @@ void Scene::toggleDisplayBoundingBox()
     m_displayBoundingBox = !m_displayBoundingBox;
 }
 
-void Scene::toggleDisplayOctree() 
+void Scene::toggleDisplayOctree()
 {
     m_displayOctree = !m_displayOctree;
 }

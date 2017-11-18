@@ -64,15 +64,15 @@ void WireBoundingBox::computeBox()
     Point3f min = m_aabb->min();
     Point3f max = m_aabb->max();
 
-    m_points[0] = min;                          // Left Bottom Back
-    m_points[1] = Point3f(min.x, max.y, min.z); // Left Top Back
-    m_points[2] = Point3f(max.x, max.y, min.z); // Right Top Back
-    m_points[3] = Point3f(max.x, min.y, min.z); // Right Bottom Back
+    m_points[0] = min;                                // Left Bottom Back
+    m_points[1] = Point3f(min.x(), max.y(), min.z()); // Left Top Back
+    m_points[2] = Point3f(max.x(), max.y(), min.z()); // Right Top Back
+    m_points[3] = Point3f(max.x(), min.y(), min.z()); // Right Bottom Back
 
-    m_points[4] = Point3f(max.x, min.y, max.z); // Right Bottom Front
-    m_points[5] = Point3f(min.x, min.y, max.z); // Left Bottom Front
-    m_points[6] = Point3f(min.x, max.y, max.z); // Left Top Front
-    m_points[7] = Point3f(max.x, max.y, max.z); // Right Top Front
+    m_points[4] = Point3f(max.x(), min.y(), max.z()); // Right Bottom Front
+    m_points[5] = Point3f(min.x(), min.y(), max.z()); // Left Bottom Front
+    m_points[6] = Point3f(min.x(), max.y(), max.z()); // Left Top Front
+    m_points[7] = Point3f(max.x(), max.y(), max.z()); // Right Top Front
 
     m_indices[0] = Vector2i(0, 1);
     m_indices[1] = Vector2i(1, 2);

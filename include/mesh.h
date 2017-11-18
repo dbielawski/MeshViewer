@@ -48,7 +48,7 @@ public:
     unsigned int verticesCount() const  { return m_vertices.size(); }
     unsigned int trianglesCount() const { return m_faces.size();    }
     unsigned int facesCount() const     { return m_faces.size();    }
-    unsigned int edgesCount() const     { return m_allEdges.size();    }
+    unsigned int edgesCount() const     { return m_allEdges.size(); }
     bool isValid() const { return m_polyhedron.is_valid(); }
     bool isClosed() const { return m_polyhedron.is_closed(); }
     void fillHoles();

@@ -6,7 +6,7 @@
 #include <iostream>
 #include <CGAL/Vector_3.h>
 #include <CGAL/Origin.h>
-
+#include <limits>
 
 Mesh::Mesh() :
     m_octree(Q_NULLPTR),
@@ -60,15 +60,15 @@ void Mesh::init()
     m_wireBoundingBox->init();
 
     Point3f center = m_boundingBox->center();
-    m_transform.translate(-center.x, -center.y, -center.z);
+    m_transform.translate(-center.x(), -center.y(), -center.z());
 
     buildOctree();
 
     // Building the Polyhedron from vertices and faces
     Polyhedron_builder<HalfedgeDS>builder(m_vertices, m_faces);
     m_polyhedron.delegate(builder);
-    
-	// Filling holes 
+
+	// Filling holes
 	// TODO: Put this as an action to showcase the feature
 	fillHoles();
 }
@@ -139,7 +139,7 @@ void Mesh::renderMesh() const
             const Vertex &vertex = m_vertices.at(index);
 
             glColor4f(vertex.color.r, vertex.color.g, vertex.color.b, m_scenePtr->transparency());
-            glVertex3f(vertex.position.x, vertex.position.y, vertex.position.z);
+            glVertex3f(vertex.position.x(), vertex.position.y(), vertex.position.z());
         }
         glEnd();
     }
@@ -242,9 +242,9 @@ void Mesh::saveAsObj(const QString& fileName) const
     for (int i = 0; i < m_vertices.size(); ++i)
     {
         QString line = "v ";
-        line += QString::number(m_vertices.at(i).position.x) + " "
-                + QString::number(m_vertices.at(i).position.y) + " "
-                + QString::number(m_vertices.at(i).position.z)
+        line += QString::number(m_vertices.at(i).position.x()) + " "
+                + QString::number(m_vertices.at(i).position.y()) + " "
+                + QString::number(m_vertices.at(i).position.z())
                 + '\n';
         out << line;
     }
@@ -254,9 +254,9 @@ void Mesh::saveAsObj(const QString& fileName) const
     for (int i = 0; i < m_vertices.size(); ++i)
     {
         QString line = "vn ";
-        line += QString::number(m_vertices.at(i).normal.x) + " "
-                + QString::number(m_vertices.at(i).normal.y) + " "
-                + QString::number(m_vertices.at(i).normal.z)
+        line += QString::number(m_vertices.at(i).normal.x()) + " "
+                + QString::number(m_vertices.at(i).normal.y()) + " "
+                + QString::number(m_vertices.at(i).normal.z())
                 + '\n';
         out << line;
     }
@@ -279,10 +279,11 @@ void Mesh::saveAsObj(const QString& fileName) const
 typedef Polyhedron::Halfedge_handle                     Halfedge_handle;
 typedef Polyhedron::Halfedge_iterator                   Halfedge_iterator;
 typedef Polyhedron::Vertex_iterator                     Vertex_iterator;
+typedef Polyhedron::Edge_iterator                       Edge_iterator;
 typedef Polyhedron::Face_iterator                       Face_iterator;
 typedef Polyhedron::Halfedge_around_facet_circulator    Halfedge_facet_circulator;
 
-void Mesh::fillHoles() 
+void Mesh::fillHoles()
 {
     for (Halfedge_iterator heit = m_polyhedron.halfedges_begin(); heit != m_polyhedron.halfedges_end(); heit++) {
         if (heit->is_border()) { // If there is a hole
