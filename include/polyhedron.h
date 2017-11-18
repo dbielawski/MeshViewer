@@ -42,14 +42,14 @@ void Polyhedron_builder<HDS>::operator()(HDS& hds) {
 
     for (FaceIndex face: m_faces) {
         B.begin_facet();
-        for (int i = 0 ; i < face.size(); ++i)
-        {
+        for (int i = 0; i < face.size(); ++i) {
             B.add_vertex_to_facet(face.at(i));
         }
         B.end_facet();
     }
+    
+    B.end_surface();
 }
 
 
 #endif // POLYHEDRON_H
-

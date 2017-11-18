@@ -62,8 +62,6 @@ private:
     uint                m_vertexBufferId;
     uint                m_indexBufferId;
 
-
-
     QVector<Vertex>     m_vertices;
     QVector<FaceIndex> 	m_faces;
 

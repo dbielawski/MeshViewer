@@ -68,13 +68,11 @@ void obj::loadFromFile(const QString &fileName) {
                 QStringList elementArray = list.at(i).split('/');
                 face.append(elementArray.at(0).toInt() - 1);
 
-                uint textCoord, normalIndex;
-                Q_UNUSED(textCoord);
                 if (elementArray.size() == 2) {
-                    normalIndex = elementArray.at(1).toInt() - 1;
+                    normalIndices.append(elementArray.at(1).toInt() - 1);
                 } else if (elementArray.size() == 3) {
-                    //textCoord = elementArray.at(1).toInt() - 1;  // We don't use textCoords for now
-                    normalIndex = elementArray.at(2).toInt() - 1;
+                    // uint textCoord = elementArray.at(1).toInt() - 1;  // We don't use textCoords for now
+                    normalIndices.append(elementArray.at(2).toInt() - 1);
                 }
             }
             normalsIndices.append(normalIndices);
@@ -109,7 +107,7 @@ void obj::loadFromFile(const QString &fileName) {
 //    }
 }
 
-Mesh *obj::mesh() const
+Mesh* obj::mesh() const
 {
     Mesh* mesh = new Mesh;
     mesh->displayableData(m_vertices, m_faces);
