@@ -68,9 +68,6 @@ void Mesh::init()
     Polyhedron_builder<HalfedgeDS>builder(m_vertices, m_faces);
     m_polyhedron.delegate(builder);
 
-	// Filling holes
-	// TODO: Put this as an action to showcase the feature
-	fillHoles();
 }
 
 void Mesh::renderMesh() const
@@ -124,18 +121,13 @@ void Mesh::renderMesh() const
     //    }
 
 
-    glEnable(GL_LIGHTING);
     glShadeModel(GL_SMOOTH);
 
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_BLEND);
     glMultMatrixf(m_transform.constData());
 
-    for (const FaceIndex& face: m_faces)
-    {
+    for (const FaceIndex& face: m_faces) {
         glBegin(GL_POLYGON);
-        for (const uint index: face)
-        {
+        for (const uint index: face) {
             const Vertex &vertex = m_vertices.at(index);
 
             glColor4f(vertex.color.r, vertex.color.g, vertex.color.b, m_scenePtr->transparency());
@@ -283,7 +275,7 @@ typedef Polyhedron::Edge_iterator                       Edge_iterator;
 typedef Polyhedron::Face_iterator                       Face_iterator;
 typedef Polyhedron::Halfedge_around_facet_circulator    Halfedge_facet_circulator;
 
-void Mesh::fillHoles()
+void Mesh::fillingHoles()
 {
     for (Halfedge_iterator heit = m_polyhedron.halfedges_begin(); heit != m_polyhedron.halfedges_end(); heit++) {
         if (heit->is_border()) { // If there is a hole

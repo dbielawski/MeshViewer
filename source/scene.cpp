@@ -52,6 +52,15 @@ void Scene::saveMesh(const QStringList& fileNames) {
     }
 }
 
+void Scene::fillingHoles()
+{
+    for (Mesh* mesh : m_meshList) {
+        if (!mesh->isClosed()) {
+            mesh->fillingHoles();
+        }
+    }
+}
+
 void Scene::init()
 {
     loadShader(m_simpleShaderProgram, QString("simpleshader"));

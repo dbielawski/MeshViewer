@@ -154,21 +154,40 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="clearSceneButton">
-         <property name="text">
-          <string>Clear scene</string>
-         </property>
-         <property name="checkable">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="sceneBackgroundColorButton">
-         <property name="text">
-          <string>Scene color</string>
-         </property>
-        </widget>
+           <widget class="QGroupBox" name="groupOptions">
+               <property name="title">
+                   <string>Options</string>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_8">
+                   <item>
+                       <widget class="QPushButton" name="clearSceneButton">
+                           <property name="text">
+                               <string>Clear scene</string>
+                           </property>
+                           <property name="checkable">
+                               <bool>false</bool>
+                           </property>
+                       </widget>
+                   </item>
+                   <item>
+                       <widget class="QPushButton" name="sceneBackgroundColorButton">
+                           <property name="text">
+                               <string>Scene color</string>
+                           </property>
+                       </widget>
+                   </item>
+                   <item>
+                       <widget class="QPushButton" name="fillingHolesButton">
+                           <property name="text">
+                               <string>Filling Holes</string>
+                           </property>
+                           <property name="checkable">
+                               <bool>false</bool>
+                           </property>
+                       </widget>
+                   </item>
+               </layout>
+           </widget>
        </item>
        <item>
         <spacer name="verticalSpacer">

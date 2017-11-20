@@ -21,6 +21,7 @@ public:
     void render() const;
     void removeLights();
     void removeModels();
+    void fillingHoles();
 
     void toggleDisplayBoundingBox();
     void toggleDisplayOctree();
@@ -52,7 +53,7 @@ public:
 private:
     void loadShader(QGLShaderProgram* program, const QString& fileName);
 
-    QVector<const Mesh*>    m_meshList;
+    QVector<Mesh*>    m_meshList;
     QVector<const Light*>   m_lightList;
 
     // Used to draw AABB, octree..

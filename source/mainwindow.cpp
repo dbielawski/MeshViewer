@@ -28,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->clearSceneButton, SIGNAL(clicked()), this, SLOT(onClearScene()));
     connect(ui->sceneBackgroundColorButton, SIGNAL(clicked(bool)), this, SLOT(onBackgroundColorScene()));
+    connect(ui->fillingHolesButton, SIGNAL(clicked()), this, SLOT(fillingHolesAction()));
+
     ui->alphaValue->setText(QString::number(ui->transparencySlider->value()));
 
     createActions(); // Create action before menu !
@@ -77,6 +79,11 @@ void MainWindow::createActions()
     m_clearSceneAction->setStatusTip(tr("Clear the scene"));
     connect(m_clearSceneAction, SIGNAL(triggered(bool)), this, SLOT(onClearScene()));
 
+    m_holeFillingAction = new QAction(tr("&Fill Holes"), this);
+    m_holeFillingAction->setShortcut(QKeySequence(tr("Ctrl+F")));
+    m_holeFillingAction->setStatusTip(tr("Fill Holes"));
+    connect(m_holeFillingAction, SIGNAL(triggered(bool)), this, SLOT(fillingHolesAction()));
+
     m_quitAction = new QAction(tr("&Quit"), this);
     m_quitAction->setShortcut(QKeySequence(tr("Ctrl+Q")));
     m_quitAction->setStatusTip(tr("Exit the application"));
@@ -107,7 +114,7 @@ void MainWindow::createActions()
 
 	m_holeFillingAction = new QAction(tr("&Fill Holes"), this);
 	m_holeFillingAction->setStatusTip(tr("Fill holes in the current model | Press H to process."));
-	connect(m_holeFillingAction, SIGNAL(triggered(bool)), this, SLOT(holeFillingAction()));
+	connect(m_holeFillingAction, SIGNAL(triggered(bool)), this, SLOT(fillingHolesAction()));
 
     // Update infos in the right panel (vertices/faces count...)
     updateInfos();
@@ -177,6 +184,13 @@ void MainWindow::onClearScene()
     if (ui->openGLWidget->scene()->meshCount() == 0)
         m_displayMenu->setEnabled(false);
 
+    ui->openGLWidget->updateGL();
+}
+
+void MainWindow::fillingHolesAction()
+{
+    ui->openGLWidget->scene()->fillingHoles();
+    updateInfos();
     ui->openGLWidget->updateGL();
 }
 
@@ -268,13 +282,4 @@ void MainWindow::onBackgroundColorScene()
     Color4f color(c.red()/255.0, c.green()/255.0, c.blue()/255.0);
     ui->openGLWidget->changeSceneColor(color);
     ui->openGLWidget->updateGL();
-}
-
-
-void MainWindow::holeFillingAction()
-{
-	//TODO: Of course, since EVERY-FUCKING-THING is const it is impossible to perform treatment
-	// on the mesh from the mainwindow ...
-	//ui->openGLWidget->scene()->fillHoles();
-	//ui->openGLWIdget->updateGL();
 }
