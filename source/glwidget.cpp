@@ -49,6 +49,8 @@ void GLWidget::initializeGL()
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+
+    glEnable(GL_POINT_SMOOTH);
     glPointSize(m_pointSize);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -246,5 +248,6 @@ float GLWidget::pointSize() const
 
 void GLWidget::pointSize(float size)
 {
-    glPointSize(size);
+    m_pointSize = size;
+    glPointSize(m_pointSize);
 }
