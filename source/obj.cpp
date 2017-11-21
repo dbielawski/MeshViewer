@@ -86,25 +86,24 @@ void obj::loadFromFile(const QString &fileName) {
 
     // Set normals previously loaded
     // vertex/textCoord/normals format
-    //TODO: Damien fix this
-//    if (!normalIndices.isEmpty())
-//    {
-//        for (int i = 0; i < m_faces.size(); ++i)
-//        {
-//            for (int j = 0; j < m_faces.at(i).size(); ++j)
-//            {
-//                m_vertices.value(m_faces.at(i).at(0)).normal = normals.at(normalsIndices.at(i).x);
-//                m_vertices.value(m_faces.at(i).at(1)).normal = normals.at(normalsIndices.at(i).y);
-//                m_vertices.value(m_faces.at(i).at(2)).normal = normals.at(normalsIndices.at(i).z);
-//            }
-//        }
-//    }
-//    else
-//    {
-//        // classical format
-//        for (int i = 0; i < normals.size(); ++i)
-//            m_vertices.value(i).normal = normals.at(i);
-//    }
+    if (!normalsIndices.isEmpty())
+    {
+        for (int i = 0; i < m_faces.size(); ++i)
+        {
+            int j = 0;
+            while (j < m_faces.at(i).size())
+            {
+                m_vertices.value(m_faces.at(i).at(j)).normal = normals.at(normalsIndices.at(i).at(j));
+                ++j;
+            }
+        }
+    }
+    else
+    {
+        // classical format
+        for (int i = 0; i < normals.size(); ++i)
+            m_vertices.value(i).normal = normals.at(i);
+    }
 }
 
 Mesh* obj::mesh() const

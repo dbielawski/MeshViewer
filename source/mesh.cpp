@@ -40,7 +40,7 @@ void Mesh::init()
         for (int j = 0; j < m_faces.at(i).size(); ++j)
             faces.append(m_faces.at(i).at(j));
 
-    //computeNormals();
+    computeNormals();
 
     if (!m_functions->glIsBuffer(m_vertexBufferId)) {
         m_functions->glGenBuffers(1, &m_vertexBufferId);
@@ -165,39 +165,34 @@ void Mesh::displayableData(const QVector<Vertex>& vertices, const QVector<FaceIn
 
 void Mesh::computeNormals()
 {
-    //TODO: fix this
-
     // Set all normals to 0
-    //    for (int i = 0; i < m_vertices.size(); ++i)
-    //        m_vertices.value(i).normal = Vector3f(0.f, 0.f, 0.f);
+    for (int i = 0; i < m_vertices.size(); ++i)
+        m_vertices.value(i).normal = Vector3f(0.f, 0.f, 0.f);
 
-    //    qDebug()<< "computenormals1";
-    //    // Compute normals
-    //    for (int i = 0; i < m_faces.size(); i++)
-    //    {
-    //        const FaceIndex face = m_faces.at(i);
-    //        const FaceIndex face2 = m_faces.at(i+1);
+    // Compute normals
+    for (int i = 0; i < m_faces.size(); i++)
+    {
+        const FaceIndex face = m_faces.at(i);
 
-    //        const Point3f v0 = m_vertices.at(face.at(0)).position;
-    //        const Point3f v1 = m_vertices.at(face.at(1)).position;
-    //        const Point3f v2 = m_vertices.at(face.at(2)).position;
+        const Point3f v0 = m_vertices.at(face.at(0)).position;
+        const Point3f v1 = m_vertices.at(face.at(1)).position;
+        const Point3f v2 = m_vertices.at(face.at(2)).position;
 
-    //        const Vector3f normal = (v1 - v0).cross(v2 - v0);
+        const Vector3f normal = (v1 - v0).cross(v2 - v0);
 
-    //        m_vertices[face.at(0)].normal += normal;
-    //        m_vertices[face.at(1)].normal += normal;
-    //        m_vertices[face.at(2)].normal += normal;
+        m_vertices[face.at(0)].normal += normal;
+        m_vertices[face.at(1)].normal += normal;
+        m_vertices[face.at(2)].normal += normal;
+    }
 
-    //        // The reversed face should have the same normal.
-    //        m_vertices[face2.at(0)].normal += normal;
-    //        m_vertices[face2.at(1)].normal += normal;
-    //        m_vertices[face2.at(2)].normal += normal;
-    //    }
-    //    qDebug()<< "computenormals2";
-    //    // Normalize all normals
-    //    for (int i = 0; i < m_vertices.size(); ++i) {
-    //        m_vertices[i].normal.normalise();
-    //    }
+    // Normalize all normals
+    for (int i = 0; i < m_vertices.size(); ++i) {
+        Vector3f n = m_vertices[i].normal;
+        float norm = sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]);
+
+        if (norm != 0)
+            m_vertices[i].normal /= norm;
+    }
 }
 
 void Mesh::computeBoundingBox()
