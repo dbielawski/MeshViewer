@@ -205,7 +205,7 @@ void Mesh::computeBoundingBox()
 
 void Mesh::buildOctree()
 {
-    m_octree = new Octree(m_vertices, m_vertices.size()/1000);
+    m_octree = new Octree(m_vertices, std::max(1, m_vertices.size() / 1000));
     m_octree->setFunctions(*m_functions);
     m_octree->build();
 }
@@ -270,7 +270,7 @@ typedef Polyhedron::Edge_iterator                       Edge_iterator;
 typedef Polyhedron::Face_iterator                       Face_iterator;
 typedef Polyhedron::Halfedge_around_facet_circulator    Halfedge_facet_circulator;
 
-void Mesh::fillingHoles()
+void Mesh::fillHoles()
 {
     for (Halfedge_iterator heit = m_polyhedron.halfedges_begin(); heit != m_polyhedron.halfedges_end(); heit++) {
         if (heit->is_border()) { // If there is a hole
@@ -315,4 +315,9 @@ void Mesh::fillingHoles()
 
         m_faces.append(face);
     }
+
+    if(m_octree != NULL) {
+        delete m_octree;
+    }
+    buildOctree();
 }

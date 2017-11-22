@@ -51,7 +51,7 @@ public:
     unsigned int edgesCount() const     { return m_allEdges.size(); }
     bool isValid() const { return m_polyhedron.is_valid(); }
     bool isClosed() const { return m_polyhedron.is_closed(); }
-    void fillingHoles();
+    void fillHoles();
 
     void saveAsObj(const QString& filename) const;
 

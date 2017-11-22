@@ -189,7 +189,7 @@ void MainWindow::onClearScene()
 
 void MainWindow::fillingHolesAction()
 {
-    ui->openGLWidget->scene()->fillingHoles();
+    ui->openGLWidget->scene()->fillHoles();
     updateInfos();
     ui->openGLWidget->updateGL();
 }

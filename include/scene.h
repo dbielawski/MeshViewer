@@ -21,7 +21,7 @@ public:
     void render() const;
     void removeLights();
     void removeModels();
-    void fillingHoles();
+    void fillHoles();
 
     void toggleDisplayBoundingBox();
     void toggleDisplayOctree();

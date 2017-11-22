@@ -53,7 +53,7 @@ void GLWidget::initializeGL()
     glEnable(GL_POINT_SMOOTH);
     glPointSize(m_pointSize);
 
-    glEnable(GL_LIGHTING);
+    //glEnable(GL_LIGHTING);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

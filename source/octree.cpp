@@ -70,7 +70,7 @@ void::Octree::buildNode(Node* parent) {
     // Front Bot Left
     aabb_nodes[2] = new AlignedBox3f(min, center);
     // Front Bot Right
-    aabb_nodes[3] = new AlignedBox3f(Point3f(center.y(), min.y(), min.z()), Point3f(max.x(), center.y(), center.z()));
+    aabb_nodes[3] = new AlignedBox3f(Point3f(center.x(), min.y(), min.z()), Point3f(max.x(), center.y(), center.z()));
     // Back Top Left
     aabb_nodes[4] = new AlignedBox3f(Point3f(min.x(), center.y(), center.z()), Point3f(center.x(), max.y(), max.z()));
     // Back Top Right
@@ -101,7 +101,7 @@ void::Octree::buildNode(Node* parent) {
             n->aabb = aabb_nodes[i];
             n->objects = objs[i];
             n->parent = parent;
-			n->box = new WireBoundingBox(*n->aabb, Color4f(0.f, 0.f, 1.f));
+            n->box = new WireBoundingBox(*n->aabb, Color4f(Eigen::internal::random<float>(0.f, 1.f), Eigen::internal::random<float>(0.f, 1.f), Eigen::internal::random<float>(0.f, 1.f)));
 			n->box->setFunctions(*m_functions);
 			n->box->init();
             parent->childs.push_back(n);

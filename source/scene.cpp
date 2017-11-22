@@ -52,11 +52,11 @@ void Scene::saveMesh(const QStringList& fileNames) {
     }
 }
 
-void Scene::fillingHoles()
+void Scene::fillHoles()
 {
     for (Mesh* mesh : m_meshList) {
         if (!mesh->isClosed()) {
-            mesh->fillingHoles();
+            mesh->fillHoles();
         }
     }
 }
