@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->clearSceneButton, SIGNAL(clicked()), this, SLOT(onClearScene()));
     connect(ui->sceneBackgroundColorButton, SIGNAL(clicked(bool)), this, SLOT(onBackgroundColorScene()));
+    connect(ui->detectHolesButton, SIGNAL(clicked()), this, SLOT(onDetectHoles()));
     connect(ui->fillingHolesButton, SIGNAL(clicked()), this, SLOT(fillingHolesAction()));
 
     ui->alphaValue->setText(QString::number(ui->transparencySlider->value()));
@@ -220,7 +221,7 @@ void MainWindow::onToggleDisplayBoundingBox()
 
 void MainWindow::onToggleDisplayOctree()
 {
-	ui->openGLWidget->scene()->toggleDisplayOctree();
+    ui->openGLWidget->scene()->toggleDisplayOctree();
 	ui->openGLWidget->updateGL();
 }
 
@@ -237,6 +238,12 @@ void MainWindow::onDrawLine()
 void MainWindow::onDrawFilled()
 {
     setDraw(GLWidget::EDisplayMode::FILL);
+}
+
+void MainWindow::onDetectHoles()
+{
+    ui->openGLWidget->scene()->detectHoles();
+    ui->openGLWidget->updateGL();
 }
 
 void MainWindow::setDraw(unsigned int value)

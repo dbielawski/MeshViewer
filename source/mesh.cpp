@@ -33,7 +33,6 @@ Mesh::~Mesh()
 
 void Mesh::init()
 {
-    // TODO: clean
     // We need a temporary 1D array to give to the GC
     QVector<unsigned int> faces;
     for (int i = 0; i < m_faces.size(); ++i)
@@ -41,6 +40,10 @@ void Mesh::init()
             faces.append(m_faces.at(i).at(j));
 
     computeNormals();
+
+    // Building the Polyhedron from vertices and faces
+    Polyhedron_builder<HalfedgeDS>builder(m_vertices, m_faces);
+    m_polyhedron.delegate(builder);
 
     if (!m_functions->glIsBuffer(m_vertexBufferId)) {
         m_functions->glGenBuffers(1, &m_vertexBufferId);
@@ -63,11 +66,6 @@ void Mesh::init()
     m_transform.translate(-center.x(), -center.y(), -center.z());
 
     buildOctree();
-
-    // Building the Polyhedron from vertices and faces
-    Polyhedron_builder<HalfedgeDS>builder(m_vertices, m_faces);
-    m_polyhedron.delegate(builder);
-
 }
 
 void Mesh::renderMesh() const
@@ -122,6 +120,7 @@ void Mesh::renderMesh() const
 
 
     glShadeModel(GL_SMOOTH);
+//    glShadeModel(GL_FLAT);
 
     glMultMatrixf(m_transform.constData());
 
@@ -320,4 +319,32 @@ void Mesh::fillHoles()
         delete m_octree;
     }
     buildOctree();
+}
+
+void Mesh::detectHoles()
+{
+    for (Halfedge_iterator heit = m_polyhedron.halfedges_begin(); heit != m_polyhedron.halfedges_end(); heit++)
+    {
+        if (heit->is_border()) // If there is a hole
+        {
+            Kernel::Point_3 vec(0.0, 0.0, 0.0);
+            vec = heit->vertex()->point();
+            Point3f p0(vec.x(), vec.y(), vec.z());
+            vec = heit->opposite()->vertex()->point();
+            Point3f p1(vec.x(), vec.y(), vec.z());
+
+            for (int i = 0; i < m_vertices.size(); ++i)
+            {
+                Point3f p  = m_vertices.at(i).position;
+
+                if ((p.x() == p0.x() && p.y() == p0.y() && p.z() == p0.z()) ||
+                        (p.x() == p1.x() && p.y() == p1.y() && p.z() == p1.z()))
+                {
+                    m_vertices[i].color = Color4f(Color4f::red());
+                }
+            }
+        }
+    }
+
+    //init(); // Send new colors to
 }

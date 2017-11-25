@@ -52,6 +52,7 @@ public:
     bool isValid() const { return m_polyhedron.is_valid(); }
     bool isClosed() const { return m_polyhedron.is_closed(); }
     void fillHoles();
+    void detectHoles();
 
     void saveAsObj(const QString& filename) const;
 

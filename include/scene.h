@@ -48,6 +48,8 @@ public:
     bool isValid() const;
     bool isClosed() const;
 
+    void detectHoles();
+
     void saveMesh(const QStringList& fileNames);
 
 private:

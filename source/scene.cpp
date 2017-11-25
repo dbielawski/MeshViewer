@@ -248,6 +248,12 @@ bool Scene::isClosed() const
     return true;
 }
 
+void Scene::detectHoles()
+{
+    for (Mesh* m : m_meshList)
+        m->detectHoles();
+}
+
 void Scene::loadShader(QGLShaderProgram* program, const QString& fileName)
 {
     if (!program->addShaderFromSourceFile(QGLShader::Vertex, ":/shaders/" + fileName + ".vert"))

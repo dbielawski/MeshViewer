@@ -19,7 +19,6 @@ int main(int argc, char *argv[])
     return a.exec();
 }
 
-// TODO: comprendre pourquoi la transparence ne fonctionne plus !!!!!
 // TODO: faire des tests sur des OBJ bidons (vide, avec un seul point, indice de face..)
 // TODO: NETTOYER LE CODE
 // TODO: Corriger la rotation
@@ -28,4 +27,3 @@ int main(int argc, char *argv[])
 // TODO: Epaississement basique (stefka) + sauvegarde du nouveau maillage epaissie
 // TODO: Rapport (4 pages) diapo (validity ???)
 // TODO: Verifier si save as obj marche
-// TODO: trouver ordre enable/disable (lightning, transparency)

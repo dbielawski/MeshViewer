@@ -33,6 +33,10 @@ struct Color4f
     {
         return Color4f(.5, .5, .5, 1.f);
     }
+    static Color4f red()
+    {
+        return Color4f(1.f, 0.f, 0.f, 1.f);
+    }
 
     inline Color4f& operator += (const Color4f& c)
     {

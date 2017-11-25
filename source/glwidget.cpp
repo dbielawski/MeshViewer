@@ -32,6 +32,7 @@ GLWidget::GLWidget(QWidget *parent) :
 
     m_zoomStepValue = 1.f;
     m_dx = 0;
+    m_dy = 0;
 
     m_pointSize = 1.f;
 }
@@ -53,7 +54,8 @@ void GLWidget::initializeGL()
     glEnable(GL_POINT_SMOOTH);
     glPointSize(m_pointSize);
 
-    //glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_COLOR_MATERIAL);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -110,16 +112,28 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
     if (m_leftButtonPressed)
     {
         if (dx > 0)
+        {
             m_dx = 1;
+        }
         else if (dx < 0)
+        {
             m_dx = -1;
+        }
         else
             m_dx = 0;
 
         if (dy > 0)
+        {
             m_dy = -1;
+            if (m_dy < -90)
+                m_dy = -90;
+        }
         else if (dy < 0)
+        {
             m_dy = 1;
+            if (m_dy > 90)
+                m_dy = 90;
+        }
         else
             m_dy = 0;
 

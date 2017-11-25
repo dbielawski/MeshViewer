@@ -37,6 +37,7 @@ private slots:
     void onDrawLine();
     void onDrawFilled();
 
+    void onDetectHoles();
     void onBackgroundColorScene();
 
 private:
