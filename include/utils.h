@@ -1,9 +1,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <QVector>
-#include <math.h>
 #include <Eigen/Dense>
+#include <QVector>
+#include <cmath>
 
 
 typedef Eigen::Matrix<float, 3, 1> Point3f;
@@ -13,11 +13,6 @@ typedef Eigen::Matrix<int, 2, 1> Vector2i;
 
 typedef QVector<uint> FaceIndex;
 
-namespace arm {
-    struct Color4f;
-    struct Vertex;
-    struct EdgeIndex;
-}
 
 struct Color4f
 {
@@ -48,15 +43,25 @@ struct Color4f
     }
 
 	inline bool operator == (const Color4f& c) const {
-        return (abs(this->r - c.r) < 0.001 &&
-                abs(this->b - c.b) < 0.001 &&
-                abs(this->g - c.g) < 0.001 &&
-                abs(this->a - c.a) < 0.001);
+        return (std::abs(this->r - c.r) < 0.001 &&
+                std::abs(this->b - c.b) < 0.001 &&
+                std::abs(this->g - c.g) < 0.001 &&
+                std::abs(this->a - c.a) < 0.001);
 	}
 
 	inline bool operator != (const Color4f& c) const {
 		return !(*this == c);
 	}
+
+    inline bool operator > (const Color4f& c) const {
+        if ((this->r > c.r) ||
+            (this->r == c.r && this->g > c.g) ||
+            (this->r == c.r && this->g == c.g && this->b > c.b)) {
+            return true;
+        }
+        return false;
+    }
+
 };
 
 inline Color4f operator +(const Color4f& l, const Color4f& r)
