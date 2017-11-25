@@ -50,7 +50,7 @@ public:
 
     void detectHoles();
 
-    void saveMesh(const QStringList& fileNames);
+    void saveMeshes(const QString fileName) const;
 
 private:
     void loadShader(QGLShaderProgram* program, const QString& fileName);

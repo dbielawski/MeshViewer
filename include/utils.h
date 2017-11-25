@@ -18,9 +18,6 @@ struct Color4f
 {
     float r, g, b, a;
 
-    Color4f(float v): r(v), g(v), b(v), a(1.f)
-    {}
-
     Color4f(float red = 0.f, float green = 0.f, float blue = 0.f, float alpha = 1.f) :
         r(red), g(green), b(blue), a(alpha)
     {}
@@ -31,7 +28,7 @@ struct Color4f
 
     static Color4f gray()
     {
-        return Color4f(.5, .5, .5, 1.f);
+        return Color4f(0.5, 0.5, 0.5, 1.f);
     }
     static Color4f red()
     {
