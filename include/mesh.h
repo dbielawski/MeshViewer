@@ -53,7 +53,7 @@ public:
     bool isClosed() const { return m_polyhedron.is_closed(); }
     void fillHoles();
 
-    void saveAsObj(const QString& filename) const;
+    void saveAsObj(QTextStream& out, int offset) const;
 
 
 private:
@@ -65,8 +65,8 @@ private:
     QVector<Vertex>     m_vertices;
     QVector<FaceIndex> 	m_faces;
 
-    QVector<EdgeIndex> 	m_allEdges;
     QVector<Vertex>     m_allVertices;
+    QVector<EdgeIndex> 	m_allEdges;
     QVector<FaceIndex>  m_allFaces;
 
     surface_mesh::Surface_mesh m_halfEdge;

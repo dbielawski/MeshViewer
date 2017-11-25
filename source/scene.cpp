@@ -45,11 +45,27 @@ Scene::~Scene()
     delete m_simpleshadingProgram;
 }
 
-void Scene::saveMesh(const QStringList& fileNames) {
-    int i = 0;
-    for(const Mesh* m : m_meshList) {
-        m->saveAsObj(fileNames.at(i++));
+void Scene::saveMeshes(const QString fileName) const
+{
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly)) {
+        QMessageBox::critical(0, "Error while writing file", file.errorString());
+        return;
     }
+
+    QTextStream out(&file);
+
+    QString applicationName = "MeshViewer";
+    QString header = "# This file was generated with " + applicationName + "\n";
+    out << header;
+
+    int nb_vertices = 0;
+    for(const Mesh* m : m_meshList) {
+        m->saveAsObj(out, nb_vertices);
+        nb_vertices += m->verticesCount();
+    }
+
+    file.close();
 }
 
 void Scene::fillHoles()

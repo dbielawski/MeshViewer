@@ -210,24 +210,11 @@ void Mesh::buildOctree()
     m_octree->build();
 }
 
-void Mesh::saveAsObj(const QString& fileName) const
+// Offset is the number of vertices already written in the out stream.
+void Mesh::saveAsObj(QTextStream& out, int offset) const
 {
-    QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly))
-    {
-        QMessageBox::critical(0, "Error while writing file", file.errorString());
-        return;
-    }
-
-    QTextStream out(&file);
-
-    QString applicationName = "MeshViewer";
-    QString header = "# This file was generated with " + applicationName + "\n";
-    out << header;
-
     // Write Vertex
-    for (int i = 0; i < m_vertices.size(); ++i)
-    {
+    for (int i = 0; i < m_vertices.size(); ++i) {
         QString line = "v ";
         line += QString::number(m_vertices.at(i).position.x()) + " "
                 + QString::number(m_vertices.at(i).position.y()) + " "
@@ -236,31 +223,25 @@ void Mesh::saveAsObj(const QString& fileName) const
         out << line;
     }
 
-
     // Write Normal
-    for (int i = 0; i < m_vertices.size(); ++i)
-    {
+    for (int i = 0; i < m_vertices.size(); ++i) {
         QString line = "vn ";
-        line += QString::number(m_vertices.at(i).normal.x()) + " "
-                + QString::number(m_vertices.at(i).normal.y()) + " "
-                + QString::number(m_vertices.at(i).normal.z())
+        line += QString::number(offset + m_vertices.at(i).normal.x()) + " "
+                + QString::number(offset + m_vertices.at(i).normal.y()) + " "
+                + QString::number(offset + m_vertices.at(i).normal.z())
                 + '\n';
         out << line;
     }
 
     // Write Faces
-    for (int i = 0; i < m_faces.size(); i++)
-    {
+    for (int i = 0; i < m_faces.size(); i++) {
         QString line ="f ";
-        for (int j = 0; j < m_faces.at(i).size(); ++j)
-        {
-            line += QString::number(m_faces.at(i).at(j) + 1) + " ";
+        for (int j = 0; j < m_faces.at(i).size(); ++j) {
+            line += QString::number(offset + m_faces.at(i).at(j) + 1) + " ";
         }
         line += '\n';
         out << line;
     }
-
-    file.close();
 }
 
 typedef Polyhedron::Halfedge_handle                     Halfedge_handle;
@@ -319,5 +300,6 @@ void Mesh::fillHoles()
     if(m_octree != NULL) {
         delete m_octree;
     }
+
     buildOctree();
 }

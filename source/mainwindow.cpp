@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setWindowTitle("MeshViewer");
 
     connect(ui->pointsModeButton, SIGNAL(clicked()), this, SLOT(onDrawPoint()));
     connect(ui->linesModeButton, SIGNAL(clicked()), this, SLOT(onDrawLine()));
@@ -32,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->alphaValue->setText(QString::number(ui->transparencySlider->value()));
 
-    createActions(); // Create action before menu !
+    createActions();
     createMenus();
 }
 
@@ -165,15 +166,11 @@ void MainWindow::onOpenFile()
 
 void MainWindow::onSaveAsObj()
 {
-    QStringList fileNames;
-    for(int i = 0 ; i < ui->openGLWidget->scene()->meshCount() ; i++) {
+    QString fileName = QFileDialog::getSaveFileName(
+        this, tr("Save file"), tr("../models/mesh.obj"), tr("OBJ Files (*.obj)")
+    );
 
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Save file")
-                                                    , tr("../models/")
-                                                    , tr("OBJ Files (*.obj)"));
-        fileNames.append(fileName);
-    }
-    ui->openGLWidget->scene()->saveMesh(fileNames);
+    ui->openGLWidget->scene()->saveMeshes(fileName);
 }
 
 void MainWindow::onClearScene()
