@@ -63,10 +63,6 @@ void GLWidget::resizeGL(int w, int h)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     m_scene->camera()->projectionMatrix();
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    m_scene->camera()->viewMatrix();
 }
 
 void GLWidget::paintGL()
@@ -78,10 +74,6 @@ void GLWidget::paintGL()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glMultMatrixf(m_scene->camera()->projectionMatrix().constData());
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glMultMatrixf(m_scene->camera()->viewMatrix().constData());
 
     m_scene->render();
 }

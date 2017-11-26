@@ -71,7 +71,6 @@ void Mesh::init()
 void Mesh::renderMesh() const
 {
     glShadeModel(GL_SMOOTH);
-    glMultMatrixf(m_transform.constData());
 
     for (const FaceIndex& face: m_faces) {
         glBegin(GL_POLYGON);
@@ -91,7 +90,6 @@ void Mesh::renderBoundingBox() const
         m_wireBoundingBox->render(*m_scenePtr, m_transform);
     }
 }
-
 
 void Mesh::renderOctree() const
 {
@@ -274,5 +272,4 @@ void Mesh::detectHoles()
             }
         }
     }
-    //init(); // Send new colors to
 }

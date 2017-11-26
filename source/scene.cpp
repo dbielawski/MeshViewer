@@ -129,8 +129,27 @@ void Scene::render() const
             m_simpleshadingProgram->release();
         }
     }
+    // TODO: to remove
+    // Debug purpsose: get the center (0, 0, 0) on the scene
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glMultMatrixf(m_camera->viewMatrix().constData());
+    QMatrix4x4 i;
+    i.setToIdentity();
+    glMultMatrixf(i.constData());
+
+    glBegin(GL_POINTS);
+        glColor4f(1, 0, 0, 1);
+        glVertex3f(0, 0, 0);
+    glEnd();
+    // END Debug purpsose: get the center (0, 0, 0) on the scene
 
     for (const Mesh* m : m_meshList) {
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        glMultMatrixf(m_camera->viewMatrix().constData());
+        glMultMatrixf(m->transform().constData());
+
         if (m != Q_NULLPTR) {
             m->renderMesh();
 
