@@ -121,9 +121,64 @@ void Octree::buildShapeFromOctree() {
 }
 
 void Octree::buildShape(Node* currentNode) {
+
+    // For compilation purpose only
+    QVector<FaceIndex> faces;
+    QVector<Vertex> vertices;
+
     for(Node* child : currentNode->childs) {
         if(child->isLeaf()) {
-            // Store vertices or bouding box ??
+            AlignedBox3f* aabb = child->aabb;
+
+            Point3f center = aabb->center();
+            Point3f min = aabb->min();
+            Point3f max = aabb->max();
+
+            uint offset = vertices.size();
+
+            Vertex ftl(Vector3f(min.x(), max.y(), min.z()), Color4f::gray());
+            vertices.push_back(ftl);
+
+            Vertex ftr(Vector3f(max.x(), max.y(), min.z()), Color4f::gray());
+            vertices.push_back(ftr);
+
+            Vertex fbl(Vector3f(min), Color4f::gray());
+            vertices.push_back(fbl);
+
+            Vertex fbr(Vector3f(max.x(), min.y(), min.z()), Color4f::gray());
+            vertices.push_back(fbr);
+
+            Vertex btl(Vector3f(min.x(), max.z(), max.z()), Color4f::gray());
+            vertices.push_back(btl);
+
+            Vertex btr(Vector3f(max), Color4f::gray());
+            vertices.push_back(btr);
+
+            Vertex bbl(Vector3f(max.x(), min.y(), max.z()), Color4f::gray());
+            vertices.push_back(bbl);
+
+            Vertex bbr(Vector3f(min.x(), min.y(), max.z()), Color4f::gray());
+            vertices.push_back(bbr);
+
+            // ftl, ftr, fbr, fbl
+            FaceIndex front = {offset + 1, offset + 2, offset + 4, offset + 3 };
+            // btl, btr, bbr, bbl
+            FaceIndex back = {offset + 5, offset + 6, offset + 8, offset + 7 };
+            // ftl, ftr, btr, btl
+            FaceIndex top = {offset + 1, offset + 2, offset + 6, offset + 5 };
+            // fbl, fbr, bbr, bbl
+            FaceIndex bot = {offset + 3, offset + 4, offset + 8, offset + 7 };
+            // ftl, fbl, bbl, btl
+            FaceIndex left = {offset + 1, offset + 3, offset + 7, offset + 5 };
+            // ftr, fbr, bbr, btr
+            FaceIndex right = {offset + 2, offset + 4, offset + 8, offset + 6 };
+
+            faces.push_back(front); faces.push_back(back);
+            faces.push_back(top); faces.push_back(bot);
+            faces.push_back(left); faces.push_back(right);
+
+            // TODO: Wups ? Since it is recursive it will be parallelized and the offset will no longer be valid...
+
         }
     }
 }
