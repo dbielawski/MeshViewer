@@ -1,8 +1,5 @@
 #include "pgm3d.h"
 
-#include <fstream>
-#include <iostream>
-
 #include <QFile>
 #include <QTextStream>
 #include <QMessageBox>
@@ -14,8 +11,7 @@
 
 
 pgm3d::pgm3d(): m_width(0), m_height(0), m_depth(0)
-{
-}
+{}
 
 pgm3d::pgm3d(const QString& str)
 {
@@ -27,15 +23,13 @@ pgm3d::pgm3d(const QString& str)
 }
 
 pgm3d::~pgm3d()
-{
-}
-
+{}
 
 void pgm3d::loadFromFile(const QString& fileName)
 {
 	std::ifstream inputFile(fileName.toStdString());
 
-	if(!inputFile.is_open()) {
+	if (!inputFile.is_open()) {
 		QMessageBox::critical(0, "Error", QString("Couldn't open file " + fileName));
 		return;
 	}
@@ -55,7 +49,7 @@ void pgm3d::loadFromFile(const QString& fileName)
         if (headerCount == HEADER_SIZE) {
 			uint value = atoi(data.c_str());
 
-			if(value > m_maxGrayscaleValue) {
+			if (value > m_maxGrayscaleValue) {
 				QMessageBox::critical(0, "Error", "Bad file format : bad gray value.");
 				return;
 			}
@@ -73,11 +67,11 @@ void pgm3d::loadFromFile(const QString& fileName)
 				y = 0;
                 ++z;
 			}
-		} else {
+		}
+		else {
 			/* We need to read the HEADER_SIZE values for header informations
 			We assume that they're in the right order -> format width height depth grayscales */
-            switch (headerCount)
-			{
+            switch (headerCount) {
 			case 0:
 				format = data.c_str();
                 if (format != "PGM3D") {
@@ -274,7 +268,8 @@ Mesh* pgm3d::mesh() const
 	return mesh;
 }
 
-void pgm3d::indexToCoord(uint index, uint& x, uint& y, uint& z) const {
+void pgm3d::indexToCoord(uint index, uint& x, uint& y, uint& z) const
+{
 	assert(m_width != 0 && m_height != 0 && m_depth != 0);
 
 	x = (index % (m_width * m_height)) % m_width;
@@ -282,7 +277,8 @@ void pgm3d::indexToCoord(uint index, uint& x, uint& y, uint& z) const {
 	z =  index / (m_width * m_height);
 }
 
-int pgm3d::coordToIndex(uint x, uint y, uint z) const {
+int pgm3d::coordToIndex(uint x, uint y, uint z) const
+{
 	assert(m_width != 0 && m_height != 0 && m_depth != 0);
 	return x + y * m_width + z * m_height * m_width;
 }

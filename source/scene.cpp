@@ -1,6 +1,5 @@
 #include "scene.h"
 
-#include <iostream>
 #include <QDebug>
 #include <QMessageBox>
 
@@ -82,9 +81,10 @@ void Scene::init()
     loadShader(m_simpleshadingProgram, QString("simpleshading"));
 
     // TODO: Clean this and use the light in the lightlist ??
+    GLfloat diffuse[] = {1.0, 1.0, 1.0, 1.0};
+
     glEnable(GL_LIGHT0);
     GLfloat pos0[] = {-10.0, 0.0, 0.0, 1.0};
-    GLfloat diffuse[] = {1.0, 1.0, 1.0, 1.0};
     glLightfv(GL_LIGHT0, GL_POSITION, pos0);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
 
@@ -234,9 +234,9 @@ void Scene::setTransparency(float t)
     m_transparency = t;
 }
 
-unsigned int Scene::vertexCount() const
+uint Scene::vertexCount() const
 {
-    unsigned int totalVerticesCount = 0;
+    uint totalVerticesCount = 0;
 
     for (const Mesh* m : m_meshList)
         totalVerticesCount += m->verticesCount();
@@ -244,9 +244,9 @@ unsigned int Scene::vertexCount() const
     return totalVerticesCount;
 }
 
-unsigned int Scene::triangleCount() const
+uint Scene::triangleCount() const
 {
-    unsigned int totalTrianglesCount = 0;
+    uint totalTrianglesCount = 0;
 
     for (const Mesh* m : m_meshList)
         totalTrianglesCount += m->trianglesCount();
@@ -254,9 +254,9 @@ unsigned int Scene::triangleCount() const
     return totalTrianglesCount;
 }
 
-unsigned int Scene::faceCount() const
+uint Scene::faceCount() const
 {
-    unsigned int totalFacesCount = 0;
+    uint totalFacesCount = 0;
 
     for (const Mesh* m : m_meshList)
         totalFacesCount += m->facesCount();
@@ -264,9 +264,9 @@ unsigned int Scene::faceCount() const
     return totalFacesCount;
 }
 
-unsigned int Scene::edgeCount() const
+uint Scene::edgeCount() const
 {
-    unsigned int totalEdgesCount = 0;
+    uint totalEdgesCount = 0;
 
     for (const Mesh* m : m_meshList)
         totalEdgesCount += m->edgesCount();

@@ -1,9 +1,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <Eigen/Dense>
-#include <QVector>
 #include <cmath>
+#include <QVector>
+#include <Eigen/Dense>
 
 typedef Eigen::Matrix<float, 3, 1> Point3f;
 typedef Eigen::Matrix<float, 3, 1> Vector3f;

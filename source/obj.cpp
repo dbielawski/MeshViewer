@@ -1,9 +1,8 @@
+#include "obj.h"
+
 #include <QFile>
 #include <QTextStream>
 #include <QMessageBox>
-#include <fstream>
-
-#include "obj.h"
 #include "mesh.h"
 
 
@@ -27,7 +26,7 @@ void obj::loadFromFile(const QString &fileName) {
     QString line = in.readLine();
 
     QVector<Vector3f> normals;
-    QVector<QVector<unsigned int>> normalsIndices;
+    QVector<QVector<uint>> normalsIndices;
 
     while (!line.isNull()) {
         if (line.isEmpty()) {
@@ -88,20 +87,20 @@ void obj::loadFromFile(const QString &fileName) {
     file.close();
 
     // Set normals previously loaded
-    // vertex/textCoord/normals format
-    if (!normalsIndices.isEmpty()) {
+    if (normalsIndices.isEmpty()) {
+        // classical format
+        for (int i = 0; i < normals.size(); ++i) {
+            m_vertices.value(i).normal = normals.at(i);
+        }
+    }
+    else {
+        // vertex/textCoord/normals format
         for (int i = 0; i < m_faces.size(); ++i) {
             int j = 0;
             while (j < m_faces.at(i).size()) {
                 m_vertices.value(m_faces.at(i).at(j)).normal = normals.at(normalsIndices.at(i).at(j));
                 ++j;
             }
-        }
-    }
-    else {
-        // classical format
-        for (int i = 0; i < normals.size(); ++i) {
-            m_vertices.value(i).normal = normals.at(i);
         }
     }
 }

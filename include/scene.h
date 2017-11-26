@@ -1,13 +1,9 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include <QVector>
 #include <QGLShaderProgram>
-#include <QGLFunctions>
 #include <QFile>
-
 #include "utils.h"
-
 
 class Mesh;
 class Light;
@@ -41,12 +37,12 @@ public:
     void setTransparency(float t);
     float transparency() const { return m_transparency; }
 
-    unsigned int vertexCount() const;
-    unsigned int triangleCount() const;
-    unsigned int faceCount() const;
-    unsigned int edgeCount() const;
-    unsigned int lightCount() const { return m_lightList.size();    }
-    unsigned int meshCount() const  { return m_meshList.size();     }
+    uint vertexCount() const;
+    uint triangleCount() const;
+    uint faceCount() const;
+    uint edgeCount() const;
+    uint lightCount() const { return m_lightList.size();    }
+    uint meshCount() const  { return m_meshList.size();     }
     bool isValid() const;
     bool isClosed() const;
 
@@ -59,17 +55,17 @@ public:
 private:
     void loadShader(QGLShaderProgram* program, const QString& fileName);
 
-    QVector<Mesh*>    m_meshList;
-    QVector<const Light*>   m_lightList;
+    QVector<Mesh*> m_meshList;
+    QVector<const Light*> m_lightList;
 
     // Used to draw AABB, octree..
-    QGLShaderProgram*       m_simpleShaderProgram;
+    QGLShaderProgram* m_simpleShaderProgram;
 
     // Used to draw models with effects
-    QGLShaderProgram*       m_simpleshadingProgram;
+    QGLShaderProgram* m_simpleshadingProgram;
 
-    Camera*                 m_camera;
-    Color4f                 m_backgroundColor;
+    Camera* m_camera;
+    Color4f m_backgroundColor;
 
     bool m_displayBoundingBox;
     bool m_displayOctree;

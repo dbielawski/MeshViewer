@@ -3,8 +3,6 @@
 #include "scene.h"
 #include "camera.h"
 
-#include <iostream>
-
 WireBoundingBox::WireBoundingBox(const Color4f &color)
 {
     m_color = color;
@@ -31,8 +29,7 @@ void WireBoundingBox::init()
 
 void WireBoundingBox::render(const Scene& scene, const QMatrix4x4& transform) const
 {
-    if (scene.simpleShaderProgram()->bind())
-    {
+    if (scene.simpleShaderProgram()->bind()) {
         m_functionsPtr->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
         m_functionsPtr->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
 
@@ -45,15 +42,16 @@ void WireBoundingBox::render(const Scene& scene, const QMatrix4x4& transform) co
         program->setAttributeValue("vtx_color", c);
 
         const int vertexLoc = program->attributeLocation("vtx_position");
-        if (vertexLoc >= 0)
-        {
+        if (vertexLoc >= 0) {
             m_functionsPtr->glVertexAttribPointer(vertexLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Point3f), (void*)0);
             m_functionsPtr->glEnableVertexAttribArray(vertexLoc);
         }
 
         glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, (void*)0);
 
-        if (vertexLoc >= 0) m_functionsPtr->glDisableVertexAttribArray(vertexLoc);
+        if (vertexLoc >= 0) {
+            m_functionsPtr->glDisableVertexAttribArray(vertexLoc);
+        }
 
         scene.simpleShaderProgram()->release();
     }

@@ -1,8 +1,6 @@
 #ifndef PGM3D_H
 #define PGM3D_H
 
-#include <QVector>
-
 #include "model3d.h"
 #include "utils.h"
 

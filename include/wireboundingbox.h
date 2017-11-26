@@ -5,7 +5,6 @@
 
 #include "utils.h"
 #include "alignedbox3f.h"
-#include <QVector4D>
 
 class Scene;
 
@@ -18,9 +17,9 @@ public:
     void init();
     void render(const Scene& scene, const QMatrix4x4& transform) const;
 
-    void setAlignedBox(const AlignedBox3f& aabb)    { m_aabb = &aabb;       }
-    void setColor(const Color4f& color)             { m_color = color;      }
-    void setFunctions(QGLFunctions& f)              { m_functionsPtr = &f;  }
+    void setAlignedBox(const AlignedBox3f& aabb) { m_aabb = &aabb;      }
+    void setColor(const Color4f& color)          { m_color = color;     }
+    void setFunctions(QGLFunctions& f)           { m_functionsPtr = &f; }
 
     Point3f min() const { return m_aabb->min(); }
     Point3f max() const { return m_aabb->max(); }

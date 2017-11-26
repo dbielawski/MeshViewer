@@ -1,7 +1,4 @@
-#include <iostream>
-
 #include "octree.h"
-#include "wireboundingbox.h"
 
 Octree::Octree(const QVector<Vertex>& vertices, uint minObj) :
     m_vertices(vertices), m_minObj(minObj)
@@ -9,7 +6,8 @@ Octree::Octree(const QVector<Vertex>& vertices, uint minObj) :
     m_size = 0;
 }
 
-void Octree::build() {
+void Octree::build()
+{
     // Creating first node which is the big one with everyone inside
     AlignedBox3f* aabb = new AlignedBox3f();
     for (const Vertex v : m_vertices) {
@@ -33,6 +31,7 @@ void Octree::build() {
 void::Octree::buildNode(Node* parent)
 {
     QVector<Vertex> objects = parent->objects;
+
 	// If the boxes are too small we stop the recursion
     if (objects.size() <= m_minObj ||
         (parent->aabb->size().x() <= EPSILON &&
@@ -104,31 +103,32 @@ void::Octree::buildNode(Node* parent)
     }
 }
 
-void Octree::render(const Scene &scene, const QMatrix4x4 &transform, bool renderFullOctree) const {
+void Octree::render(const Scene &scene, const QMatrix4x4 &transform, bool renderFullOctree) const
+{
     m_octree->box->render(scene, transform);
     renderNode(scene, transform, m_octree, renderFullOctree);
 }
 
-void Octree::renderNode(const Scene &scene, const QMatrix4x4 &transform, Node* currentNode, bool renderFullOctree) const {
+void Octree::renderNode(const Scene &scene, const QMatrix4x4 &transform, Node* currentNode, bool renderFullOctree) const
+{
     for (Node* child : currentNode->childs) {
         if (renderFullOctree) {
             child->box->render(scene, transform);
         }
-        else {
-            if (child->isLeaf()) {
-                child->box->render(scene, transform);
-            }
+        else if (child->isLeaf()) {
+            child->box->render(scene, transform);
         }
         renderNode(scene, transform, child, renderFullOctree);
     }
 }
 
-void Octree::buildShapeFromOctree() {
+void Octree::buildShapeFromOctree()
+{
     buildShape(m_octree);
 }
 
-void Octree::buildShape(Node* currentNode) {
-
+void Octree::buildShape(Node* currentNode)
+{
     // For compilation purpose only
     QVector<FaceIndex> faces;
     QVector<Vertex> vertices;
@@ -167,24 +167,23 @@ void Octree::buildShape(Node* currentNode) {
             vertices.push_back(bbr);
 
             // ftl, ftr, fbr, fbl
-            FaceIndex front = {offset + 1, offset + 2, offset + 4, offset + 3 };
+            FaceIndex front = { offset + 1, offset + 2, offset + 4, offset + 3 };
             // btl, btr, bbr, bbl
-            FaceIndex back = {offset + 5, offset + 6, offset + 8, offset + 7 };
+            FaceIndex back  = { offset + 5, offset + 6, offset + 8, offset + 7 };
             // ftl, ftr, btr, btl
-            FaceIndex top = {offset + 1, offset + 2, offset + 6, offset + 5 };
+            FaceIndex top   = { offset + 1, offset + 2, offset + 6, offset + 5 };
             // fbl, fbr, bbr, bbl
-            FaceIndex bot = {offset + 3, offset + 4, offset + 8, offset + 7 };
+            FaceIndex bot   = { offset + 3, offset + 4, offset + 8, offset + 7 };
             // ftl, fbl, bbl, btl
-            FaceIndex left = {offset + 1, offset + 3, offset + 7, offset + 5 };
+            FaceIndex left  = { offset + 1, offset + 3, offset + 7, offset + 5 };
             // ftr, fbr, bbr, btr
-            FaceIndex right = {offset + 2, offset + 4, offset + 8, offset + 6 };
+            FaceIndex right = { offset + 2, offset + 4, offset + 8, offset + 6 };
 
             faces.push_back(front); faces.push_back(back);
             faces.push_back(top); faces.push_back(bot);
             faces.push_back(left); faces.push_back(right);
 
             // TODO: Wups ? Since it is recursive it will be parallelized and the offset will no longer be valid...
-
         }
     }
 }

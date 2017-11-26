@@ -2,12 +2,7 @@
 #define GLVIEWER_H
 
 #include <QGLWidget>
-#include <QGLShaderProgram>
-#include <QWheelEvent>
-#include <QMouseEvent>
-
-#include "pgm3d.h"
-#include "mesh.h"
+#include "scene.h"
 
 class Scene;
 
@@ -30,7 +25,7 @@ public:
 
     Scene* scene() const { return m_scene; }
 
-    void setDrawMode(unsigned int displayMode) { m_displayModeIndex = displayMode; }
+    void setDrawMode(uint displayMode) { m_displayModeIndex = displayMode; }
 
     float pointSizeMin() const;
     float pointSizeMax() const;
@@ -61,16 +56,16 @@ private:
         GL_POINT, GL_LINE, GL_FILL
     };
 
-    unsigned int    m_displayModeIndex;
+    uint m_displayModeIndex;
 
     // INPUTS
-    bool    m_wheelButtonPressed;
-    bool    m_leftButtonPressed;
-    bool    m_rightButtonPressed;
+    bool m_wheelButtonPressed;
+    bool m_leftButtonPressed;
+    bool m_rightButtonPressed;
 
-    QPoint  m_previousMousePosition;
+    QPoint m_previousMousePosition;
 
-    float   m_zoomStepValue;
+    float m_zoomStepValue;
 
     float m_dx;
     float m_dy;

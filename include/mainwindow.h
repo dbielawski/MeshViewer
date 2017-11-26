@@ -43,7 +43,7 @@ private:
     void createMenus();
     void createActions();
 
-	void setDraw(unsigned int);
+	void setDraw(uint);
 
     void updateInfos() const;
 

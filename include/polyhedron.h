@@ -4,16 +4,15 @@
 #include <QVector>
 #include "mesh.h"
 
-
 #include <CGAL/Simple_cartesian.h>
 #include <CGAL/Polyhedron_3.h>
 #include <CGAL/Polyhedron_incremental_builder_3.h>
 #include <CGAL/Polygon_mesh_processing/triangulate_hole.h>
 
-typedef CGAL::Simple_cartesian<double>                  Kernel;
-typedef Kernel::Point_3                                 Point_3;
-typedef CGAL::Polyhedron_3<Kernel>                      Polyhedron;
-typedef Polyhedron::HalfedgeDS                          HalfedgeDS;
+typedef CGAL::Simple_cartesian<double> Kernel;
+typedef Kernel::Point_3                Point_3;
+typedef CGAL::Polyhedron_3<Kernel>     Polyhedron;
+typedef Polyhedron::HalfedgeDS         HalfedgeDS;
 
 template <class HDS>
 class Polyhedron_builder: public CGAL::Modifier_base<HDS> {
@@ -50,6 +49,5 @@ void Polyhedron_builder<HDS>::operator()(HDS& hds) {
 
     B.end_surface();
 }
-
 
 #endif // POLYHEDRON_H

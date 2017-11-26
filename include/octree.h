@@ -1,14 +1,10 @@
 #ifndef OCTREE_H
 #define OCTREE_H
 
+#include <QGLFunctions>
 #include "utils.h"
 #include "alignedbox3f.h"
-#include "scene.h"
 #include "wireboundingbox.h"
-
-#include <QVector>
-#include <QGLFunctions>
-#include <iostream>
 
 class Octree
 {
@@ -35,7 +31,7 @@ public:
         ~Node() {
 			delete aabb;
 			delete box;
-			for(Node* child : childs) {
+			for (Node* child : childs) {
 				delete child;
 			}
 		}
@@ -56,7 +52,7 @@ public:
     void render(const Scene& scene, const QMatrix4x4& transform, bool renderFullOctree) const;
     void renderNode(const Scene &scene, const QMatrix4x4 &transform, Node* currentNode, bool renderFullOctree) const;
 
-    void setFunctions(QGLFunctions& f)              { m_functions = &f; }
+    void setFunctions(QGLFunctions& f) { m_functions = &f; }
 
 private:
     // This is all the vertices we are going to build the octree of.

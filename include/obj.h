@@ -1,9 +1,8 @@
 #ifndef OBJ_H
 #define OBJ_H
 
-#include <QVector>
-#include "model3d.h"
 #include "utils.h"
+#include "model3d.h"
 
 class obj : public Model3d
 {
@@ -18,8 +17,8 @@ public:
     QVector<FaceIndex> faces() const;
 
 private:
-    QVector<Vertex>     m_vertices;
-    QVector<FaceIndex>  m_faces;
+    QVector<Vertex> m_vertices;
+    QVector<FaceIndex> m_faces;
 };
 
 #endif // OBJ_H

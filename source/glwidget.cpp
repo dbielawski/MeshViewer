@@ -1,13 +1,7 @@
 #include "glwidget.h"
 
-#include <QGLShader>
 #include <QKeyEvent>
-#include <GL/gl.h>
-
-#include "scene.h"
 #include "camera.h"
-#include "light.h"
-
 
 GLWidget::GLWidget(QWidget *parent) :
     QGLWidget(parent),
