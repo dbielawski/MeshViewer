@@ -51,6 +51,7 @@ public:
     bool isClosed() const;
 
     void detectHoles();
+    void thicken();
 
     void saveMeshes(const QString fileName) const;
 

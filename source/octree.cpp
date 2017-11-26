@@ -20,9 +20,9 @@ void Octree::build() {
     mainNode->parent = NULL;
     mainNode->aabb = aabb;
     mainNode->objects = m_vertices;
-	mainNode->box = new WireBoundingBox(*mainNode->aabb);
-	mainNode->box->setFunctions(*m_functions);
-	mainNode->box->init();
+    mainNode->box = new WireBoundingBox(*mainNode->aabb);
+    mainNode->box->setFunctions(*m_functions);
+    mainNode->box->init();
 
     m_octree = mainNode;
     ++m_size;
@@ -33,11 +33,11 @@ void Octree::build() {
 void::Octree::buildNode(Node* parent)
 {
     QVector<Vertex> objects = parent->objects;
-	// If the boxes are too small we stop the recursion
+    // If the boxes are too small we stop the recursion
     if (objects.size() <= m_minObj ||
-        (parent->aabb->size().x() <= EPSILON &&
-         parent->aabb->size().y() <= EPSILON &&
-         parent->aabb->size().z() <= EPSILON)) {
+            (parent->aabb->size().x() <= EPSILON &&
+             parent->aabb->size().y() <= EPSILON &&
+             parent->aabb->size().z() <= EPSILON)) {
         return;
     }
 
@@ -59,7 +59,7 @@ void::Octree::buildNode(Node* parent)
      *
     */
 
-	AlignedBox3f* aabb_nodes[8];
+    AlignedBox3f* aabb_nodes[8];
     // Front Top left
     aabb_nodes[0] = new AlignedBox3f(Point3f(min.x(), center.y(), min.z()), Point3f(center.x(), max.y(), center.z()));
     // Front Top Right
@@ -97,7 +97,7 @@ void::Octree::buildNode(Node* parent)
             WireBoundingBox* box = new WireBoundingBox(*aabb_nodes[i], Color4f::blue());
             Node* n = new Node(aabb_nodes[i], parent, box, objs[i]);
             n->box->setFunctions(*m_functions);
-			n->box->init();
+            n->box->init();
             parent->childs.push_back(n);
             buildNode(n);
         }
@@ -111,7 +111,25 @@ void Octree::render(const Scene &scene, const QMatrix4x4 &transform) const {
 
 void Octree::renderNode(const Scene &scene, const QMatrix4x4 &transform, Node* currentNode) const {
     for (Node* child : currentNode->childs) {;
-		child->box->render(scene, transform);
+        child->box->render(scene, transform);
         renderNode(scene, transform, child);
+    }
+}
+
+void Octree::aabbsWithObjects(QVector<AlignedBox3f*>& aabbs, QVector<WireBoundingBox*>& wire, const Node* node)
+{
+    if (node->isLeaf() && !node->isEmpty())
+    {
+        // TODO: remove => pour debug
+//        for (int i = 0; i < node->objects.size(); ++i)
+//            std::cout <<  node->objects.at(i).position.x() << " " << node->objects.at(i).position.y() << " " << node->objects.at(i).position.z() << std::endl;
+
+        wire.append(node->box);
+        aabbs.append(node->aabb);
+    }
+    else
+    {
+        for (int i = 0; i < 8; ++i)
+            aabbsWithObjects(aabbs, wire, node->childs[i]);
     }
 }

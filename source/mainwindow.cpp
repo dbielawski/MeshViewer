@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->sceneBackgroundColorButton, SIGNAL(clicked()), this, SLOT(onBackgroundColorScene()));
     connect(ui->detectHolesButton,          SIGNAL(clicked()), this, SLOT(onDetectHoles()));
     connect(ui->holesFillingButton,         SIGNAL(clicked()), this, SLOT(holesFillingAction()));
+    connect(ui->thickenButton,              SIGNAL(clicked()), this, SLOT(onThicken()));
 
     ui->alphaValue->setText(QString::number(ui->transparencySlider->value()));
 
@@ -281,5 +282,11 @@ void MainWindow::onBackgroundColorScene()
     QColor c = QColorDialog::getColor();
     Color4f color(c.red()/255.0, c.green()/255.0, c.blue()/255.0);
     ui->openGLWidget->changeSceneColor(color);
+    ui->openGLWidget->updateGL();
+}
+
+void MainWindow::onThicken()
+{
+    ui->openGLWidget->scene()->thicken();
     ui->openGLWidget->updateGL();
 }

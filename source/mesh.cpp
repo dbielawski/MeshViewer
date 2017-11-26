@@ -166,9 +166,9 @@ void Mesh::saveAsObj(QTextStream& out, int offset) const
     for (int i = 0; i < m_vertices.size(); ++i) {
         QString line = "v ";
         line += QString::number(m_vertices.at(i).position.x()) + " "
-              + QString::number(m_vertices.at(i).position.y()) + " "
-              + QString::number(m_vertices.at(i).position.z())
-              + '\n';
+                + QString::number(m_vertices.at(i).position.y()) + " "
+                + QString::number(m_vertices.at(i).position.z())
+                + '\n';
         out << line;
     }
 
@@ -176,9 +176,9 @@ void Mesh::saveAsObj(QTextStream& out, int offset) const
     for (int i = 0; i < m_vertices.size(); ++i) {
         QString line = "vn ";
         line += QString::number(offset + m_vertices.at(i).normal.x()) + " "
-              + QString::number(offset + m_vertices.at(i).normal.y()) + " "
-              + QString::number(offset + m_vertices.at(i).normal.z())
-              + '\n';
+                + QString::number(offset + m_vertices.at(i).normal.y()) + " "
+                + QString::number(offset + m_vertices.at(i).normal.z())
+                + '\n';
         out << line;
     }
 
@@ -266,10 +266,59 @@ void Mesh::detectHoles()
                 Point3f p  = m_vertices.at(i).position;
 
                 if ((p.x() == p0.x() && p.y() == p0.y() && p.z() == p0.z()) ||
-                    (p.x() == p1.x() && p.y() == p1.y() && p.z() == p1.z())) {
+                        (p.x() == p1.x() && p.y() == p1.y() && p.z() == p1.z())) {
                     m_vertices[i].color = Color4f::red();
                 }
             }
         }
     }
+}
+
+void Mesh::thicken()
+{
+    QVector<AlignedBox3f*> aabbs;
+    QVector<WireBoundingBox*> wires_aabbs;
+    m_octree->aabbsWithObjects(aabbs, wires_aabbs, m_octree->mainNode());
+    //    for (int i = 0; i < aabbs.size(); ++i)
+    //    {
+    //        wires_aabbs.at(i)->render(*m_scenePtr, m_transform);
+    //    }
+
+    QVector<Vertex> vertices;
+    QVector<FaceIndex> faces;
+
+    // TODO: do!
+    int offset = 0;
+    for (int i = 0; i < aabbs.size(); ++i)
+    {
+        Point3f min = aabbs.at(i)->min();
+        Point3f max = aabbs.at(i)->max();
+
+        vertices.append(Vertex(min, Color4f::gray())); // Left Bottom Back
+        vertices.append(Vertex(Point3f(min.x(), max.y(), min.z()), Color4f::gray())); // Left Top Back
+        vertices.append(Vertex(Point3f(max.x(), max.y(), min.z()), Color4f::gray())); // Right Top Back
+        vertices.append(Vertex(Point3f(max.x(), min.y(), min.z()), Color4f::gray())); // Right Bottom Back
+
+        vertices.append(Vertex(Point3f(max.x(), min.y(), max.z()), Color4f::gray())); // Right Bottom Front
+        vertices.append(Vertex(Point3f(min.x(), min.y(), max.z()), Color4f::gray())); // Left Bottom Front
+        vertices.append(Vertex(Point3f(min.x(), max.y(), max.z()), Color4f::gray())); // Left Top Front
+        vertices.append(Vertex(Point3f(max.x(), max.y(), max.z()), Color4f::gray())); // Right Top Front
+
+
+        offset = i * 8;
+        faces.append({offset+0, offset+1, offset+2, offset+4}); // back face
+        faces.append({offset+4, offset+7, offset+6, offset+5}); // front face
+        faces.append({offset+7, offset+2, offset+1, offset+6}); // top face
+        faces.append({offset+4, offset+5, offset+0, offset+3}); // bottom
+
+        faces.append({offset+5, offset+6, offset+1, offset+0}); // left
+        faces.append({offset+3, offset+2, offset+7, offset+4}); // right
+    }
+
+    m_vertices.clear();
+    m_faces.clear();
+    m_vertices = vertices;
+    m_faces = faces;
+
+    init();
 }

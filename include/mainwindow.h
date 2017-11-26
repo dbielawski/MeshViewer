@@ -38,6 +38,7 @@ private slots:
 
     void onDetectHoles();
     void onBackgroundColorScene();
+    void onThicken();
 
 private:
     void createMenus();

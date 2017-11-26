@@ -40,12 +40,12 @@ public:
 			}
 		}
 
-        bool isEmpty() { return objects.size() == 0; }
-        bool isLeaf()  { return childs.size() == 0; }
+        bool isEmpty() const { return objects.size() == 0; }
+        bool isLeaf() const  { return childs.size() == 0;  }
     };
 
     Octree(const QVector<Vertex>& vertices, uint m_minObj = 5);
-    ~Octree() { delete m_octree; };
+    ~Octree() { delete m_octree; }
 
     void build();
     void buildNode(Node* parent);
@@ -54,6 +54,10 @@ public:
     void renderNode(const Scene &scene, const QMatrix4x4 &transform, Node* currentNode) const;
 
     void setFunctions(QGLFunctions& f)              { m_functions = &f; }
+
+    // TODO: enlever le wire
+    void aabbsWithObjects(QVector<AlignedBox3f*>& aabbs, QVector<WireBoundingBox*>& wire, const Node* node);
+    Node* mainNode() const { return m_octree; }
 
 private:
     // This is all the vertices we are going to build the octree of.

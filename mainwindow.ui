@@ -193,6 +193,13 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QPushButton" name="thickenButton">
+            <property name="text">
+             <string>Thicken</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -343,7 +350,7 @@
      <x>0</x>
      <y>0</y>
      <width>887</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>

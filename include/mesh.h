@@ -46,6 +46,7 @@ public:
     bool isClosed() const { return m_polyhedron.is_closed(); }
     void fillHoles();
     void detectHoles();
+    void thicken();
 
     void saveAsObj(QTextStream& out, int offset) const;
 

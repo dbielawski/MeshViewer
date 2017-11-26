@@ -277,6 +277,12 @@ void Scene::detectHoles()
         m->detectHoles();
 }
 
+void Scene::thicken()
+{
+    for (Mesh* m : m_meshList)
+        m->thicken();
+}
+
 void Scene::loadShader(QGLShaderProgram* program, const QString& fileName)
 {
     if (!program->addShaderFromSourceFile(QGLShader::Vertex, ":/shaders/" + fileName + ".vert"))
