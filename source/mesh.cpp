@@ -272,3 +272,130 @@ void Mesh::detectHoles()
         }
     }
 }
+
+
+/*
+static bool isConvex(Vector3f p0, Vector3f p1, Vector3f p2)
+{
+    Vector3f vec0to1(p1.x() - p0.x(), p1.y() - p0.y(), p1.z() - p0.z());
+    Vector3f vec0to2(p2.x() - p0.x(), p2.y() - p0.y(), p2.z() - p0.z());
+    vec0to1.normalize(); vec0to2.normalize();
+
+    float angle = std::acos(vec0to1.dot(vec0to2));
+    return (angle > 0 && angle < 180);
+}
+
+static bool inTriangle(Vector3f p0, Vector3f p1, Vector3f p2, Vector3f p)
+{
+    Vector3f AB(p1.x() - p0.x(), p1.y() - p0.y(), p1.z() - p0.z()); // AB
+    Vector3f BA(p0.x() - p1.x(), p0.y() - p1.y(), p0.z() - p1.z()); // BA
+    Vector3f AC(p2.x() - p0.x(), p2.y() - p0.y(), p2.z() - p0.z()); // AC
+    Vector3f CA(p0.x() - p2.x(), p0.y() - p2.y(), p0.z() - p2.z()); // CA
+    Vector3f BC(p2.x() - p1.x(), p2.y() - p1.y(), p2.z() - p1.z()); // AC
+    Vector3f CB(p1.x() - p2.x(), p1.y() - p2.y(), p1.z() - p2.z()); // CA
+
+    Vector3f AM(p.x() - p0.x(), p.y() - p0.y(), p.z() - p0.z()); // AM
+    Vector3f BM(p.x() - p1.x(), p.y() - p1.y(), p.z() - p1.z()); // BM
+    Vector3f CM(p.x() - p2.x(), p.y() - p2.y(), p.z() - p2.z()); // CM
+
+    return (((AB.cross(AM)).dot(AM.cross(AC)) >= 0) &&
+            ((BA.cross(BM)).dot(BM.cross(BC)) >= 0) &&
+            ((CA.cross(CM)).dot(CM.cross(CB)) >= 0));
+}
+
+
+void Mesh::fillHoles()
+{
+    for (Halfedge_iterator heit = m_polyhedron.halfedges_begin(); heit != m_polyhedron.halfedges_end(); heit++) {
+        if (heit->is_border()) { // If there is a hole
+            std::cerr << "border found" << std::endl;
+            //std::vector<Vertex_handle> vertices;
+            Halfedge_iterator heit2 = heit;
+
+            do {
+                heit2 = heit2->next();
+            } while (heit2->next()->next() != heit);
+
+            m_polyhedron.add_facet_to_border(heit, heit2);
+
+            // // =========================
+            // Halfedge_iterator heit2 = heit;
+            // do {
+            //     vertices.push_back(heit2->vertex());
+            //     heit2 = heit2->next();
+            // } while (heit2 != heit);
+            //
+            // while (vertices.size() > 3) { // while there is a hole
+            //     Vertex_handle v0, v1, v2, v;
+            //
+            //     bool isEar;
+            //     for (int i1 = 0; i1 < vertices.size(); ++i1) {
+            //         isEar = true;
+            //         int i0 = (i1 == 0) ? vertices.size() - 1 : i1 - 1;
+            //         int i2 = (i1 == vertices.size() - 1) ? 0 : i1 + 1;
+            //
+            //         v0 = vertices.at(i0);
+            //         v1 = vertices.at(i1);
+            //         v2 = vertices.at(i2);
+            //
+            //         Vector3f p0(v0->point().x(), v0->point().y(), v0->point().z());
+            //         Vector3f p1(v1->point().x(), v1->point().y(), v1->point().z());
+            //         Vector3f p2(v2->point().x(), v2->point().y(), v2->point().z());
+            //
+            //         if (isConvex(p0, p1, p2)) {
+            //             for (int j = 0; j < vertices.size(); ++j) {
+            //                 if (j == i0 || j == i1 || j == i2) { continue; }
+            //                 v = vertices.at(j);
+            //                 Vector3f p(v->point().x(), v->point().y(), v->point().z());
+            //                 if (inTriangle(p0, p1, p2, p)) {
+            //                     isEar = false;
+            //                 }
+            //             }
+            //
+            //             if (isEar) {
+            //                 std::cerr << vertices.size() << std::endl;
+            //                 std::cerr << "ear found : " << i1 << std::endl;
+            //                 heit2 = heit;
+            //                 do {
+            //                     heit2 = heit2->next();
+            //                 } while (heit2->next()->next() != heit);
+            //                 m_polyhedron.add_facet_to_border(heit, heit2);
+            //                 vertices.erase(vertices.begin()+i1);
+            //                 break;
+            //             }
+            //         }
+            //     }
+            //     if (isEar) {
+            //         break;
+            //     }
+            // }
+
+        }
+        break;
+    }
+    std::cerr << "finish" << std::endl;
+
+    m_polyhedron.normalize_border(); // Normalize all the borders just to be sure
+    // Update m_vertices & m_faces with the new data from the filled polyhedron
+    m_vertices.clear();
+    unsigned int nb_vertices = 0;
+    std::map<const Polyhedron::Vertex *, unsigned int> mapping;
+    for(Vertex_iterator vit = m_polyhedron.vertices_begin(); vit != m_polyhedron.vertices_end(); vit++) {
+        m_vertices.push_back(Vertex(Point3f(vit->point().x(), vit->point().y(), vit->point().z()), Color4f(0.5, 0.5, 0.5)));
+        mapping[&*vit] = nb_vertices++;
+    }
+
+    m_faces.clear();
+    for(Face_iterator fit = m_polyhedron.facets_begin(); fit != m_polyhedron.facets_end(); fit++) {
+        Halfedge_facet_circulator hfc = fit->facet_begin();
+
+        QVector<unsigned int> face;
+        do {
+            face.append(mapping[&*(hfc->vertex())]);
+            hfc++;
+        } while (hfc != fit->facet_begin());
+
+        m_faces.append(face);
+    }
+}
+*/
