@@ -18,7 +18,7 @@ Scene::Scene() :
 {
     m_camera->lookAt(Point3f(0.f, 0.f, 3.f),
                      Point3f(0.f, 0.f, 0.f),
-                     Vector3f(0.f, 1.f, 0.f));
+                     Vector3f::UnitY());
 
     m_camera->setPerspective(60.f, 0.001f, 1000.f);
 
@@ -28,12 +28,12 @@ Scene::Scene() :
     m_transparency = 1.f;
 
     // Add some lights
-    m_lightList.append(new DirectionalLight(Color4f(1, 1, 1), Vector3f(0, 0, 1)));
-    m_lightList.append(new DirectionalLight(Color4f(1, 1, 1), Vector3f(0, 0, -1)));
-    m_lightList.append(new DirectionalLight(Color4f(1, 1, 1), Vector3f(1, 0, 0)));
-    m_lightList.append(new DirectionalLight(Color4f(1, 1, 1), Vector3f(-1, 0, 0)));
-    m_lightList.append(new DirectionalLight(Color4f(1, 1, 1), Vector3f(0, -1, 0)));
-    m_lightList.append(new DirectionalLight(Color4f(1, 1, 1), Vector3f(0, 1, 0)));
+    m_lightList.append(new DirectionalLight(Color4f::white(),    Vector3f::UnitZ()));
+    m_lightList.append(new DirectionalLight(Color4f::white(), -1*Vector3f::UnitZ()));
+    m_lightList.append(new DirectionalLight(Color4f::white(),    Vector3f::UnitX()));
+    m_lightList.append(new DirectionalLight(Color4f::white(), -1*Vector3f::UnitX()));
+    m_lightList.append(new DirectionalLight(Color4f::random(),  Vector3f::UnitY()));
+    m_lightList.append(new DirectionalLight(Color4f::white(), -1*Vector3f::UnitY()));
 }
 
 Scene::~Scene()
@@ -60,7 +60,7 @@ void Scene::saveMeshes(const QString fileName) const
     out << header;
 
     int nb_vertices = 0;
-    for(const Mesh* m : m_meshList) {
+    for (const Mesh* m : m_meshList) {
         m->saveAsObj(out, nb_vertices);
         nb_vertices += m->verticesCount();
     }
@@ -82,6 +82,7 @@ void Scene::init()
     loadShader(m_simpleShaderProgram, QString("simpleshader"));
     loadShader(m_simpleshadingProgram, QString("simpleshading"));
 
+    // TODO: Clean this and use the light in the lightlist ??
     glEnable(GL_LIGHT0);
     GLfloat pos0[] = {-10.0, 0.0, 0.0, 1.0};
     GLfloat diffuse[] = {1.0, 1.0, 1.0, 1.0};
@@ -158,7 +159,7 @@ void Scene::render() const
 
 void Scene::removeLights()
 {
-    for(int i = m_lightList.size() - 1; i >= 0; i--)
+    for (int i = m_lightList.size() - 1; i >= 0; i--)
     {
         const Light* l = m_lightList.at(i);
         m_lightList.pop_back();
@@ -169,7 +170,7 @@ void Scene::removeLights()
 
 void Scene::removeModels()
 {
-    for(int i = m_meshList.size() - 1; i >= 0; i--)
+    for (int i = m_meshList.size() - 1; i >= 0; i--)
     {
         const Mesh* m = m_meshList.at(i);
         m_meshList.pop_back();

@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->clearSceneButton, SIGNAL(clicked()), this, SLOT(onClearScene()));
     connect(ui->sceneBackgroundColorButton, SIGNAL(clicked(bool)), this, SLOT(onBackgroundColorScene()));
     connect(ui->detectHolesButton, SIGNAL(clicked()), this, SLOT(onDetectHoles()));
-    connect(ui->fillingHolesButton, SIGNAL(clicked()), this, SLOT(fillingHolesAction()));
+    connect(ui->holesFillingButton, SIGNAL(clicked()), this, SLOT(holesFillingAction()));
 
     ui->alphaValue->setText(QString::number(ui->transparencySlider->value()));
 
@@ -61,7 +61,7 @@ void MainWindow::createMenus()
     m_displayMenu->setEnabled(false);
 
 	m_actionMenu = menuBar()->addMenu(tr("&Actions"));
-	m_actionMenu->addAction(m_holeFillingAction);
+    m_actionMenu->addAction(m_holesFillingAction);
 }
 
 void MainWindow::createActions()
@@ -80,11 +80,6 @@ void MainWindow::createActions()
     m_clearSceneAction->setShortcut(QKeySequence(tr("Ctrl+W")));
     m_clearSceneAction->setStatusTip(tr("Clear the scene"));
     connect(m_clearSceneAction, SIGNAL(triggered(bool)), this, SLOT(onClearScene()));
-
-    m_holeFillingAction = new QAction(tr("&Fill Holes"), this);
-    m_holeFillingAction->setShortcut(QKeySequence(tr("Ctrl+F")));
-    m_holeFillingAction->setStatusTip(tr("Fill Holes"));
-    connect(m_holeFillingAction, SIGNAL(triggered(bool)), this, SLOT(fillingHolesAction()));
 
     m_quitAction = new QAction(tr("&Quit"), this);
     m_quitAction->setShortcut(QKeySequence(tr("Ctrl+Q")));
@@ -114,9 +109,10 @@ void MainWindow::createActions()
     connect(ui->transparencySlider, SIGNAL(valueChanged(int)), this, SLOT(onAlphaChanged(int)));
     connect(ui->pointSizeSlider,SIGNAL(valueChanged(int)), this, SLOT(onPointSizeChanged(int)));
 
-	m_holeFillingAction = new QAction(tr("&Fill Holes"), this);
-	m_holeFillingAction->setStatusTip(tr("Fill holes in the current model | Press H to process."));
-	connect(m_holeFillingAction, SIGNAL(triggered(bool)), this, SLOT(fillingHolesAction()));
+    m_holesFillingAction = new QAction(tr("&Fill Holes"), this);
+    m_holesFillingAction->setShortcut(QKeySequence('H'));
+    m_holesFillingAction->setStatusTip(tr("Fill holes in the current model | Press H to process."));
+    connect(m_holesFillingAction, SIGNAL(triggered(bool)), this, SLOT(holesFillingAction()));
 
     // Update infos in the right panel (vertices/faces count...)
     updateInfos();
@@ -140,7 +136,7 @@ void MainWindow::onOpenFile()
     QString ext = fi.suffix();
 
     Model3d* model = Q_NULLPTR;
-    if(ext.toStdString() == "pgm3d") {
+    if (ext.toStdString() == "pgm3d") {
         model = new pgm3d(fileName);
     }
     else if (ext.toStdString() == "obj") {
@@ -185,7 +181,7 @@ void MainWindow::onClearScene()
     ui->openGLWidget->updateGL();
 }
 
-void MainWindow::fillingHolesAction()
+void MainWindow::holesFillingAction()
 {
     ui->openGLWidget->scene()->fillHoles();
     updateInfos();

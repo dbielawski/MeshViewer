@@ -26,18 +26,27 @@ public:
 		WireBoundingBox* box;
         QVector<Node*> childs;
         QVector<Vertex> objects;
-        bool isEmpty() { return objects.size() == 0; }
-		~Node() {
+
+        Node() {}
+        Node(AlignedBox3f* aabb, Node* parent, WireBoundingBox* box, QVector<Vertex> objects) :
+            aabb(aabb), parent(parent), box(box), objects(objects)
+        {}
+
+        ~Node() {
 			delete aabb;
 			delete box;
 			for(Node* child : childs) {
 				delete child;
 			}
 		}
+
+        bool isEmpty() { return objects.size() == 0; }
+        bool isLeaf()  { return childs.size() == 0; }
     };
 
     Octree(const QVector<Vertex>& vertices, uint m_minObj = 5);
-	~Octree() { delete m_octree; };
+    ~Octree() { delete m_octree; };
+
     void build();
     void buildNode(Node* parent);
 

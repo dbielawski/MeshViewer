@@ -45,14 +45,14 @@ void pgm3d::loadFromFile(const QString& fileName)
 
 	int headerCount(0);
 	uint x = 0, y = 0, z = 0;
-	while(inputFile >> data && inputFile) {
-		if(data[0] == '#') {
+    while (inputFile >> data && inputFile) {
+        if (data[0] == '#') {
 			inputFile.ignore(INT_MAX, '\n');
 			continue;
 		}
 
 		/* If we have already read the header, we store the raw data in m_data */
-		if(headerCount == HEADER_SIZE) {
+        if (headerCount == HEADER_SIZE) {
 			uint value = atoi(data.c_str());
 
 			if(value > m_maxGrayscaleValue) {
@@ -64,23 +64,23 @@ void pgm3d::loadFromFile(const QString& fileName)
 			Vertex v(Point3f(x, y, z), Color4f(grayValue, grayValue, grayValue));
 			m_data.append(v);
 
-			x++;
+            ++x;
 			if(x == m_width) {
 				x = 0;
-				y++;
+                ++y;
 			}
 			if(y == m_height) {
 				y = 0;
-				z++;
+                ++z;
 			}
 		} else {
 			/* We need to read the HEADER_SIZE values for header informations
 			We assume that they're in the right order -> format width height depth grayscales */
-			switch(headerCount)
+            switch (headerCount)
 			{
 			case 0:
 				format = data.c_str();
-				if(format != "PGM3D") {
+                if (format != "PGM3D") {
 					QMessageBox::critical(0, "Error", "Bad file format : bad header.");
 					return;
 				}
@@ -101,11 +101,11 @@ void pgm3d::loadFromFile(const QString& fileName)
 				break;
 			}
 
-			headerCount++;
+            ++headerCount;
 		}
 	}
 
-	if(m_width * m_height * m_depth != uint(m_data.size())) {
+    if (m_width * m_height * m_depth != uint(m_data.size())) {
 		QMessageBox::critical(0, "Error", "Bad file format : missing data.");
 		return;
 	}
@@ -176,7 +176,7 @@ Mesh* pgm3d::mesh() const
 			allFaces.push_back(face);
 		}
 
-		for(int i = 0; i < 18; i++) {
+        for (int i = 0; i < 18; i++) {
 			EdgeIndex edge(offset+ive[i][0], offset+ive[i][1]);
 			allEdges.push_back(edge);
 		}
@@ -190,9 +190,8 @@ Mesh* pgm3d::mesh() const
 	bool left, right, top, bot, front, back;
 	bool newVertex;
 
-	Color4f black = Color4f(0.f, 0.f, 0.f);
-    for(uint i = 0; i < voxelCount; ++i) {
-		if (m_data[i].color == black) {continue; }
+    for (uint i = 0; i < voxelCount; ++i) {
+        if (m_data[i].color == Color4f::black()) {continue; }
 
 		newVertex = false;
 		offset = vertices.size();
@@ -207,7 +206,7 @@ Mesh* pgm3d::mesh() const
         front = (z == m_depth - 1 ? true : false);
 
         index = coordToIndex(x-1, y, z);
-        if(left || m_data[i].color > m_data[index].color) {
+        if (left || m_data[i].color > m_data[index].color) {
 			FaceIndex face1 = {offset + ivf[0][0], offset + ivf[0][1], offset + ivf[0][2]};
 	        FaceIndex face2 = {offset + ivf[1][0], offset + ivf[1][1], offset + ivf[1][2]};
             faces.push_back(face1); faces.push_back(face2);
@@ -215,7 +214,7 @@ Mesh* pgm3d::mesh() const
         }
 
         index = coordToIndex(x+1, y, z);
-        if(right || m_data[i].color > m_data[index].color) {
+        if (right || m_data[i].color > m_data[index].color) {
 			FaceIndex face1 = {offset + ivf[2][0], offset + ivf[2][1], offset + ivf[2][2]};
 			FaceIndex face2 = {offset + ivf[3][0], offset + ivf[3][1], offset + ivf[3][2]};
             faces.push_back(face1); faces.push_back(face2);
@@ -223,7 +222,7 @@ Mesh* pgm3d::mesh() const
         }
 
         index = coordToIndex(x, y+1, z);
-		if(top || m_data[i].color > m_data[index].color) {
+        if (top || m_data[i].color > m_data[index].color) {
 			FaceIndex face1 = {offset + ivf[4][0], offset + ivf[4][1], offset + ivf[4][2]};
 			FaceIndex face2 = {offset + ivf[5][0], offset + ivf[5][1], offset + ivf[5][2]};
             faces.push_back(face1); faces.push_back(face2);
@@ -231,7 +230,7 @@ Mesh* pgm3d::mesh() const
         }
 
         index = coordToIndex(x, y-1, z);
-        if(bot || m_data[i].color > m_data[index].color) {
+        if (bot || m_data[i].color > m_data[index].color) {
 			FaceIndex face1 = {offset + ivf[6][0], offset + ivf[6][1], offset + ivf[6][2]};
 			FaceIndex face2 = {offset + ivf[7][0], offset + ivf[7][1], offset + ivf[7][2]};
             faces.push_back(face1); faces.push_back(face2);
@@ -239,7 +238,7 @@ Mesh* pgm3d::mesh() const
         }
 
 		index = coordToIndex(x, y, z+1);
-        if(front || m_data[i].color > m_data[index].color) {
+        if (front || m_data[i].color > m_data[index].color) {
 			FaceIndex face1 = {offset + ivf[8][0], offset + ivf[8][1], offset + ivf[8][2]};
 			FaceIndex face2 = {offset + ivf[9][0], offset + ivf[9][1], offset + ivf[9][2]};
             faces.push_back(face1); faces.push_back(face2);
@@ -247,7 +246,7 @@ Mesh* pgm3d::mesh() const
         }
 
         index = coordToIndex(x, y, z-1);
-        if(back || m_data[i].color > m_data[index].color) {
+        if (back || m_data[i].color > m_data[index].color) {
 			FaceIndex face1 = {offset + ivf[10][0], offset + ivf[10][1], offset + ivf[10][2]};
 			FaceIndex face2 = {offset + ivf[11][0], offset + ivf[11][1], offset + ivf[11][2]};
             faces.push_back(face1); faces.push_back(face2);

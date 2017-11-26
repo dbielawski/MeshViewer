@@ -4,8 +4,10 @@
 #include <QVector>
 #include <QGLShaderProgram>
 #include <QGLFunctions>
+#include <QFile>
 
 #include "utils.h"
+
 
 class Mesh;
 class Light;

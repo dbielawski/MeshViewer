@@ -1,10 +1,11 @@
-#include "obj.h"
-#include "mesh.h"
-
 #include <QFile>
 #include <QTextStream>
 #include <QMessageBox>
 #include <fstream>
+
+#include "obj.h"
+#include "mesh.h"
+
 
 obj::obj(const QString &fileName)
 {
@@ -55,13 +56,15 @@ void obj::loadFromFile(const QString &fileName) {
             float z = list.at(3).toFloat();
             Vertex v(Point3f(x, y, z), Color4f::gray());
             m_vertices.append(v);
-        } else if (list.at(0) == "vn") { // Normals
+        }
+        else if (list.at(0) == "vn") { // Normals
             float n0 = list.at(1).toFloat();
             float n1 = list.at(2).toFloat();
             float n2 = list.at(3).toFloat();
             Vector3f normal(n0, n1, n2);
             normals.append(normal);
-        } else if (list.at(0) == "f") { // Faces
+        }
+        else if (list.at(0) == "f") { // Faces
             FaceIndex face;
             QVector<uint> normalIndices;
             for (int i = 1; i < listSize; ++i) {
@@ -70,8 +73,8 @@ void obj::loadFromFile(const QString &fileName) {
 
                 if (elementArray.size() == 2) {
                     normalIndices.append(elementArray.at(1).toInt() - 1);
-                } else if (elementArray.size() == 3) {
-                    // uint textCoord = elementArray.at(1).toInt() - 1;  // We don't use textCoords for now
+                }
+                else if (elementArray.size() == 3) {
                     normalIndices.append(elementArray.at(2).toInt() - 1);
                 }
             }
@@ -86,23 +89,20 @@ void obj::loadFromFile(const QString &fileName) {
 
     // Set normals previously loaded
     // vertex/textCoord/normals format
-    if (!normalsIndices.isEmpty())
-    {
-        for (int i = 0; i < m_faces.size(); ++i)
-        {
+    if (!normalsIndices.isEmpty()) {
+        for (int i = 0; i < m_faces.size(); ++i) {
             int j = 0;
-            while (j < m_faces.at(i).size())
-            {
+            while (j < m_faces.at(i).size()) {
                 m_vertices.value(m_faces.at(i).at(j)).normal = normals.at(normalsIndices.at(i).at(j));
                 ++j;
             }
         }
     }
-    else
-    {
+    else {
         // classical format
-        for (int i = 0; i < normals.size(); ++i)
+        for (int i = 0; i < normals.size(); ++i) {
             m_vertices.value(i).normal = normals.at(i);
+        }
     }
 }
 

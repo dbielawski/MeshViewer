@@ -184,9 +184,9 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="fillingHolesButton">
+           <widget class="QPushButton" name="holesFillingButton">
             <property name="text">
-             <string>Filling Holes</string>
+             <string>Fill Holes</string>
             </property>
             <property name="checkable">
              <bool>false</bool>
@@ -343,7 +343,7 @@
      <x>0</x>
      <y>0</y>
      <width>887</width>
-     <height>20</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

@@ -5,7 +5,6 @@
 #include <QVector>
 #include <cmath>
 
-
 typedef Eigen::Matrix<float, 3, 1> Point3f;
 typedef Eigen::Matrix<float, 3, 1> Vector3f;
 typedef Eigen::Matrix<float, 2, 1> Vector2f;
@@ -14,25 +13,61 @@ typedef Eigen::Matrix<int, 2, 1> Vector2i;
 typedef QVector<uint> FaceIndex;
 
 
+static const double EPSILON = 0.0001;
+
 struct Color4f
 {
     float r, g, b, a;
 
     Color4f(float red = 0.f, float green = 0.f, float blue = 0.f, float alpha = 1.f) :
         r(red), g(green), b(blue), a(alpha)
-    {}
+    {
+
+    }
 
     Color4f(const Color4f& c):
         r(c.r), g(c.g), b(c.b), a(c.a)
-    {}
+    {
+
+    }
+
+    static Color4f white()
+    {
+        return Color4f(1.f, 1.f, 1.f, 1.f);
+    }
+
+    static Color4f black()
+    {
+        return Color4f(0.f, 0.f, 0.f, 1.f);
+    }
 
     static Color4f gray()
     {
         return Color4f(0.5, 0.5, 0.5, 1.f);
     }
+
     static Color4f red()
     {
         return Color4f(1.f, 0.f, 0.f, 1.f);
+    }
+
+    static Color4f green()
+    {
+        return Color4f(0.f, 1.f, 0.f, 1.f);
+    }
+
+    static Color4f blue()
+    {
+        return Color4f(0.f, 0.f, 1.f, 1.f);
+    }
+
+    static Color4f random()
+    {
+        return Color4f(
+                    Eigen::internal::random<float>(0.f, 1.f),
+                    Eigen::internal::random<float>(0.f, 1.f),
+                    Eigen::internal::random<float>(0.f, 1.f),
+                    Eigen::internal::random<float>(0.f, 1.f));
     }
 
     inline Color4f& operator += (const Color4f& c)
@@ -43,21 +78,24 @@ struct Color4f
         return *this;
     }
 
-	inline bool operator == (const Color4f& c) const {
-        return (std::abs(this->r - c.r) < 0.001 &&
-                std::abs(this->b - c.b) < 0.001 &&
-                std::abs(this->g - c.g) < 0.001 &&
-                std::abs(this->a - c.a) < 0.001);
+    inline bool operator == (const Color4f& c) const
+    {
+        return (std::abs(this->r - c.r) < EPSILON &&
+                std::abs(this->b - c.b) < EPSILON &&
+                std::abs(this->g - c.g) < EPSILON &&
+                std::abs(this->a - c.a) < EPSILON);
 	}
 
-	inline bool operator != (const Color4f& c) const {
+    inline bool operator != (const Color4f& c) const
+    {
 		return !(*this == c);
 	}
 
-    inline bool operator > (const Color4f& c) const {
+    inline bool operator > (const Color4f& c) const
+    {
         if ((this->r > c.r) ||
             (this->r == c.r && this->g > c.g) ||
-            (this->r == c.r && this->g == c.g && this->b > c.b)) {
+            (this->r == c.r && this->g == c.g && this->b > c.b))  {
             return true;
         }
         return false;

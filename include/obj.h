@@ -1,7 +1,6 @@
 #ifndef OBJ_H
 #define OBJ_H
 
-
 #include <QVector>
 #include "model3d.h"
 #include "utils.h"

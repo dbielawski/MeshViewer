@@ -11,11 +11,6 @@
 #include "octree.h"
 #include "polyhedron.h"
 
-#include <surface_mesh/surface_mesh.h>
-#include <QMessageBox>
-#include <QFile>
-
-
 class Octree;
 
 class Mesh
@@ -43,8 +38,6 @@ public:
 
     void attachScene(Scene* scene)      { m_scenePtr = scene; }
 
-    surface_mesh::Surface_mesh& halfEdgeMesh() { return m_halfEdge; }
-
     unsigned int verticesCount() const  { return m_vertices.size(); }
     unsigned int trianglesCount() const { return m_faces.size();    }
     unsigned int facesCount() const     { return m_faces.size();    }
@@ -69,8 +62,6 @@ private:
     QVector<Vertex>     m_allVertices;
     QVector<EdgeIndex> 	m_allEdges;
     QVector<FaceIndex>  m_allFaces;
-
-    surface_mesh::Surface_mesh m_halfEdge;
 
     QMatrix4x4          m_transform;
 

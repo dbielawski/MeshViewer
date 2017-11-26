@@ -1,17 +1,18 @@
-#include "octree.h"
-
-#include "wireboundingbox.h"
-
-
 #include <iostream>
 
-Octree::Octree(const QVector<Vertex>& vertices, uint minObj) : m_vertices(vertices), m_minObj(minObj) {
+#include "octree.h"
+#include "wireboundingbox.h"
+
+Octree::Octree(const QVector<Vertex>& vertices, uint minObj) :
+    m_vertices(vertices), m_minObj(minObj)
+{
+    m_size = 0;
 }
 
 void Octree::build() {
     // Creating first node which is the big one with everyone inside
     AlignedBox3f* aabb = new AlignedBox3f();
-    for(const Vertex v : m_vertices) {
+    for (const Vertex v : m_vertices) {
         aabb->extend(v.position);
     }
 
@@ -24,33 +25,29 @@ void Octree::build() {
 	mainNode->box->init();
 
     m_octree = mainNode;
+    ++m_size;
 
-	m_size++;
-
-	buildNode(mainNode);
-
-	std::cout << "Finished Octree buildind. " << std::endl << "Octree size: " << m_size << std::endl;
+    buildNode(mainNode);
 }
 
-void::Octree::buildNode(Node* parent) {
+void::Octree::buildNode(Node* parent)
+{
     QVector<Vertex> objects = parent->objects;
 	// If the boxes are too small we stop the recursion
-    if(objects.size() <= m_minObj ||
-		(parent->aabb->size().x() <= 0.00001
-		&& parent->aabb->size().y() <= 0.00001
-		&& parent->aabb->size().z() <= 0.00001)) {
+    if (objects.size() <= m_minObj ||
+        (parent->aabb->size().x() <= EPSILON &&
+         parent->aabb->size().y() <= EPSILON &&
+         parent->aabb->size().z() <= EPSILON)) {
         return;
     }
 
-	m_size++;
+    ++m_size;
 
     AlignedBox3f* aabb = parent->aabb;
 
     Point3f center = aabb->center();
     Point3f min = aabb->min();
     Point3f max = aabb->max();
-    //Vector3f halfV = aabb.size() / 2;
-    //Point3f half = Point3f(halfV.x(), halfV.y(), halfV.z());
 
     /* Boxes has been written considering the following axis
      *
@@ -81,28 +78,25 @@ void::Octree::buildNode(Node* parent) {
     aabb_nodes[7] = new AlignedBox3f(Point3f(center.x(), min.y(), center.z()), Point3f(max.x(), center.y(), max.z()));
 
     QVector<Vertex> objs[8];
-    for(int i  = 0 ; i < objects.size() ; i++) {
+    for (int i  = 0; i < objects.size(); ++i) {
         /* For each bounding box we test if the object from the list is inside it.
         *  If true : we can push it into the obj list of the node and break out the for loop
         *  since we don"t want duplicate. The first bounding box containing an object
         *  will be the only one.
         */
-        for(int j = 0 ; j < 8 ; j++) {
-            if(aabb_nodes[j]->contain(objects.at(i).position)) {
+        for (int j = 0; j < 8; ++j) {
+            if (aabb_nodes[j]->contain(objects.at(i).position)) {
                 objs[j].push_back(objects.at(i));
                 break;
             }
         }
     }
 
-    for(int i = 0 ; i < 8 ; i++) {
-        if(objs[i].size() != 0) {
-            Node* n = new Node();
-            n->aabb = aabb_nodes[i];
-            n->objects = objs[i];
-            n->parent = parent;
-            n->box = new WireBoundingBox(*n->aabb, Color4f(Eigen::internal::random<float>(0.f, 1.f), Eigen::internal::random<float>(0.f, 1.f), Eigen::internal::random<float>(0.f, 1.f)));
-			n->box->setFunctions(*m_functions);
+    for (int i = 0; i < 8; ++i) {
+        if (objs[i].size() != 0) {
+            WireBoundingBox* box = new WireBoundingBox(*aabb_nodes[i], Color4f::blue());
+            Node* n = new Node(aabb_nodes[i], parent, box, objs[i]);
+            n->box->setFunctions(*m_functions);
 			n->box->init();
             parent->childs.push_back(n);
             buildNode(n);
@@ -116,7 +110,7 @@ void Octree::render(const Scene &scene, const QMatrix4x4 &transform) const {
 }
 
 void Octree::renderNode(const Scene &scene, const QMatrix4x4 &transform, Node* currentNode) const {
-    for(Node* child : currentNode->childs) {;
+    for (Node* child : currentNode->childs) {;
 		child->box->render(scene, transform);
         renderNode(scene, transform, child);
     }

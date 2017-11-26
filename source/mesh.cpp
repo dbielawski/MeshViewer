@@ -35,10 +35,11 @@ void Mesh::init()
 {
     // We need a temporary 1D array to give to the GC
     QVector<unsigned int> faces;
-    for (int i = 0; i < m_faces.size(); ++i)
-        for (int j = 0; j < m_faces.at(i).size(); ++j)
+    for (int i = 0; i < m_faces.size(); ++i) {
+        for (int j = 0; j < m_faces.at(i).size(); ++j) {
             faces.append(m_faces.at(i).at(j));
-
+        }
+    }
     computeNormals();
 
     // Building the Polyhedron from vertices and faces
@@ -70,58 +71,7 @@ void Mesh::init()
 
 void Mesh::renderMesh() const
 {
-    //    if (m_scenePtr != Q_NULLPTR
-    //            && m_scenePtr->simpleShadingProgram()->bind())
-    //    {
-    //        m_functions->glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
-    //        m_functions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
-
-    //        QGLShaderProgram* program = m_scenePtr->simpleShadingProgram();
-    //        program->setUniformValue("mat_obj", m_transform);
-    //        program->setUniformValue("mat_view", m_scenePtr->camera()->viewMatrix());
-    //        program->setUniformValue("mat_proj", m_scenePtr->camera()->projectionMatrix());
-
-    //        const int vertexLoc = program->attributeLocation("vtx_position");
-    //        const int colorLoc  = program->attributeLocation("vtx_color");
-    //        const int normalLoc = program->attributeLocation("vtx_normal");
-
-    //        if (vertexLoc >= 0)
-    //        {
-    //            m_functions->glVertexAttribPointer(vertexLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-    //            m_functions->glEnableVertexAttribArray(vertexLoc);
-    //        }
-
-    //        if (colorLoc >= 0)
-    //        {
-    //            m_functions->glVertexAttribPointer(colorLoc, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
-    //            m_functions->glEnableVertexAttribArray(colorLoc);
-    //        }
-
-    //        if (normalLoc >= 0)
-    //        {
-    //            m_functions->glVertexAttribPointer(normalLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
-    //            m_functions->glEnableVertexAttribArray(normalLoc);
-    //        }
-
-
-    //        QVector<unsigned int> faces;
-    //        for (int i = 0; i < m_faces.size(); ++i)
-    //            for (int j = 0; j < m_faces.at(i).size(); ++j)
-    //                faces.append(m_faces.at(i).at(j));
-
-    //        glDrawElements(GL_POLYGON, m_faces.size(), GL_UNSIGNED_INT, (void*)0);
-
-    //        if (vertexLoc >= 0) m_functions->glDisableVertexAttribArray(vertexLoc);
-    //        if (colorLoc >= 0)  m_functions->glDisableVertexAttribArray(colorLoc);
-    //        if (normalLoc >= 0) m_functions->glDisableVertexAttribArray(normalLoc);
-
-    //        m_scenePtr->simpleShadingProgram()->release();
-    //    }
-
-
     glShadeModel(GL_SMOOTH);
-//    glShadeModel(GL_FLAT);
-
     glMultMatrixf(m_transform.constData());
 
     for (const FaceIndex& face: m_faces) {
@@ -165,12 +115,12 @@ void Mesh::displayableData(const QVector<Vertex>& vertices, const QVector<FaceIn
 void Mesh::computeNormals()
 {
     // Set all normals to 0
-    for (int i = 0; i < m_vertices.size(); ++i)
+    for (int i = 0; i < m_vertices.size(); ++i) {
         m_vertices.value(i).normal = Vector3f(0.f, 0.f, 0.f);
+    }
 
     // Compute normals
-    for (int i = 0; i < m_faces.size(); i++)
-    {
+    for (int i = 0; i < m_faces.size(); ++i) {
         const FaceIndex face = m_faces.at(i);
 
         const Point3f v0 = m_vertices.at(face.at(0)).position;
@@ -189,8 +139,9 @@ void Mesh::computeNormals()
         Vector3f n = m_vertices[i].normal;
         float norm = sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]);
 
-        if (norm != 0)
+        if (norm != 0) {
             m_vertices[i].normal /= norm;
+        }
     }
 }
 
@@ -198,13 +149,14 @@ void Mesh::computeBoundingBox()
 {
     m_boundingBox->reset();
 
-    for (int i = 0; i < m_vertices.size(); ++i)
+    for (int i = 0; i < m_vertices.size(); ++i) {
         m_boundingBox->extend(m_vertices.at(i).position);
+    }
 }
 
 void Mesh::buildOctree()
 {
-    m_octree = new Octree(m_vertices, std::max(1, m_vertices.size() / 1000));
+    m_octree = new Octree(m_vertices, std::max(1, (m_vertices.size() / 1000)));
     m_octree->setFunctions(*m_functions);
     m_octree->build();
 }
@@ -233,7 +185,7 @@ void Mesh::saveAsObj(QTextStream& out, int offset) const
     }
 
     // Write Faces
-    for (int i = 0; i < m_faces.size(); i++) {
+    for (int i = 0; i < m_faces.size(); ++i) {
         QString line ="f ";
         for (int j = 0; j < m_faces.at(i).size(); ++j) {
             line += QString::number(offset + m_faces.at(i).at(j) + 1) + " ";
@@ -265,14 +217,13 @@ void Mesh::fillHoles()
             CGAL_assertion(order >= 3);
             Kernel::Point_3 center = CGAL::ORIGIN + (vec / static_cast<double>(order));
 
-            // Fill hole
             m_polyhedron.fill_hole(heit);
             Halfedge_handle new_center = m_polyhedron.create_center_vertex(heit);
             new_center->vertex()->point() = center;
         }
     }
 
-    m_polyhedron.normalize_border(); // Normalize all the borders just to be sure
+    m_polyhedron.normalize_border();
 
     // Update m_vertices & m_faces with the new data from the filled polyhedron
     m_vertices.clear();
@@ -305,28 +256,23 @@ void Mesh::fillHoles()
 
 void Mesh::detectHoles()
 {
-    for (Halfedge_iterator heit = m_polyhedron.halfedges_begin(); heit != m_polyhedron.halfedges_end(); heit++)
-    {
-        if (heit->is_border()) // If there is a hole
-        {
+    for (Halfedge_iterator heit = m_polyhedron.halfedges_begin(); heit != m_polyhedron.halfedges_end(); heit++) {
+        if (heit->is_border()) { // If there is a hole
             Kernel::Point_3 vec(0.0, 0.0, 0.0);
             vec = heit->vertex()->point();
             Point3f p0(vec.x(), vec.y(), vec.z());
             vec = heit->opposite()->vertex()->point();
             Point3f p1(vec.x(), vec.y(), vec.z());
 
-            for (int i = 0; i < m_vertices.size(); ++i)
-            {
+            for (int i = 0; i < m_vertices.size(); ++i) {
                 Point3f p  = m_vertices.at(i).position;
 
                 if ((p.x() == p0.x() && p.y() == p0.y() && p.z() == p0.z()) ||
-                        (p.x() == p1.x() && p.y() == p1.y() && p.z() == p1.z()))
-                {
-                    m_vertices[i].color = Color4f(Color4f::red());
+                    (p.x() == p1.x() && p.y() == p1.y() && p.z() == p1.z())) {
+                    m_vertices[i].color = Color4f::red();
                 }
             }
         }
     }
-
     //init(); // Send new colors to
 }

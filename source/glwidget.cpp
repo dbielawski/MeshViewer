@@ -18,12 +18,6 @@ GLWidget::GLWidget(QWidget *parent) :
     m_scene(new Scene),
     m_displayModeIndex(EDisplayMode::FILL)
 {
-    //QGLFormat glFormat;
-    //glFormat.setVersion(3, 3);
-    //glFormat.setProfile(QGLFormat::CompatibilityProfile); // Requires >=Qt-4.8.0
-    //glFormat.setSampleBuffers(true);
-
-    //this->setFormat(glFormat);
     setFocusPolicy( Qt::StrongFocus );
 
     m_wheelButtonPressed = false;
@@ -59,8 +53,6 @@ void GLWidget::initializeGL()
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    //glEnable(GL_CULL_FACE);
 
     m_scene->init();
 }
@@ -109,37 +101,34 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
     int dx = event->x() - m_previousMousePosition.x();
     int dy = event->y() - m_previousMousePosition.y();
 
-    if (m_leftButtonPressed)
-    {
-        if (dx > 0)
-        {
+    if (m_leftButtonPressed) {
+        if (dx > 0) {
             m_dx = 1;
         }
-        else if (dx < 0)
-        {
+        else if (dx < 0) {
             m_dx = -1;
         }
-        else
+        else {
             m_dx = 0;
+        }
 
-        if (dy > 0)
-        {
+        if (dy > 0) {
             m_dy = -1;
             if (m_dy < -90)
                 m_dy = -90;
         }
-        else if (dy < 0)
-        {
+        else if (dy < 0) {
             m_dy = 1;
             if (m_dy > 90)
                 m_dy = 90;
         }
-        else
+        else {
             m_dy = 0;
+        }
 
         // WARNING: magic numbers/ mouse sensitivity...
-        m_scene->camera()->rotateAroundTarget(m_dx * 2, Vector3f(0.f, 1.f, 0.f));
-        m_scene->camera()->rotateAroundTarget(m_dy * 2, Vector3f(1.f, 0.f, 0.f));
+        m_scene->camera()->rotateAroundTarget(m_dx * 2, Vector3f::UnitY());
+        m_scene->camera()->rotateAroundTarget(m_dy * 2, Vector3f::UnitX());
     }
 
     m_previousMousePosition = event->pos();
@@ -150,8 +139,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
-    switch (event->button())
-    {
+    switch (event->button()) {
     case Qt::LeftButton:
         m_leftButtonPressed = true;
         break;
@@ -169,8 +157,7 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
 
 void GLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    switch (event->button())
-    {
+    switch (event->button()) {
     case Qt::LeftButton:
         m_leftButtonPressed = false;
         break;
@@ -188,10 +175,12 @@ void GLWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void GLWidget::wheelEvent(QWheelEvent *event)
 {
-    if (event->delta() > 0.f)
+    if (event->delta() > 0.f) {
         m_scene->camera()->zoom(m_zoomStepValue);
-    else
+    }
+    else {
         m_scene->camera()->zoom(-m_zoomStepValue);
+    }
 
     updateGL();
     event->accept();
@@ -199,30 +188,23 @@ void GLWidget::wheelEvent(QWheelEvent *event)
 
 void GLWidget::keyPressEvent(QKeyEvent *event)
 {
-    switch ( event->key() )
-    {
+    switch (event->key()) {
     case Qt::Key_Q:
-
         updateGL();
         break;
     case Qt::Key_D:
-
         updateGL();
         break;
     case Qt::Key_Z:
-
         updateGL();
         break;
     case Qt::Key_S:
-
         updateGL();
         break;
-
     case Qt::Key_M:
         m_displayModeIndex = ++m_displayModeIndex % EDisplayMode::DisplayModeCount;
         updateGL();
         break;
-
     case Qt::Key_B:
         m_scene->toggleDisplayBoundingBox();
         updateGL();

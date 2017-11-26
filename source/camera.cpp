@@ -5,7 +5,7 @@ Camera::Camera() : m_originX(0), m_originY(0),
     m_fovY(60.f),
     m_near(0.001f), m_far(1000.f),
     m_position(0.f, 0.f, 5.f),
-    m_target(0.f, 0.f, 0.f)
+    m_target(Vector3f::Zero())
 {
 
 }
@@ -90,8 +90,7 @@ void Camera::zoom(float z)
 
     // Check if the distance is greater
     // Don't want to go through the target
-    if (dist > z)
-    {
+    if (dist > z) {
         m_position = m_position + direction() * z;
         updateView();
     }

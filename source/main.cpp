@@ -20,10 +20,8 @@ int main(int argc, char *argv[])
 }
 
 // TODO: faire des tests sur des OBJ bidons (vide, avec un seul point, indice de face..)
-// TODO: NETTOYER LE CODE
 // TODO: Corriger la rotation
-// TODO: Corriger la matrice model (plusieurs objets scene)
+// TODO: Corriger la matrice model (plusieurs objets scene) encore plus bugée qu'avant, wtf
 // TODO: ear clipping
 // TODO: Epaississement basique (stefka) + sauvegarde du nouveau maillage epaissie
 // TODO: Rapport (4 pages) diapo (validity ???)
-// TODO: Verifier si save as obj marche

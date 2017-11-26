@@ -32,7 +32,7 @@ private slots:
     void onToggleDisplayBoundingBox();
 	void onToggleDisplayOctree();
 
-    void fillingHolesAction();
+    void holesFillingAction();
     void onDrawPoint();
     void onDrawLine();
     void onDrawFilled();
@@ -64,7 +64,7 @@ private:
     QAction*    m_drawFilledAction;
 
 	QMenu* 		m_actionMenu;
-	QAction*	m_holeFillingAction;
+    QAction*	m_holesFillingAction;
 };
 
 #endif // MAINWINDOW_H
