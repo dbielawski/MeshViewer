@@ -73,6 +73,7 @@ private:
 
     bool m_displayBoundingBox;
     bool m_displayOctree;
+    uint m_octreeMode;
 
     float m_transparency;
 };

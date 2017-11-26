@@ -104,15 +104,22 @@ void::Octree::buildNode(Node* parent)
     }
 }
 
-void Octree::render(const Scene &scene, const QMatrix4x4 &transform) const {
+void Octree::render(const Scene &scene, const QMatrix4x4 &transform, bool renderFullOctree) const {
     m_octree->box->render(scene, transform);
-    renderNode(scene, transform, m_octree);
+    renderNode(scene, transform, m_octree, renderFullOctree);
 }
 
-void Octree::renderNode(const Scene &scene, const QMatrix4x4 &transform, Node* currentNode) const {
+void Octree::renderNode(const Scene &scene, const QMatrix4x4 &transform, Node* currentNode, bool renderFullOctree) const {
     for (Node* child : currentNode->childs) {
-        child->box->render(scene, transform);
-        renderNode(scene, transform, child);
+        if (renderFullOctree) {
+            child->box->render(scene, transform);
+        }
+        else {
+            if (child->isLeaf()) {
+                child->box->render(scene, transform);
+            }
+        }
+        renderNode(scene, transform, child, renderFullOctree);
     }
 }
 
@@ -126,11 +133,10 @@ void Octree::buildShape(Node* currentNode) {
     QVector<FaceIndex> faces;
     QVector<Vertex> vertices;
 
-    for(Node* child : currentNode->childs) {
-        if(child->isLeaf()) {
+    for (Node* child : currentNode->childs) {
+        if (child->isLeaf()) {
             AlignedBox3f* aabb = child->aabb;
 
-            Point3f center = aabb->center();
             Point3f min = aabb->min();
             Point3f max = aabb->max();
 

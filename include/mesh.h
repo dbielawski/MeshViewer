@@ -22,7 +22,7 @@ public:
     void init();
     void renderMesh() const;
     void renderBoundingBox() const;
-    void renderOctree() const;
+    void renderOctree(bool renderFullOctree) const;
 
     void rawData(const QVector<Vertex>& vertices,  const QVector<EdgeIndex>& edges, const QVector<FaceIndex>& faces);
     void displayableData(const QVector<Vertex>& vertices, const QVector<FaceIndex>& faces);

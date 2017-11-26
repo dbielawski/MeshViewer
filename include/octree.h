@@ -53,8 +53,8 @@ public:
     void buildShapeFromOctree();
     void buildShape(Node* currentNode);
 
-    void render(const Scene& scene, const QMatrix4x4& transform) const;
-    void renderNode(const Scene &scene, const QMatrix4x4 &transform, Node* currentNode) const;
+    void render(const Scene& scene, const QMatrix4x4& transform, bool renderFullOctree) const;
+    void renderNode(const Scene &scene, const QMatrix4x4 &transform, Node* currentNode, bool renderFullOctree) const;
 
     void setFunctions(QGLFunctions& f)              { m_functions = &f; }
 

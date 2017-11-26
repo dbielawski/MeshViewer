@@ -91,10 +91,10 @@ void Mesh::renderBoundingBox() const
     }
 }
 
-void Mesh::renderOctree() const
+void Mesh::renderOctree(bool renderFullOctree) const
 {
     if (m_octree != Q_NULLPTR)
-        m_octree->render(*m_scenePtr, m_transform);
+        m_octree->render(*m_scenePtr, m_transform, renderFullOctree);
 }
 
 void Mesh::rawData(const QVector<Vertex>& allVertices, const QVector<EdgeIndex>& allEdges, const QVector<FaceIndex>& allFaces)

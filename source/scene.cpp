@@ -22,6 +22,7 @@ Scene::Scene() :
 
     m_displayBoundingBox = false;
     m_displayOctree = false;
+    m_octreeMode = 0;
 
     m_transparency = 1.f;
 
@@ -142,8 +143,13 @@ void Scene::render() const
             if (m_displayBoundingBox) {
                 m->renderBoundingBox();
             }
-            if(m_displayOctree) {
-                m->renderOctree();
+            if (m_octreeMode > 0) {
+                if (m_octreeMode == 1) {
+                    m->renderOctree(true);
+                }
+                else {
+                    m->renderOctree(false);
+                }
             }
         }
     }
@@ -209,7 +215,7 @@ void Scene::toggleDisplayBoundingBox()
 
 void Scene::toggleDisplayOctree()
 {
-    m_displayOctree = !m_displayOctree;
+    m_octreeMode = ++m_octreeMode % 3;
 }
 
 void Scene::addMesh(Mesh& mesh)
