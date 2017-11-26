@@ -12,6 +12,8 @@ public:
     Camera();
 
     void setSize(int w, int h);
+    Vector2i size() const { return Vector2i(m_width, m_height); }
+
     void setPerspective(float fovY, float near, float far);
     void setViewport(uint oX, uint oY, uint width, uint height);
     void setTarget(const Point3f& point);

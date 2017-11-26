@@ -48,12 +48,7 @@ include(${CGAL_USE_FILE})
 # Set include directories
 include_directories(${CMAKE_SOURCE_DIR}/include
 			${CMAKE_SOURCE_DIR}/ext/eigen3
-			${CMAKE_SOURCE_DIR}/ext/
-			${CMAKE_SOURCE_DIR}/ext/tinyobjloader)
-
-# Tell CMake to compile tinyobjloader
-add_subdirectory(${CMAKE_SOURCE_DIR}/ext/tinyobjloader)
-
+                        ${CMAKE_SOURCE_DIR}/ext/)
 # Use Qt5 ressources
 set(RESOURCE resources.qrc)
 # Use Qt5 ui
@@ -86,12 +81,12 @@ set(SOURCES
 	include/light.h
 	include/obj.h
 	include/alignedbox3f.h
-    include/wireboundingbox.h
+        include/wireboundingbox.h
 	include/octree.h
-    include/polyhedron.h
+        include/polyhedron.h
 )
 
 
 add_executable(${PROJECT_NAME} ${UIS_H} ${RESOURCE} ${SOURCES} )
-target_link_libraries(${PROJECT_NAME} tinyobjloader ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES} ${OPENGL_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES} ${OPENGL_LIBRARIES})
 

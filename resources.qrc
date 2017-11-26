@@ -7,5 +7,13 @@
         <file>models/cube_tr.obj</file>
         <file>shaders/simpleshading.frag</file>
         <file>shaders/simpleshading.vert</file>
+        <file>models/single_vertice.obj</file>
+        <file>models/Kate_fur.obj</file>
+        <file>models/Kate_leg.obj</file>
+        <file>models/pencil.obj</file>
+        <file>models/empty.obj</file>
+        <file>models/Dilo.obj</file>
+        <file>models/single_face_triangle.obj</file>
+        <file>models/single_face_quad.obj</file>
     </qresource>
 </RCC>

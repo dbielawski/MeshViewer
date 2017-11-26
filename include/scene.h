@@ -54,6 +54,8 @@ public:
 
     void saveMeshes(const QString fileName) const;
 
+    void drawAxis() const;
+
 private:
     void loadShader(QGLShaderProgram* program, const QString& fileName);
 

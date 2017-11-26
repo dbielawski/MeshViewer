@@ -12,8 +12,8 @@ class Scene;
 class WireBoundingBox
 {
 public:
-    WireBoundingBox(const Color4f& color = Color4f(0.f, 1.f, 0.f));
-    WireBoundingBox(const AlignedBox3f& aabb, const Color4f& color = Color4f(0.f , 1.f , 0.f));
+    WireBoundingBox(const Color4f& color = Color4f::green());
+    WireBoundingBox(const AlignedBox3f& aabb, const Color4f& color = Color4f::green());
 
     void init();
     void render(const Scene& scene, const QMatrix4x4& transform) const;

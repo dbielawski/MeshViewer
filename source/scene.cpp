@@ -129,20 +129,6 @@ void Scene::render() const
             m_simpleshadingProgram->release();
         }
     }
-    // TODO: to remove
-    // Debug purpsose: get the center (0, 0, 0) on the scene
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glMultMatrixf(m_camera->viewMatrix().constData());
-    QMatrix4x4 i;
-    i.setToIdentity();
-    glMultMatrixf(i.constData());
-
-    glBegin(GL_POINTS);
-        glColor4f(1, 0, 0, 1);
-        glVertex3f(0, 0, 0);
-    glEnd();
-    // END Debug purpsose: get the center (0, 0, 0) on the scene
 
     for (const Mesh* m : m_meshList) {
         glMatrixMode(GL_MODELVIEW);
@@ -161,6 +147,35 @@ void Scene::render() const
             }
         }
     }
+
+    this->drawAxis();
+}
+
+void Scene::drawAxis() const
+{
+    // Draw bottom right corner
+    glViewport(0, 0, 50, 50);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glMultMatrixf(m_camera->viewMatrix().constData());
+
+    glBegin(GL_LINES);
+    glColor4f(1.f, 0.f, 0.f, 1.f);
+    glVertex3f(-10, 0, 0);
+    glVertex3f(0, 0, 0);
+
+    glColor4f(0.f, 1.f, 0.f, 1.f);
+    glVertex3f(0, 0, 0);
+    glVertex3f(0, 10, 0);
+
+    glColor4f(0.f, 0.f, 1.f, 1.f);
+    glVertex3f(0, 0, -10);
+    glVertex3f(0, 0, 0);
+    glEnd();
+
+    Vector2i size = m_camera->size();
+    glViewport(0, 0, size.x(), size.y());
 }
 
 void Scene::removeLights()

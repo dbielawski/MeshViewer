@@ -45,10 +45,13 @@ public:
     };
 
     Octree(const QVector<Vertex>& vertices, uint m_minObj = 5);
-    ~Octree() { delete m_octree; };
+    ~Octree() { delete m_octree; }
 
     void build();
     void buildNode(Node* parent);
+
+    void buildShapeFromOctree();
+    void buildShape(Node* currentNode);
 
     void render(const Scene& scene, const QMatrix4x4& transform) const;
     void renderNode(const Scene &scene, const QMatrix4x4 &transform, Node* currentNode) const;

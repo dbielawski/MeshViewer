@@ -110,8 +110,20 @@ void Octree::render(const Scene &scene, const QMatrix4x4 &transform) const {
 }
 
 void Octree::renderNode(const Scene &scene, const QMatrix4x4 &transform, Node* currentNode) const {
-    for (Node* child : currentNode->childs) {;
-		child->box->render(scene, transform);
+    for (Node* child : currentNode->childs) {
+        child->box->render(scene, transform);
         renderNode(scene, transform, child);
+    }
+}
+
+void Octree::buildShapeFromOctree() {
+    buildShape(m_octree);
+}
+
+void Octree::buildShape(Node* currentNode) {
+    for(Node* child : currentNode->childs) {
+        if(child->isLeaf()) {
+            // Store vertices or bouding box ??
+        }
     }
 }
