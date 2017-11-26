@@ -2,15 +2,11 @@
 
 #include <QGLShader>
 #include <QKeyEvent>
-#include <QMouseEvent>
+#include <GL/gl.h>
 
 #include "scene.h"
-#include "pgm3d.h"
-#include "obj.h"
-#include "mesh.h"
 #include "camera.h"
 #include "light.h"
-#include <GL/gl.h>
 
 
 GLWidget::GLWidget(QWidget *parent) :
@@ -92,7 +88,7 @@ void GLWidget::paintGL()
 
 void GLWidget::changeSceneColor(const Color4f& c) {
     m_scene->setBackgroundColor(c);
-    glClearColor(c.r, c.g, c.b, 1.0f);
+    glClearColor(c.r, c.g, c.b, 1.f);
     updateGL();
 }
 
@@ -114,13 +110,9 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
         if (dy > 0) {
             m_dy = -1;
-            if (m_dy < -90)
-                m_dy = -90;
         }
         else if (dy < 0) {
             m_dy = 1;
-            if (m_dy > 90)
-                m_dy = 90;
         }
         else {
             m_dy = 0;
@@ -189,18 +181,6 @@ void GLWidget::wheelEvent(QWheelEvent *event)
 void GLWidget::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
-    case Qt::Key_Q:
-        updateGL();
-        break;
-    case Qt::Key_D:
-        updateGL();
-        break;
-    case Qt::Key_Z:
-        updateGL();
-        break;
-    case Qt::Key_S:
-        updateGL();
-        break;
     case Qt::Key_M:
         m_displayModeIndex = ++m_displayModeIndex % EDisplayMode::DisplayModeCount;
         updateGL();
@@ -216,7 +196,6 @@ void GLWidget::keyPressEvent(QKeyEvent *event)
     default:
         break;
     }
-
     event->accept();
 }
 
@@ -233,9 +212,6 @@ float GLWidget::pointSizeMin() const
 
 float GLWidget::pointSizeMax() const
 {
-    GLfloat max;
-    glGetFloatv(GL_POINT_SIZE_MAX, &max);
-
     return 50.f;
 }
 

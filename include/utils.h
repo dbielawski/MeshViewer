@@ -21,15 +21,11 @@ struct Color4f
 
     Color4f(float red = 0.f, float green = 0.f, float blue = 0.f, float alpha = 1.f) :
         r(red), g(green), b(blue), a(alpha)
-    {
+    {}
 
-    }
-
-    Color4f(const Color4f& c):
+    Color4f(const Color4f& c) :
         r(c.r), g(c.g), b(c.b), a(c.a)
-    {
-
-    }
+    {}
 
     static Color4f white()
     {

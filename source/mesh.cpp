@@ -1,12 +1,12 @@
 #include "mesh.h"
 
+#include <iostream>
+#include <limits>
+#include <map>
 #include <QGLFunctions>
 #include <QGLShaderProgram>
-#include <map>
-#include <iostream>
 #include <CGAL/Vector_3.h>
 #include <CGAL/Origin.h>
-#include <limits>
 
 Mesh::Mesh() :
     m_octree(Q_NULLPTR),
@@ -16,7 +16,6 @@ Mesh::Mesh() :
     m_functions(new QGLFunctions)
 {
     m_functions->initializeGLFunctions();
-
     m_transform.setToIdentity();
 }
 
@@ -34,7 +33,7 @@ Mesh::~Mesh()
 void Mesh::init()
 {
     // We need a temporary 1D array to give to the GC
-    QVector<unsigned int> faces;
+    QVector<uint> faces;
     for (int i = 0; i < m_faces.size(); ++i) {
         for (int j = 0; j < m_faces.at(i).size(); ++j) {
             faces.append(m_faces.at(i).at(j));
@@ -88,8 +87,9 @@ void Mesh::renderMesh() const
 
 void Mesh::renderBoundingBox() const
 {
-    if (m_wireBoundingBox != Q_NULLPTR)
+    if (m_wireBoundingBox != Q_NULLPTR) {
         m_wireBoundingBox->render(*m_scenePtr, m_transform);
+    }
 }
 
 
@@ -168,9 +168,9 @@ void Mesh::saveAsObj(QTextStream& out, int offset) const
     for (int i = 0; i < m_vertices.size(); ++i) {
         QString line = "v ";
         line += QString::number(m_vertices.at(i).position.x()) + " "
-                + QString::number(m_vertices.at(i).position.y()) + " "
-                + QString::number(m_vertices.at(i).position.z())
-                + '\n';
+              + QString::number(m_vertices.at(i).position.y()) + " "
+              + QString::number(m_vertices.at(i).position.z())
+              + '\n';
         out << line;
     }
 
@@ -178,15 +178,15 @@ void Mesh::saveAsObj(QTextStream& out, int offset) const
     for (int i = 0; i < m_vertices.size(); ++i) {
         QString line = "vn ";
         line += QString::number(offset + m_vertices.at(i).normal.x()) + " "
-                + QString::number(offset + m_vertices.at(i).normal.y()) + " "
-                + QString::number(offset + m_vertices.at(i).normal.z())
-                + '\n';
+              + QString::number(offset + m_vertices.at(i).normal.y()) + " "
+              + QString::number(offset + m_vertices.at(i).normal.z())
+              + '\n';
         out << line;
     }
 
     // Write Faces
     for (int i = 0; i < m_faces.size(); ++i) {
-        QString line ="f ";
+        QString line = "f ";
         for (int j = 0; j < m_faces.at(i).size(); ++j) {
             line += QString::number(offset + m_faces.at(i).at(j) + 1) + " ";
         }
@@ -210,8 +210,8 @@ void Mesh::fillHoles()
             size_t order = 0;
             Halfedge_iterator heit2 = heit;
             do {
-                vec = vec + (heit2->vertex()->point() - CGAL::ORIGIN);
                 order++;
+                vec = vec + (heit2->vertex()->point() - CGAL::ORIGIN);
                 heit2 = heit2->next();
             } while (heit2 != heit);
             CGAL_assertion(order >= 3);
@@ -227,8 +227,8 @@ void Mesh::fillHoles()
 
     // Update m_vertices & m_faces with the new data from the filled polyhedron
     m_vertices.clear();
-    unsigned int nb_vertices = 0;
-    std::map<const Polyhedron::Vertex *, unsigned int> mapping;
+    uint nb_vertices = 0;
+    std::map<const Polyhedron::Vertex *, uint> mapping;
     for(Vertex_iterator vit = m_polyhedron.vertices_begin(); vit != m_polyhedron.vertices_end(); vit++) {
         m_vertices.push_back(Vertex(Point3f(vit->point().x(), vit->point().y(), vit->point().z()), Color4f(0.5, 0.5, 0.5)));
         mapping[&*vit] = nb_vertices++;
@@ -238,7 +238,7 @@ void Mesh::fillHoles()
     for(Face_iterator fit = m_polyhedron.facets_begin(); fit != m_polyhedron.facets_end(); fit++) {
         Halfedge_facet_circulator hfc = fit->facet_begin();
 
-        QVector<unsigned int> face;
+        QVector<uint> face;
         do {
             face.append(mapping[&*(hfc->vertex())]);
             hfc++;

@@ -32,17 +32,17 @@ public:
     void computeBoundingBox();
     void buildOctree();
 
-    AlignedBox3f* boundingBox() const   { return m_boundingBox; }
-    Octree* octree() const              { return m_octree;      }
-    QMatrix4x4 transform() const        { return m_transform;   }
+    AlignedBox3f* boundingBox() const { return m_boundingBox; }
+    Octree* octree() const            { return m_octree;      }
+    QMatrix4x4 transform() const      { return m_transform;   }
 
-    void attachScene(Scene* scene)      { m_scenePtr = scene; }
+    void attachScene(Scene* scene) { m_scenePtr = scene; }
 
-    unsigned int verticesCount() const  { return m_vertices.size(); }
-    unsigned int trianglesCount() const { return m_faces.size();    }
-    unsigned int facesCount() const     { return m_faces.size();    }
-    unsigned int edgesCount() const     { return m_allEdges.size(); }
-    bool isValid() const { return m_polyhedron.is_valid(); }
+    uint verticesCount() const  { return m_vertices.size(); }
+    uint trianglesCount() const { return m_faces.size();    }
+    uint facesCount() const     { return m_faces.size();    }
+    uint edgesCount() const     { return m_allEdges.size(); }
+    bool isValid() const  { return m_polyhedron.is_valid(); }
     bool isClosed() const { return m_polyhedron.is_closed(); }
     void fillHoles();
     void detectHoles();
@@ -51,27 +51,27 @@ public:
 
 
 private:
-    QGLFunctions*       m_functions;
+    QGLFunctions*      m_functions;
 
-    uint                m_vertexBufferId;
-    uint                m_indexBufferId;
+    uint               m_vertexBufferId;
+    uint               m_indexBufferId;
 
-    QVector<Vertex>     m_vertices;
-    QVector<FaceIndex> 	m_faces;
+    QVector<Vertex>    m_vertices;
+    QVector<FaceIndex> m_faces;
 
-    QVector<Vertex>     m_allVertices;
-    QVector<EdgeIndex> 	m_allEdges;
-    QVector<FaceIndex>  m_allFaces;
+    QVector<Vertex>    m_allVertices;
+    QVector<EdgeIndex> m_allEdges;
+    QVector<FaceIndex> m_allFaces;
 
-    QMatrix4x4          m_transform;
+    QMatrix4x4         m_transform;
 
-    AlignedBox3f*       m_boundingBox;
-    WireBoundingBox*    m_wireBoundingBox;
+    AlignedBox3f*      m_boundingBox;
+    WireBoundingBox*   m_wireBoundingBox;
 
-    Octree*             m_octree;
+    Octree*            m_octree;
 
-    const Scene*        m_scenePtr;
-    Polyhedron          m_polyhedron;
+    const Scene*       m_scenePtr;
+    Polyhedron         m_polyhedron;
 };
 
 #endif // MESH_H

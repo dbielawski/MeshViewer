@@ -9,9 +9,7 @@ AlignedBox3f::AlignedBox3f()
 
 AlignedBox3f::AlignedBox3f(const Point3f& min, const Point3f& max) :
     m_min(min), m_max(max)
-{
-
-}
+{}
 
 void AlignedBox3f::extend(const Point3f& p)
 {
@@ -26,8 +24,8 @@ void AlignedBox3f::extend(const Point3f& p)
 
 bool AlignedBox3f::contain(const Point3f& p) const
 {
-    return (m_min.x() <= p.x()) && (m_min.y() <= p.y()) && (m_min.z() <= p.z())
-        && (m_max.x() >= p.x()) && (m_max.y() >= p.y()) && (m_max.z() >= p.z());
+    return (m_min.x() <= p.x()) && (m_min.y() <= p.y()) && (m_min.z() <= p.z()) &&
+           (m_max.x() >= p.x()) && (m_max.y() >= p.y()) && (m_max.z() >= p.z());
 }
 
 void AlignedBox3f::reset()
@@ -47,6 +45,5 @@ Vector3f AlignedBox3f::size() const
 
 Point3f AlignedBox3f::center() const
 {
-    Vector3f s = size();
-    return Point3f(m_min + s / 2);
+    return Point3f(m_min + size() / 2.f);
 }

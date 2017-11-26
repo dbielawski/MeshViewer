@@ -3,9 +3,7 @@
 
 #include <QGLWidget>
 #include <QGLShaderProgram>
-
 #include <QWheelEvent>
-#include <QKeyEvent>
 #include <QMouseEvent>
 
 #include "pgm3d.h"
@@ -55,7 +53,7 @@ protected:
     virtual void keyReleaseEvent(QKeyEvent* event) override;
 
 private:
-    Scene*              m_scene;
+    Scene* m_scene;
 
     GLfloat m_pointSize;
 

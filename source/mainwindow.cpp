@@ -1,20 +1,17 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-
 #include <QFileDialog>
-#include <QLayout>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QLayout>
 #include <QLabel>
-
 #include <QColorDialog>
 #include <QMessageBox>
 
 #include "glwidget.h"
 #include "pgm3d.h"
 #include "obj.h"
-
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -24,13 +21,13 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowTitle("MeshViewer");
 
     connect(ui->pointsModeButton, SIGNAL(clicked()), this, SLOT(onDrawPoint()));
-    connect(ui->linesModeButton, SIGNAL(clicked()), this, SLOT(onDrawLine()));
-    connect(ui->fillModeButton, SIGNAL(clicked()), this, SLOT(onDrawFilled()));
+    connect(ui->linesModeButton,  SIGNAL(clicked()), this, SLOT(onDrawLine()));
+    connect(ui->fillModeButton,   SIGNAL(clicked()), this, SLOT(onDrawFilled()));
 
-    connect(ui->clearSceneButton, SIGNAL(clicked()), this, SLOT(onClearScene()));
-    connect(ui->sceneBackgroundColorButton, SIGNAL(clicked(bool)), this, SLOT(onBackgroundColorScene()));
-    connect(ui->detectHolesButton, SIGNAL(clicked()), this, SLOT(onDetectHoles()));
-    connect(ui->holesFillingButton, SIGNAL(clicked()), this, SLOT(holesFillingAction()));
+    connect(ui->clearSceneButton,           SIGNAL(clicked()), this, SLOT(onClearScene()));
+    connect(ui->sceneBackgroundColorButton, SIGNAL(clicked()), this, SLOT(onBackgroundColorScene()));
+    connect(ui->detectHolesButton,          SIGNAL(clicked()), this, SLOT(onDetectHoles()));
+    connect(ui->holesFillingButton,         SIGNAL(clicked()), this, SLOT(holesFillingAction()));
 
     ui->alphaValue->setText(QString::number(ui->transparencySlider->value()));
 
@@ -129,8 +126,9 @@ void MainWindow::onOpenFile()
                                                     "../models/",
                                                     tr("OBJ Files (*.obj);; PGM3D Files (*.pgm3d)"));
 
-    if(fileName.isEmpty())
+    if (fileName.isEmpty()) {
         return;
+    }
 
     QFileInfo fi(fileName);
     QString ext = fi.suffix();
@@ -147,7 +145,7 @@ void MainWindow::onOpenFile()
         exit(EXIT_FAILURE);
     }
 
-    if(model == nullptr) {
+    if (model == nullptr) {
         QMessageBox::critical(0, "Error", "Error while loading the model.");
         exit(EXIT_FAILURE);
     }
@@ -164,8 +162,7 @@ void MainWindow::onOpenFile()
 void MainWindow::onSaveAsObj()
 {
     QString fileName = QFileDialog::getSaveFileName(
-        this, tr("Save file"), tr("../models/mesh.obj"), tr("OBJ Files (*.obj)")
-    );
+        this, tr("Save file"), tr("../models/mesh.obj"), tr("OBJ Files (*.obj)"));
 
     ui->openGLWidget->scene()->saveMeshes(fileName);
 }
@@ -175,8 +172,10 @@ void MainWindow::onClearScene()
     ui->openGLWidget->scene()->removeModels();
     updateInfos();
 
-    if (ui->openGLWidget->scene()->meshCount() == 0)
+    if (ui->openGLWidget->scene()->meshCount() == 0) {
         m_displayMenu->setEnabled(false);
+        m_actionMenu->setEnabled(false);
+    }
 
     ui->openGLWidget->updateGL();
 }
@@ -191,7 +190,7 @@ void MainWindow::holesFillingAction()
 void MainWindow::onAlphaChanged(int alpha)
 {
     ui->alphaValue->setText(QString::number(alpha));
-    float alpha_val = alpha / 255.0;
+    float alpha_val = alpha / 255.f;
     ui->openGLWidget->scene()->setTransparency(alpha_val);
     ui->openGLWidget->scene()->simpleShadingProgram()->bind();
     ui->openGLWidget->scene()->simpleShadingProgram()->setUniformValue("alpha_val", alpha_val);
@@ -239,7 +238,7 @@ void MainWindow::onDetectHoles()
     ui->openGLWidget->updateGL();
 }
 
-void MainWindow::setDraw(unsigned int value)
+void MainWindow::setDraw(uint value)
 {
     ui->openGLWidget->setDrawMode(value);
     ui->openGLWidget->updateGL();
@@ -247,11 +246,11 @@ void MainWindow::setDraw(unsigned int value)
 
 void MainWindow::updateInfos() const
 {
-    unsigned int meshCount = ui->openGLWidget->scene()->meshCount();
-    unsigned int verticesCount = ui->openGLWidget->scene()->vertexCount();
-    unsigned int trianglesCount = ui->openGLWidget->scene()->triangleCount();
-    unsigned int facesCount = ui->openGLWidget->scene()->faceCount();
-    unsigned int lightCount = ui->openGLWidget->scene()->lightCount();
+    uint meshCount = ui->openGLWidget->scene()->meshCount();
+    uint verticesCount = ui->openGLWidget->scene()->vertexCount();
+    uint trianglesCount = ui->openGLWidget->scene()->triangleCount();
+    uint facesCount = ui->openGLWidget->scene()->faceCount();
+    uint lightCount = ui->openGLWidget->scene()->lightCount();
 
     ui->verticesCount->setText(QString("Vertices: " + QString::number(verticesCount)));
     ui->trianglesCount->setText(QString("Triangles: " + QString::number(trianglesCount)));
@@ -259,7 +258,7 @@ void MainWindow::updateInfos() const
     ui->modelCount->setText(QString("Model: " + QString::number(meshCount)));
     ui->lightCount->setText(QString("Lights: " + QString::number(lightCount)));
 
-	if(meshCount != 0) {
+	if (meshCount != 0) {
 		bool validity = ui->openGLWidget->scene()->isValid();
 		bool closed = ui->openGLWidget->scene()->isClosed();
 
@@ -268,7 +267,8 @@ void MainWindow::updateInfos() const
 
         QString close = closed ? "<span style=\"color: #27ae60;\">true</span>" : "<span style=\"color: #c0392b;\">false</span>";
 		ui->topoClosed->setText(QString("Closed: " + close));
-	} else {
+	}
+    else {
 		ui->topoValid->setText(QString("Validity: ???"));
 		ui->topoClosed->setText(QString("Closed: ???"));
 	}

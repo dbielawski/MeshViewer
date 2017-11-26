@@ -1,14 +1,12 @@
 #include "scene.h"
 
+#include <iostream>
+#include <QDebug>
+#include <QMessageBox>
+
 #include "camera.h"
 #include "mesh.h"
 #include "light.h"
-#include <QDebug>
-
-#include <iostream>
-#include <QDebug>
-
-#include <QMessageBox>
 
 Scene::Scene() :
     m_simpleShaderProgram(new QGLShaderProgram),
@@ -32,7 +30,7 @@ Scene::Scene() :
     m_lightList.append(new DirectionalLight(Color4f::white(), -1*Vector3f::UnitZ()));
     m_lightList.append(new DirectionalLight(Color4f::white(),    Vector3f::UnitX()));
     m_lightList.append(new DirectionalLight(Color4f::white(), -1*Vector3f::UnitX()));
-    m_lightList.append(new DirectionalLight(Color4f::random(),  Vector3f::UnitY()));
+    m_lightList.append(new DirectionalLight(Color4f::random(),   Vector3f::UnitY()));
     m_lightList.append(new DirectionalLight(Color4f::white(), -1*Vector3f::UnitY()));
 }
 
@@ -117,39 +115,28 @@ void Scene::init()
 
 void Scene::render() const
 {
-    for (int i = 0; i < m_lightList.size(); ++i)
-    {
+    for (int i = 0; i < m_lightList.size(); ++i) {
         const Light* l = m_lightList.at(i);
 
-        if (l != Q_NULLPTR && m_simpleshadingProgram->bind())
-        {
+        if (l != Q_NULLPTR && m_simpleshadingProgram->bind()) {
             Vector3f dir = l->direction();
             Color4f intensity = l->intensity(Point3f());
-
-            QString color = "lights[";
-            color += QString::number(i);
-            color += "].intensity";
-
-            QString direction;
-            direction = "lights[";
-            direction += QString::number(i);
-            direction +="].direction";
+            QString color = "lights[" + QString::number(i) + "].intensity";
+            QString direction = "lights[" + QString::number(i) + "].direction";
 
             m_simpleshadingProgram->setUniformValue(direction.toStdString().c_str(), dir.x(), dir.y(), dir.z());
             m_simpleshadingProgram->setUniformValue(color.toStdString().c_str(), intensity.r, intensity.g, intensity.b);
-
             m_simpleshadingProgram->release();
         }
     }
 
-    for (const Mesh* m : m_meshList)
-    {
-        if (m != Q_NULLPTR)
-        {
+    for (const Mesh* m : m_meshList) {
+        if (m != Q_NULLPTR) {
             m->renderMesh();
 
-            if (m_displayBoundingBox)
+            if (m_displayBoundingBox) {
                 m->renderBoundingBox();
+            }
             if(m_displayOctree) {
                 m->renderOctree();
             }

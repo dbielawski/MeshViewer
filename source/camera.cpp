@@ -1,14 +1,11 @@
 #include "camera.h"
 
-
 Camera::Camera() : m_originX(0), m_originY(0),
     m_fovY(60.f),
     m_near(0.001f), m_far(1000.f),
     m_position(0.f, 0.f, 5.f),
     m_target(Vector3f::Zero())
-{
-
-}
+{}
 
 void Camera::setSize(int w, int h)
 {
@@ -27,7 +24,7 @@ void Camera::setPerspective(float fovY, float near, float far)
     updateProjection();
 }
 
-void Camera::setViewport(unsigned int oX, unsigned int oY, unsigned int width, unsigned int height)
+void Camera::setViewport(uint oX, uint oY, uint width, uint height)
 {
     m_originX = oX;
     m_originY = oY;
@@ -69,7 +66,7 @@ QMatrix4x4 Camera::projectionMatrix()
     return m_projectionMatrix;
 }
 
-void Camera::rotateAroundTarget(float angle, Vector3f axis)
+void Camera::rotateAroundTarget(float angle, const Vector3f axis)
 {
     QQuaternion p(0, m_position.x(), m_position.y(), m_position.z());
     QQuaternion r = QQuaternion::fromAxisAndAngle(axis.x(), axis.y(), axis.z(), -angle);
@@ -88,8 +85,7 @@ void Camera::zoom(float z)
     // Get the distance between the camera and the target
     const float dist = p.norm();
 
-    // Check if the distance is greater
-    // Don't want to go through the target
+    // Check if the distance is greater (we don't want to go through the target)
     if (dist > z) {
         m_position = m_position + direction() * z;
         updateView();

@@ -13,7 +13,7 @@ public:
 
     void setSize(int w, int h);
     void setPerspective(float fovY, float near, float far);
-    void setViewport(unsigned int oX, unsigned int oY, unsigned int width, unsigned int height);
+    void setViewport(uint oX, uint oY, uint width, uint height);
     void setTarget(const Point3f& point);
 
     void lookAt(const Point3f& position, const Point3f& target, const Vector3f& up);
@@ -21,21 +21,19 @@ public:
     QMatrix4x4 viewMatrix();
     QMatrix4x4 projectionMatrix();
 
-    void rotateAroundTarget(float angle, Vector3f axis);
-    void rotate(float angle, Vector3f axis);
+    void rotateAroundTarget(float angle, const Vector3f axis);
 
     void zoom(float z);
-
-    void setPosition(const Point3f& p)          { m_position = p;       }
-    Point3f position() const                    { return m_position;    }
-
-    void setOrientation(const QQuaternion& q)   { m_orientation = q;    }
-    QQuaternion orientation() const             { return m_orientation; }
-
+    
     Vector3f up() const;
     Vector3f right() const;
     Vector3f direction() const;
 
+    void setPosition(const Point3f& p)        { m_position = p;       }
+    Point3f position() const                  { return m_position;    }
+
+    void setOrientation(const QQuaternion& q) { m_orientation = q;    }
+    QQuaternion orientation() const           { return m_orientation; }
 
 private:
     void updateView();
@@ -46,14 +44,14 @@ private:
     Point3f m_target;
     Vector3f m_up;
 
-    unsigned int m_originX;
-    unsigned int m_originY;
+    uint m_originX;
+    uint m_originY;
     float m_fovY;
     float m_near;
     float m_far;
 
-    unsigned int m_width;
-    unsigned int m_height;
+    uint m_width;
+    uint m_height;
 
     QMatrix4x4 m_viewMatrix;
     QMatrix4x4 m_projectionMatrix;

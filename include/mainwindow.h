@@ -6,11 +6,10 @@
 
 #include "utils.h"
 
-
 class GLWidget;
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
 class MainWindow : public QMainWindow

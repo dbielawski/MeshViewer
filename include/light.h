@@ -10,9 +10,7 @@ public:
     {}
 
     virtual ~Light()
-    {
-
-    }
+    {}
 
     virtual Vector3f direction() const = 0;
     virtual Color4f intensity(const Point3f& position) const = 0;
@@ -30,9 +28,7 @@ public:
     {}
 
     virtual ~DirectionalLight()
-    {
-
-    }
+    {}
 
     // Direction is always the same
     virtual Vector3f direction() const override
