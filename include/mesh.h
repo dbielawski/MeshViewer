@@ -45,12 +45,16 @@ public:
     bool isValid() const  { return m_polyhedron.is_valid(); }
     bool isClosed() const { return m_polyhedron.is_closed(); }
     void fillHoles();
+    void fillHolesCenter();
+    void fillHolesEarClipping();
     void detectHoles();
 
     void saveAsObj(QTextStream& out, int offset) const;
 
-
 private:
+    bool isConvex(Vector3f p0, Vector3f p1, Vector3f p2);
+    bool inTriangle(Vector3f p0, Vector3f p1, Vector3f p2, Vector3f p);
+
     QGLFunctions*      m_functions;
 
     uint               m_vertexBufferId;
