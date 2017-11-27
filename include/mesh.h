@@ -32,6 +32,8 @@ public:
     void computeBoundingBox();
     void buildOctree();
 
+    Mesh* thickenedMesh();
+
     AlignedBox3f* boundingBox() const { return m_boundingBox; }
     Octree* octree() const            { return m_octree;      }
     QMatrix4x4 transform() const      { return m_transform;   }

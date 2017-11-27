@@ -158,6 +158,10 @@ void Mesh::buildOctree()
     m_octree->build();
 }
 
+Mesh* Mesh::thickenedMesh() {
+    return m_octree->buildShapeFromOctree();
+}
+
 // Offset is the number of vertices already written in the out stream.
 void Mesh::saveAsObj(QTextStream& out, int offset) const
 {

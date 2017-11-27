@@ -236,6 +236,7 @@ void MainWindow::onDetectHoles()
 {
     ui->openGLWidget->scene()->detectHoles();
     ui->openGLWidget->updateGL();
+    updateInfos();
 }
 
 void MainWindow::setDraw(uint value)
@@ -252,11 +253,10 @@ void MainWindow::updateInfos() const
     uint facesCount = ui->openGLWidget->scene()->faceCount();
     uint lightCount = ui->openGLWidget->scene()->lightCount();
 
-    ui->verticesCount->setText(QString("Vertices: " + QString::number(verticesCount)));
-    ui->trianglesCount->setText(QString("Triangles: " + QString::number(trianglesCount)));
-    ui->facesCount->setText(QString("Faces: " + QString::number(facesCount)));
-    ui->modelCount->setText(QString("Model: " + QString::number(meshCount)));
-    ui->lightCount->setText(QString("Lights: " + QString::number(lightCount)));
+    ui->verticesCount->setText(QString("Vertice(s): " + QString::number(verticesCount)));
+    ui->facesCount->setText(QString("Face(s): " + QString::number(facesCount)));
+    ui->modelCount->setText(QString("Model(s): " + QString::number(meshCount)));
+    ui->lightCount->setText(QString("Light(s): " + QString::number(lightCount)));
 
 	if (meshCount != 0) {
 		bool validity = ui->openGLWidget->scene()->isValid();

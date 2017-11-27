@@ -1,5 +1,4 @@
 #include "octree.h"
-
 Octree::Octree(const QVector<Vertex>& vertices, uint minObj) :
     m_vertices(vertices), m_minObj(minObj)
 {
@@ -79,7 +78,8 @@ void::Octree::buildNode(Node* parent)
     QVector<Vertex> objs[8];
     for (int i  = 0; i < objects.size(); ++i) {
         /* For each bounding box we test if the object from the list is inside it.
-        *  If true : we can push it into the obj list of the node and break out the for loop
+        *  If true : we can push it into th
+            // TODO: Wups ? Since it is recursive it will be parallelized and the offset will no longer be valid...e obj list of the node and break out the for loop
         *  since we don"t want duplicate. The first bounding box containing an object
         *  will be the only one.
         */
@@ -122,19 +122,22 @@ void Octree::renderNode(const Scene &scene, const QMatrix4x4 &transform, Node* c
     }
 }
 
-void Octree::buildShapeFromOctree()
+Mesh* Octree::buildShapeFromOctree()
 {
-    buildShape(m_octree);
+    QVector<Vertex> vertices;
+    QVector<FaceIndex> faces;
+    buildShape(m_octree, vertices, faces);
+
+    Mesh* mesh = new Mesh;
+    mesh->displayableData(vertices, faces);
+    mesh->init();
+    return mesh;
 }
 
-void Octree::buildShape(Node* currentNode)
+void Octree::buildShape(Node* currentNode, QVector<Vertex>& vertices, QVector<FaceIndex>& faces)
 {
-    // For compilation purpose only
-    QVector<FaceIndex> faces;
-    QVector<Vertex> vertices;
-
     for (Node* child : currentNode->childs) {
-        if (child->isLeaf()) {
+        if (child->isLeaf() && !child->isEmpty()) {
             AlignedBox3f* aabb = child->aabb;
 
             Point3f min = aabb->min();
@@ -167,23 +170,24 @@ void Octree::buildShape(Node* currentNode)
             vertices.push_back(bbr);
 
             // ftl, ftr, fbr, fbl
-            FaceIndex front = { offset + 1, offset + 2, offset + 4, offset + 3 };
+            FaceIndex front = { offset + 0, offset + 1, offset + 3, offset + 2 };
             // btl, btr, bbr, bbl
-            FaceIndex back  = { offset + 5, offset + 6, offset + 8, offset + 7 };
+            FaceIndex back  = { offset + 4, offset + 5, offset + 7, offset + 6 };
             // ftl, ftr, btr, btl
-            FaceIndex top   = { offset + 1, offset + 2, offset + 6, offset + 5 };
+            FaceIndex top   = { offset + 0, offset + 1, offset + 5, offset + 4 };
             // fbl, fbr, bbr, bbl
-            FaceIndex bot   = { offset + 3, offset + 4, offset + 8, offset + 7 };
+            FaceIndex bot   = { offset + 2, offset + 3, offset + 7, offset + 6 };
             // ftl, fbl, bbl, btl
-            FaceIndex left  = { offset + 1, offset + 3, offset + 7, offset + 5 };
+            FaceIndex left  = { offset + 0, offset + 2, offset + 6, offset + 4 };
             // ftr, fbr, bbr, btr
-            FaceIndex right = { offset + 2, offset + 4, offset + 8, offset + 6 };
+            FaceIndex right = { offset + 1, offset + 3, offset + 7, offset + 5 };
 
             faces.push_back(front); faces.push_back(back);
             faces.push_back(top); faces.push_back(bot);
             faces.push_back(left); faces.push_back(right);
 
-            // TODO: Wups ? Since it is recursive it will be parallelized and the offset will no longer be valid...
         }
+        std::cout << "Over" << std::endl;
+        buildShape(child, vertices, faces);
     }
 }

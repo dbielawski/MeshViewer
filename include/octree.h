@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "alignedbox3f.h"
 #include "wireboundingbox.h"
+#include "mesh.h"
 
 class Octree
 {
@@ -46,8 +47,8 @@ public:
     void build();
     void buildNode(Node* parent);
 
-    void buildShapeFromOctree();
-    void buildShape(Node* currentNode);
+    Mesh* buildShapeFromOctree();
+    void buildShape(Node* currentNode, QVector<Vertex>& vertex, QVector<FaceIndex>& faces);
 
     void render(const Scene& scene, const QMatrix4x4& transform, bool renderFullOctree) const;
     void renderNode(const Scene &scene, const QMatrix4x4 &transform, Node* currentNode, bool renderFullOctree) const;

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>887</width>
-    <height>568</height>
+    <height>569</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -256,16 +256,16 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="verticesCount">
+          <widget class="QLabel" name="modelCount">
            <property name="text">
-            <string>vertices</string>
+            <string>models</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="trianglesCount">
+          <widget class="QLabel" name="verticesCount">
            <property name="text">
-            <string>triangles</string>
+            <string>vertices</string>
            </property>
           </widget>
          </item>
@@ -277,16 +277,9 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="modelCount">
-           <property name="text">
-            <string>model</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QLabel" name="lightCount">
            <property name="text">
-            <string>light</string>
+            <string>lights</string>
            </property>
           </widget>
          </item>
