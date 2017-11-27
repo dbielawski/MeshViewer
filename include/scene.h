@@ -37,6 +37,8 @@ public:
     void setTransparency(float t);
     float transparency() const { return m_transparency; }
 
+    void toggleFilledLinesMode() { m_filledAndLinesMode = !m_filledAndLinesMode; }
+
     uint vertexCount() const;
     uint triangleCount() const;
     uint faceCount() const;
@@ -72,6 +74,8 @@ private:
     uint m_octreeMode;
 
     float m_transparency;
+
+    bool m_filledAndLinesMode;
 };
 
 #endif // SCENE_H

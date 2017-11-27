@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->sceneBackgroundColorButton, SIGNAL(clicked()), this, SLOT(onBackgroundColorScene()));
     connect(ui->detectHolesButton,          SIGNAL(clicked()), this, SLOT(onDetectHoles()));
     connect(ui->holesFillingButton,         SIGNAL(clicked()), this, SLOT(holesFillingAction()));
+    connect(ui->fill_linesButton,           SIGNAL(clicked()), this, SLOT(onDrawFilledAndLines()));
 
     ui->alphaValue->setText(QString::number(ui->transparencySlider->value()));
 
@@ -230,6 +231,12 @@ void MainWindow::onDrawLine()
 void MainWindow::onDrawFilled()
 {
     setDraw(GLWidget::EDisplayMode::FILL);
+}
+
+void MainWindow::onDrawFilledAndLines()
+{
+    ui->openGLWidget->scene()->toggleFilledLinesMode();
+    ui->openGLWidget->updateGL();
 }
 
 void MainWindow::onDetectHoles()

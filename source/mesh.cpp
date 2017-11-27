@@ -69,8 +69,6 @@ void Mesh::init()
 
 void Mesh::renderMesh() const
 {
-    glShadeModel(GL_SMOOTH);
-
     for (const FaceIndex& face: m_faces) {
         glBegin(GL_POLYGON);
         for (const uint index: face) {
@@ -81,6 +79,36 @@ void Mesh::renderMesh() const
         }
         glEnd();
     }
+}
+void Mesh::renderMeshFilledAndLines() const
+{
+    glShadeModel(GL_SMOOTH);
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    for (const FaceIndex& face: m_faces) {
+        glBegin(GL_POLYGON);
+        for (const uint index: face) {
+            const Vertex &vertex = m_vertices.at(index);
+
+            glColor4f(vertex.color.r, vertex.color.g, vertex.color.b, m_scenePtr->transparency());
+            glVertex3f(vertex.position.x(), vertex.position.y(), vertex.position.z());
+        }
+        glEnd();
+    }
+
+    glLineWidth(3);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    for (const FaceIndex& face: m_faces) {
+        glBegin(GL_POLYGON);
+        for (const uint index: face) {
+            const Vertex &vertex = m_vertices.at(index);
+
+            glColor4f(0, 0, 1, 1);
+            glVertex3f(vertex.position.x(), vertex.position.y(), vertex.position.z());
+        }
+        glEnd();
+    }
+    glLineWidth(1);
 }
 
 void Mesh::renderBoundingBox() const
@@ -169,9 +197,9 @@ void Mesh::saveAsObj(QTextStream& out, int offset) const
     for (int i = 0; i < m_vertices.size(); ++i) {
         QString line = "v ";
         line += QString::number(m_vertices.at(i).position.x()) + " "
-              + QString::number(m_vertices.at(i).position.y()) + " "
-              + QString::number(m_vertices.at(i).position.z())
-              + '\n';
+                + QString::number(m_vertices.at(i).position.y()) + " "
+                + QString::number(m_vertices.at(i).position.z())
+                + '\n';
         out << line;
     }
 
@@ -179,9 +207,9 @@ void Mesh::saveAsObj(QTextStream& out, int offset) const
     for (int i = 0; i < m_vertices.size(); ++i) {
         QString line = "vn ";
         line += QString::number(offset + m_vertices.at(i).normal.x()) + " "
-              + QString::number(offset + m_vertices.at(i).normal.y()) + " "
-              + QString::number(offset + m_vertices.at(i).normal.z())
-              + '\n';
+                + QString::number(offset + m_vertices.at(i).normal.y()) + " "
+                + QString::number(offset + m_vertices.at(i).normal.z())
+                + '\n';
         out << line;
     }
 
@@ -336,7 +364,7 @@ void Mesh::detectHoles()
     for (Halfedge_iterator heit = m_polyhedron.halfedges_begin(); heit != m_polyhedron.halfedges_end(); heit++) {
         if (heit->is_border()) { // If there is a hole
             Kernel::Point_3 vec0 = heit->vertex()->point(),
-                            vec1 = heit->opposite()->vertex()->point();
+                    vec1 = heit->opposite()->vertex()->point();
 
             Point3f p0(vec0.x(), vec0.y(), vec0.z());
             Point3f p1(vec1.x(), vec1.y(), vec1.z());
@@ -345,7 +373,7 @@ void Mesh::detectHoles()
                 Point3f p  = m_vertices.at(i).position;
 
                 if ((p.x() == p0.x() && p.y() == p0.y() && p.z() == p0.z()) ||
-                    (p.x() == p1.x() && p.y() == p1.y() && p.z() == p1.z())) {
+                        (p.x() == p1.x() && p.y() == p1.y() && p.z() == p1.z())) {
                     m_vertices[i].color = Color4f::red();
                 }
             }

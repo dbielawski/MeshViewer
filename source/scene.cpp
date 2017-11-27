@@ -32,6 +32,8 @@ Scene::Scene() :
     m_lightList.append(new DirectionalLight(Color4f::white(), -1*Vector3f::UnitX()));
     m_lightList.append(new DirectionalLight(Color4f::random(),   Vector3f::UnitY()));
     m_lightList.append(new DirectionalLight(Color4f::white(), -1*Vector3f::UnitY()));
+
+    m_filledAndLinesMode = false;
 }
 
 Scene::~Scene()
@@ -138,7 +140,11 @@ void Scene::render() const
         glMultMatrixf(m->transform().constData());
 
         if (m != Q_NULLPTR) {
-            m->renderMesh();
+
+            if (m_filledAndLinesMode)
+                m->renderMeshFilledAndLines();
+            else
+                m->renderMesh();
 
             if (m_displayBoundingBox) {
                 m->renderBoundingBox();
@@ -168,16 +174,16 @@ void Scene::drawAxis() const
 
     glBegin(GL_LINES);
     glColor4f(1.f, 0.f, 0.f, 1.f);
-    glVertex3f(-10, 0, 0);
     glVertex3f(0, 0, 0);
+    glVertex3f(10, 0, 0);
 
     glColor4f(0.f, 1.f, 0.f, 1.f);
     glVertex3f(0, 0, 0);
     glVertex3f(0, 10, 0);
 
     glColor4f(0.f, 0.f, 1.f, 1.f);
-    glVertex3f(0, 0, -10);
     glVertex3f(0, 0, 0);
+    glVertex3f(0, 0, 10);
     glEnd();
 
     Vector2i size = m_camera->size();

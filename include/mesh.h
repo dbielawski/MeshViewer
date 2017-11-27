@@ -21,6 +21,7 @@ public:
 
     void init();
     void renderMesh() const;
+    void renderMeshFilledAndLines() const;
     void renderBoundingBox() const;
     void renderOctree(bool renderFullOctree) const;
 

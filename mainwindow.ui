@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="toolTip">
+   <string>Toggle display mode (Filled and Lines mode)</string>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
@@ -147,6 +150,13 @@
            <widget class="QPushButton" name="fillModeButton">
             <property name="text">
              <string>FILL</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="fill_linesButton">
+            <property name="text">
+             <string>FILL + LINES</string>
             </property>
            </widget>
           </item>
@@ -336,7 +346,7 @@
      <x>0</x>
      <y>0</y>
      <width>887</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
